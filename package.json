@@ -13,10 +13,13 @@
     "@material-ui/styles": "^4.6.0",
     "@next/plugin-material-ui": "^9.1.4",
     "clsx": "^1.0.4",
+    "jss": "^10.0.0",
     "next": "9.1.4",
     "react": "16.12.0",
     "react-dom": "16.12.0",
-    "styled-components": "^4.4.1"
+    "react-jss": "^10.0.0",
+    "styled-components": "^4.4.1",
+    "styled-jsx": "^3.2.4"
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^1.10.6"

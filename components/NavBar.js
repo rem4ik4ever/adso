@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
+import Link from "next/link";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -18,6 +19,9 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     flexGrow: 1
+  },
+  buttonLink: {
+    color: "#fff"
   }
 }));
 
@@ -25,7 +29,7 @@ const NavBar = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div>
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -39,7 +43,12 @@ const NavBar = () => {
           <Typography variant="h6" className={classes.title}>
             Home
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Link href="/sign-in">
+            <Button>Login</Button>
+          </Link>
+          <Link href="/sign-up">
+            <Button>Sign Up</Button>
+          </Link>
         </Toolbar>
       </AppBar>
     </div>
