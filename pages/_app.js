@@ -4,7 +4,8 @@ import { ThemeProvider } from "@material-ui/styles";
 import theme from "../src/theme";
 import { CssBaseline } from "@material-ui/core";
 import Head from "next/head";
-
+import { useNetlifyIdentity } from "react-netlify-identity";
+import { AppIdentityContext } from "../src/context/AppIdentityContext";
 export default class AdsoApp extends App {
   componentDidMount() {
     // Remove the server-side injected CSS.

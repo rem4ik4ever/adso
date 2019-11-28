@@ -1,24 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
+import Link from "../src/components/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { useLoading } from "../src/hooks/useLoading";
+import { AppIdentityContext } from "../src/context/AppIdentityContext";
+import { withIdentity } from "../src/hoc/withIdentity";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+      <Link color="inherit" href="#">
+        Adso App
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -43,11 +46,37 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  errorText: {
+    color: theme.palette.error.main
   }
 }));
 
-export default function SignIn() {
+const SignIn = ({ identity }) => {
   const classes = useStyles();
+  const { loginUser, user } = identity;
+
+  const [isLoading, load] = useLoading();
+  const [msg, setMsg] = useState("");
+  const formRef = React.createRef();
+  if (user) {
+    return "You are already logged in";
+  }
+  const onLogin = event => {
+    event.preventDefault();
+    const email = formRef.current.email.value;
+    const password = formRef.current.password.value;
+    const remember = formRef.current.remember.checked;
+    console.log(email, password, remember);
+    load(loginUser(email, password, remember))
+      .then(user => {
+        console.log("Success login", user);
+      })
+      .catch(err => {
+        console.log(err);
+        setMsg(err.message);
+      });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,7 +88,15 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <Typography variant="caption" className={classes.errorText}>
+          {msg}
+        </Typography>
+        <form
+          className={classes.form}
+          noValidate
+          onSubmit={onLogin}
+          ref={formRef}
+        >
           <TextField
             variant="outlined"
             margin="normal"
@@ -83,7 +120,7 @@ export default function SignIn() {
             autoComplete="current-password"
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox name="remember" color="primary" />}
             label="Remember me"
           />
           <Button
@@ -92,6 +129,7 @@ export default function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={isLoading}
           >
             Sign In
           </Button>
@@ -102,7 +140,7 @@ export default function SignIn() {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/sign-up" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
@@ -114,4 +152,6 @@ export default function SignIn() {
       </Box>
     </Container>
   );
-}
+};
+
+export default withIdentity(SignIn);

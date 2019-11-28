@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +12,8 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { withIdentity } from "../src/hoc/withIdentity";
+import { useLoading } from "../src/hooks/useLoading";
 
 function Copyright() {
   return (
@@ -43,11 +45,38 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  errorText: {
+    color: theme.palette.error.main
   }
 }));
 
-export default function SignUp() {
+const SignUp = ({ identity }) => {
   const classes = useStyles();
+  const { signupUser } = identity;
+  const [isLoading, load] = useLoading();
+  const [msg, setMsg] = useState("");
+  const formRef = React.createRef();
+  const onSignUp = event => {
+    event.preventDefault();
+    const firstName = formRef.current.firstName.value;
+    const lastName = formRef.current.lastName.value;
+    const email = formRef.current.email.value;
+    const password = formRef.current.password.value;
+    load(
+      signupUser(email, password, {
+        firstName,
+        lastName
+      })
+    )
+      .then(user => {
+        console.log("Sign Up successful", user);
+      })
+      .catch(err => {
+        console.log(err);
+        setMsg(err.message);
+      });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,7 +88,15 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <Typography variant="caption" className={classes.errorText}>
+          {msg}
+        </Typography>
+        <form
+          className={classes.form}
+          noValidate
+          ref={formRef}
+          onSubmit={onSignUp}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -107,12 +144,6 @@ export default function SignUp() {
                 autoComplete="current-password"
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
-              />
-            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -120,6 +151,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={isLoading}
           >
             Sign Up
           </Button>
@@ -137,4 +169,6 @@ export default function SignUp() {
       </Box>
     </Container>
   );
-}
+};
+
+export default withIdentity(SignUp);
