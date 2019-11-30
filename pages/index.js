@@ -1,6 +1,7 @@
 import React from "react";
 import Head from "next/head";
-import NavBar from "../components/NavBar";
+import NavBar from "../src/components/NavBar";
+import Hello from "../src/components/Hello";
 
 const Home = () => (
   <div>
@@ -9,6 +10,7 @@ const Home = () => (
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <NavBar />
+    <Hello />
   </div>
 );
 

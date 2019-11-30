@@ -13,8 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useLoading } from "../src/hooks/useLoading";
-import { AppIdentityContext } from "../src/context/AppIdentityContext";
-import { withIdentity } from "../src/hoc/withIdentity";
+import { useIdentityContext } from "react-netlify-identity";
 
 function Copyright() {
   return (
@@ -54,7 +53,7 @@ const useStyles = makeStyles(theme => ({
 
 const SignIn = ({ identity }) => {
   const classes = useStyles();
-  const { loginUser, user } = identity;
+  const { loginUser, user } = useIdentityContext();
 
   const [isLoading, load] = useLoading();
   const [msg, setMsg] = useState("");
@@ -154,4 +153,4 @@ const SignIn = ({ identity }) => {
   );
 };
 
-export default withIdentity(SignIn);
+export default SignIn;
