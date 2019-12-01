@@ -63,8 +63,9 @@ const SignUp = () => {
     const password = formRef.current.password.value;
     load(
       signupUser(email, password, {
-        firstName,
-        lastName
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        name: `${firstName.trim()} ${lastName.trim()}`
       })
     )
       .then(user => {
@@ -155,7 +156,7 @@ const SignUp = () => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/sign-in" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
