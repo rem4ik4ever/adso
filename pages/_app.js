@@ -4,7 +4,10 @@ import { ThemeProvider } from "@material-ui/styles";
 import theme from "../src/theme";
 import { CssBaseline } from "@material-ui/core";
 import Head from "next/head";
-import { IdentityContextProvider } from "react-netlify-identity";
+import {
+  IdentityContextProvider,
+  useNetlifyIdentity
+} from "react-netlify-identity";
 import { withApollo } from "../src/lib/apollo";
 
 class AdsoApp extends App {
