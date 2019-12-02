@@ -1,16 +1,38 @@
 import React from "react";
-import { AppIdentityContext } from "../context/AppIdentityContext";
-import { useNetlifyIdentity } from "react-netlify-identity";
+import gql from "graphql-tag";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 
-/**
- * Attaching Netlify Idendntity
- */
+const CURRENT_USER = gql`
+  {
+    me {
+      uuid
+      name
+      firstName
+      lastName
+      email
+    }
+  }
+`;
+
 export const withIdentity = WrappedComponent => {
-  const InternalWrappedComponent = props => {
-    const identityUrl = "https://adso-app.netlify.com";
-    const identity = useNetlifyIdentity(identityUrl);
-    return <WrappedComponent {...props} identity={identity} />;
-  };
+  const InternalWrappedComponent = props => <WrappedComponent {...props} />;
+  const { data, loading, error } = useQuery(CURRENT_USER);
+  console.log("current_user", data);
 
   return InternalWrappedComponent;
+};
+
+const LOGIN = gql`
+  mutation login($data: LoginInput!) {
+    login(data: $data) {
+      accessToken
+      refreshToken
+    }
+  }
+`;
+
+const loginUser = (email, password) => {
+  const [login, { data, loading, error }] = useMutation(LOGIN);
+  login({ data: { email, password } });
+  return { data, loading, error };
 };

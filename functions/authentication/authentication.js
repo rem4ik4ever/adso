@@ -4,7 +4,13 @@ const resolvers = require("./resolvers");
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: ({ event, context }) => ({
+    headers: event.headers,
+    functionName: context.functionName,
+    event,
+    context
+  })
 });
 
 exports.handler = server.createHandler();

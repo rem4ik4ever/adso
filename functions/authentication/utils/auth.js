@@ -1,8 +1,8 @@
-const { sign } = require("jsonwebtoken");
+const { sign, verify } = require("jsonwebtoken");
 const createAccessToken = user => {
   return sign(
     {
-      userId: user.uuid
+      uuid: user.uuid
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -12,12 +12,20 @@ const createAccessToken = user => {
 };
 
 const createRefreshToken = user => {
-  return sign({ userId: user.id }, process.env.ACCESS_TOKEN_REFRESH_SECRET, {
+  return sign({ uuid: user.uuid }, process.env.ACCESS_TOKEN_REFRESH_SECRET, {
     expiresIn: "7d"
   });
 };
 
+const verifyAccessToken = token =>
+  verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+const verifyRefreshToken = token =>
+  verify(token, process.env.ACCESS_TOKEN_REFRESH_SECRET);
+
 module.exports = {
   createAccessToken,
-  createRefreshToken
+  createRefreshToken,
+  verifyAccessToken,
+  verifyRefreshToken
 };

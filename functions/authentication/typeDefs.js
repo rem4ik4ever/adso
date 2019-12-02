@@ -5,11 +5,12 @@ const typeDefs = gql`
     uuid: String!
     firstName: String!
     lastName: String!
+    name: String!
     email: String!
   }
 
   type Query {
-    me: User!
+    me: User
   }
 
   type AuthResponse {
@@ -31,7 +32,7 @@ const typeDefs = gql`
 
   type Mutation {
     register(data: RegisterInput!): Boolean
-    login(data: LoginInput!): AuthResponse
+    login(email: String!, password: String!): AuthResponse
     confirmUser(token: String!): Boolean
   }
 `;

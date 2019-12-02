@@ -3,9 +3,17 @@ const uuidv4 = require("uuid/v4");
 const bcrypt = require("bcryptjs");
 const moment = require("moment");
 const sendEmail = require("./utils/sendEmail");
-const { findByEmail, findByConfirmationToken } = require("./user/search");
+const {
+  findByEmail,
+  findByConfirmationToken,
+  findByUUID
+} = require("./user/search");
 
-const { createAccessToken, createRefreshToken } = require("./utils/auth");
+const {
+  createAccessToken,
+  createRefreshToken,
+  verifyAccessToken
+} = require("./utils/auth");
 
 const q = faunadb.query;
 const client = new faunadb.Client({
@@ -46,10 +54,9 @@ const register = async (_, { data }, context) => {
   return true;
 };
 
-const login = async (_, { data }, _context) => {
+const login = async (_, { email, password }, _context) => {
+  console.log("HIT LOGIN");
   try {
-    const password = data.password;
-    const email = data.email;
     const match = await client.query(
       q.Get(q.Match(q.Index("user_by_email"), email))
     );
@@ -97,9 +104,23 @@ const confirmUser = async (_, { token }, _context) => {
   return true;
 };
 
+const getCurrentUser = async (_, _args, { headers }) => {
+  try {
+    const authorization = headers.authorization;
+    if (!authorization) return null;
+    const token = authorization.split(" ")[1];
+    const { uuid } = verifyAccessToken(token);
+    const match = await findByUUID(client, uuid);
+    return match.data;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
 module.exports = {
   Query: {
-    me: () => null
+    me: getCurrentUser
   },
   Mutation: {
     register,

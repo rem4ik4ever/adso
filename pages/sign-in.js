@@ -12,8 +12,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { useLoading } from "../src/hooks/useLoading";
-import { useIdentityContext } from "react-netlify-identity";
+import { useMutation } from "@apollo/react-hooks";
+import gql from "graphql-tag";
+import { setAuthenticationTokens } from "../src/lib/auth";
 
 function Copyright() {
   return (
@@ -51,31 +52,38 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SignIn = ({ identity }) => {
-  const classes = useStyles();
-  const { loginUser, user } = useIdentityContext();
+const LOGIN = gql`
+  mutation login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      accessToken
+      refreshToken
+    }
+  }
+`;
 
-  const [isLoading, load] = useLoading();
+const SignIn = () => {
+  const classes = useStyles();
+  const [login, { data, loading, error }] = useMutation(LOGIN, {
+    onCompleted: ({ login }) => {
+      console.log(login);
+      setAuthenticationTokens(login);
+    }
+  });
   const [msg, setMsg] = useState("");
   const formRef = React.createRef();
-  if (user) {
-    return "You are already logged in";
-  }
+
   const onLogin = event => {
     event.preventDefault();
     const email = formRef.current.email.value;
     const password = formRef.current.password.value;
     const remember = formRef.current.remember.checked;
     console.log(email, password, remember);
-    load(loginUser(email, password, remember))
-      .then(user => {
-        console.log("Success login", user);
-      })
-      .catch(err => {
-        console.log(err);
-        setMsg(err.message);
-      });
+    login({ variables: { email, password } });
+    console.log("DATA", data);
   };
+  if (error) return `Error while logging you in: ${error.message}`;
+  if (loading) return "Loggin you in...";
+  if (data) console.log("here you go!", data);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -128,7 +136,7 @@ const SignIn = ({ identity }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={isLoading}
+            disabled={loading}
           >
             Sign In
           </Button>

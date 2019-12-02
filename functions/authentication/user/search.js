@@ -25,7 +25,19 @@ const findByConfirmationToken = async (client, token) => {
   }
 };
 
+const findByUUID = async (client, uuid) => {
+  try {
+    const exists = await client.query(
+      q.Get(q.Match(q.Index("user_by_uuid"), uuid))
+    );
+    return exists;
+  } catch (error) {
+    return false;
+  }
+};
+
 module.exports = {
   findByEmail,
-  findByConfirmationToken
+  findByConfirmationToken,
+  findByUUID
 };

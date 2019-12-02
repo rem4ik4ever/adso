@@ -4,10 +4,6 @@ import { ThemeProvider } from "@material-ui/styles";
 import theme from "../src/theme";
 import { CssBaseline } from "@material-ui/core";
 import Head from "next/head";
-import {
-  IdentityContextProvider,
-  useNetlifyIdentity
-} from "react-netlify-identity";
 import { withApollo } from "../src/lib/apollo";
 
 class AdsoApp extends App {
@@ -22,17 +18,15 @@ class AdsoApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <IdentityContextProvider url="https://adso-app.netlify.com">
-        <div>
-          <Head>
-            <title>Adso App</title>
-          </Head>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Component {...pageProps} />
-          </ThemeProvider>
-        </div>
-      </IdentityContextProvider>
+      <div>
+        <Head>
+          <title>Adso App</title>
+        </Head>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </div>
     );
   }
 }
