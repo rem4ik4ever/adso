@@ -23,7 +23,6 @@ const client = new faunadb.Client({
 
 const register = async (_, { data }, _context) => {
   try {
-    console.log("REGISTER TRIGGERED");
     const exists = await findByEmail(client, data.email);
     if (exists) {
       return false;
@@ -60,7 +59,7 @@ const register = async (_, { data }, _context) => {
 const login = async (_, { email, password }, _context) => {
   let match = null;
   try {
-    match = await client.query(q.Get(q.Match(q.Index("user_by_email"), email)));
+    match = await findByEmail(client, email);
   } catch (err) {
     console.error(err);
     throw new AuthenticationError("Wrong email or password");
