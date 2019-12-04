@@ -1,0 +1,49 @@
+type User {
+  uuid: String!
+  firstName: String!
+  lastName: String!
+  name: String!
+  email: String!
+}
+
+type AuthResponse {
+  accessToken: String!
+  refreshToken: String!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type List {
+  id: ID!
+  user: User!
+  name: String!
+  todos: [Todo!]!
+}
+type Todo {
+  id: ID!
+  user: User!
+  list: List!
+  task: String!
+  completed: Boolean
+}
+type Query {
+  allTodos: [Todo!]
+  allLists: [List!]
+  allUsers: [User!]
+}
+
+type Mutation {
+  register(data: RegisterInput!): Boolean
+  login(email: String!, password: String!): AuthResponse
+  confirmUser(token: String!): Boolean
+}

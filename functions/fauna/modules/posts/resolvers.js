@@ -3,7 +3,11 @@ const uuidv4 = require("uuid/v4");
 
 const q = faunadb.query;
 
-const createPost = async (_, { title, description }, { client }) => {
+const client = new faunadb.Client({
+  secret: process.env.FAUNADB_SERVER_SECRET
+});
+
+const createPost = async (_, { title, description }, _context) => {
   try {
     const post = { data: { uuid: uuidv4(), title, description } };
     await client.query(q.Create(q.Ref("classes/posts"), post));
@@ -14,7 +18,7 @@ const createPost = async (_, { title, description }, { client }) => {
   return true;
 };
 
-const allPosts = async (_, _args, { client }) => {
+const allPosts = async (_, _args, _context) => {
   try {
     const response = await client.query(
       q.Paginate(q.Match(q.Ref("indexes/all_posts")))
@@ -30,7 +34,7 @@ const allPosts = async (_, _args, { client }) => {
   }
 };
 
-const updatePost = async (_, { id, title, description }, { client }) => {
+const updatePost = async (_, { id, title, description }, _context) => {
   try {
     const data = { title, description };
     const match = await client.query(
@@ -43,7 +47,7 @@ const updatePost = async (_, { id, title, description }, { client }) => {
   return true;
 };
 
-const deletePost = async (_, { id }, { client }) => {
+const deletePost = async (_, { id }, _context) => {
   try {
     const match = await client.query(
       q.Get(q.Match(q.Index("posts_by_uuid"), id))
@@ -57,8 +61,12 @@ const deletePost = async (_, { id }, { client }) => {
 };
 
 module.exports = {
-  createPost,
-  updatePost,
-  deletePost,
-  allPosts
+  Query: {
+    allPosts: (root, args, context) => allPosts(root, args, context)
+  },
+  Mutation: {
+    createPost: async (root, args, context) => createPost(root, args, context),
+    updatePost: async (root, args, context) => updatePost(root, args, context),
+    deletePost: async (root, args, context) => deletePost(root, args, context)
+  }
 };

@@ -11,7 +11,6 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useLoading } from "../src/hooks/useLoading";
-import { useIdentityContext } from "react-netlify-identity";
 
 function Copyright() {
   return (
@@ -51,10 +50,10 @@ const useStyles = makeStyles(theme => ({
 
 const SignUp = () => {
   const classes = useStyles();
-  const { signupUser } = useIdentityContext();
   const [isLoading, load] = useLoading();
   const [msg, setMsg] = useState("");
   const formRef = React.createRef();
+
   const onSignUp = event => {
     event.preventDefault();
     const firstName = formRef.current.firstName.value;
