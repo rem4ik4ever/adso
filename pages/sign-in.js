@@ -14,7 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { setAuthenticationTokens } from "../src/lib/auth";
+import { setAuthenticationToken, setRefreshToken } from "../src/lib/auth";
 
 function Copyright() {
   return (
@@ -65,8 +65,8 @@ const SignIn = () => {
   const classes = useStyles();
   const [login, { data, loading, error }] = useMutation(LOGIN, {
     onCompleted: ({ login }) => {
-      console.log(login);
-      setAuthenticationTokens(login);
+      setAuthenticationToken(login.accessToken);
+      setRefreshToken(login.refreshToken);
     }
   });
   const [msg, setMsg] = useState("");

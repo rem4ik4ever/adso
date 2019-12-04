@@ -21,9 +21,8 @@ const client = new faunadb.Client({
   secret: process.env.FAUNADB_SERVER_SECRET
 });
 
-const register = async (_, { data }, _context) => {
+const register = async (_, { data }, context) => {
   try {
-    console.log("REGISTER TRIGGERED");
     const exists = await findByEmail(client, data.email);
     if (exists) {
       return false;
@@ -51,7 +50,6 @@ const register = async (_, { data }, _context) => {
       `http://localhost:8888/user/confirm/${confirmationToken}`
     );
   } catch (err) {
-    console.error(err);
     return false;
   }
   return true;
@@ -124,8 +122,8 @@ module.exports = {
     me: getCurrentUser
   },
   Mutation: {
-    register: async (root, args, context) => register(root, args, context),
-    login: async (root, args, context) => login(root, args, context),
-    confirmUser: async (root, args, context) => confirmUser(root, args, context)
+    register,
+    login,
+    confirmUser
   }
 };

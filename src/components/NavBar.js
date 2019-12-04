@@ -29,7 +29,6 @@ const useStyles = makeStyles(theme => ({
 const NavBar = () => {
   const classes = useStyles();
   const { user } = useNetlifyIdentity();
-  console.log(user);
   return (
     <div>
       <AppBar position="static">

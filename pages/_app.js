@@ -5,6 +5,7 @@ import theme from "../src/theme";
 import { CssBaseline } from "@material-ui/core";
 import Head from "next/head";
 import { withApollo } from "../src/lib/apollo";
+import NavBar from "../src/components/NavBar";
 
 class AdsoApp extends App {
   componentDidMount() {
@@ -24,6 +25,7 @@ class AdsoApp extends App {
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
+          <NavBar />
           <Component {...pageProps} />
         </ThemeProvider>
       </div>
