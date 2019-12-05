@@ -8,18 +8,18 @@ const {
   findByConfirmationToken,
   findByUUID
 } = require("./user/search");
+const { client } = require("../../db/utils");
+const cookie = require("cookie");
 
 const {
   createAccessToken,
   createRefreshToken,
-  verifyAccessToken
+  verifyAccessToken,
+  verifyRefreshToken
 } = require("./utils/auth");
 const { AuthenticationError } = require("apollo-server-lambda");
 
 const q = faunadb.query;
-const client = new faunadb.Client({
-  secret: process.env.FAUNADB_SERVER_SECRET
-});
 
 const register = async (_, { data }, context) => {
   try {
@@ -47,9 +47,10 @@ const register = async (_, { data }, context) => {
     await client.query(q.Create(q.Ref("classes/users"), userData));
     await sendEmail(
       data.email,
-      `http://localhost:8888/user/confirm/${confirmationToken}`
+      `http://localhost:8888/confirm?token=${confirmationToken}`
     );
   } catch (err) {
+    console.error(err);
     return false;
   }
   return true;
@@ -92,7 +93,9 @@ const confirmUser = async (_, { token }, _context) => {
     await client.query(
       q.Update(q.Ref(match.ref), {
         data: {
-          confirmed: true
+          confirmed: true,
+          confirmationToken: null,
+          confirmationValidUntil: null
         }
       })
     );
@@ -117,6 +120,24 @@ const getCurrentUser = async (_, _args, { headers }) => {
   }
 };
 
+const refresh = async (_, _args, context) => {
+  try {
+    if (!context.headers.cookie) {
+      return null;
+    }
+    const cookies = cookie.parse(context.headers.cookie);
+    if (cookies.adso_qid) {
+      const { uuid } = verifyRefreshToken(cookies.adso_qid);
+      const match = await findByUUID(client, uuid);
+      const token = createAccessToken(match.data);
+      return token;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+  return null;
+};
+
 module.exports = {
   Query: {
     me: getCurrentUser
@@ -124,6 +145,7 @@ module.exports = {
   Mutation: {
     register,
     login,
-    confirmUser
+    confirmUser,
+    refresh
   }
 };

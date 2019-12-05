@@ -9,6 +9,7 @@ module.exports = gql`
     uuid: String!
     title: String!
     description: String!
+    author: User!
   }
 
   extend type Mutation {

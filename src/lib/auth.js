@@ -10,3 +10,8 @@ export const setRefreshToken = refreshToken => {
   Cookies.remove("adso_qid");
   Cookies.set("adso_qid", refreshToken);
 };
+
+export const clearTokens = () => {
+  Cookies.remove("adso_qid");
+  ls.remove("adso-token");
+};

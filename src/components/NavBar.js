@@ -9,7 +9,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
 import Link from "next/link";
-import { useNetlifyIdentity } from "react-netlify-identity";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,7 +27,6 @@ const useStyles = makeStyles(theme => ({
 
 const NavBar = () => {
   const classes = useStyles();
-  const { user } = useNetlifyIdentity();
   return (
     <div>
       <AppBar position="static">

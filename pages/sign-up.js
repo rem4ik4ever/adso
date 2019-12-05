@@ -11,6 +11,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useLoading } from "../src/hooks/useLoading";
+import { useMutation } from "@apollo/react-hooks";
+import { REGISTER_USER } from "../src/graphql/authResolvers";
 
 function Copyright() {
   return (
@@ -50,9 +52,15 @@ const useStyles = makeStyles(theme => ({
 
 const SignUp = () => {
   const classes = useStyles();
-  const [isLoading, load] = useLoading();
   const [msg, setMsg] = useState("");
   const formRef = React.createRef();
+  const [register, { loading }] = useMutation(REGISTER_USER, {
+    onCompleted: () => {},
+    onError: err => {
+      console.error(err);
+      setMsg(err.message);
+    }
+  });
 
   const onSignUp = event => {
     event.preventDefault();
@@ -60,20 +68,16 @@ const SignUp = () => {
     const lastName = formRef.current.lastName.value;
     const email = formRef.current.email.value;
     const password = formRef.current.password.value;
-    load(
-      signupUser(email, password, {
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        name: `${firstName.trim()} ${lastName.trim()}`
-      })
-    )
-      .then(user => {
-        console.log("Sign Up successful", user);
-      })
-      .catch(err => {
-        console.log(err);
-        setMsg(err.message);
-      });
+    register({
+      variables: {
+        data: {
+          email,
+          password,
+          firstName,
+          lastName
+        }
+      }
+    });
   };
 
   return (
@@ -149,7 +153,7 @@ const SignUp = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={isLoading}
+            disabled={loading}
           >
             Sign Up
           </Button>

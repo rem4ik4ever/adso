@@ -1,6 +1,7 @@
 import React from "react";
 import gql from "graphql-tag";
 import { useMutation, useQuery } from "@apollo/react-hooks";
+import { setAuthenticationToken, clearTokens } from "../lib/auth";
 
 const CURRENT_USER = gql`
   {
@@ -14,25 +15,43 @@ const CURRENT_USER = gql`
   }
 `;
 
-export const withIdentity = WrappedComponent => {
-  const InternalWrappedComponent = props => <WrappedComponent {...props} />;
-  const { data, loading, error } = useQuery(CURRENT_USER);
-  console.log("current_user", data);
-
-  return InternalWrappedComponent;
-};
-
-const LOGIN = gql`
-  mutation login($data: LoginInput!) {
-    login(data: $data) {
-      accessToken
-      refreshToken
-    }
+const CHECK_REFRESH_TOKEN = gql`
+  mutation refresh {
+    refresh
   }
 `;
 
-const loginUser = (email, password) => {
-  const [login, { data, loading, error }] = useMutation(LOGIN);
-  login({ data: { email, password } });
-  return { data, loading, error };
+const AuthenticationContext = React.createContext();
+
+export const withIdentity = WrappedComponent => {
+  const InternalWrappedComponent = props => {
+    const [checkRefreshToken] = useMutation(CHECK_REFRESH_TOKEN, {
+      onCompleted: data => {
+        console.log("Refresh Token data: ", data);
+        // setAuthenticationToken(data.refresh);
+        // location.reload();
+      },
+      onError: () => {
+        clearTokens();
+      }
+    });
+    const { data } = useQuery(CURRENT_USER, {
+      onCompleted: response => {
+        console.log(`Current user data`, response);
+        if (!response.me) {
+          checkRefreshToken();
+        }
+      },
+      onError: err => {
+        console.err(`Current user Error: ${err}`);
+      }
+    });
+    return (
+      <AuthenticationContext.Provider value={data}>
+        <WrappedComponent {...props} />
+      </AuthenticationContext.Provider>
+    );
+  };
+
+  return InternalWrappedComponent;
 };

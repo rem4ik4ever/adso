@@ -27,10 +27,10 @@
     "jss": "^10.0.0",
     "local-storage": "^2.0.0",
     "next": "9.1.4",
+    "query-string": "^6.9.0",
     "react": "16.12.0",
     "react-dom": "16.12.0",
     "react-jss": "^10.0.0",
-    "react-netlify-identity": "^0.1.9",
     "styled-jsx": "^3.2.4"
   },
   "devDependencies": {
