@@ -62,13 +62,13 @@ const login = async (_, { email, password }, _context) => {
     match = await client.query(q.Get(q.Match(q.Index("user_by_email"), email)));
   } catch (err) {
     console.error(err);
-    throw new AuthenticationError("Wrong email or password");
+    throw new AuthenticationError("WrongEmailOrPassword");
   }
   const user = match.data;
 
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
-    throw new AuthenticationError("Wrong email or password");
+    throw new AuthenticationError("WrongEmailOrPassword");
   }
   return {
     accessToken: createAccessToken(user),
@@ -77,19 +77,18 @@ const login = async (_, { email, password }, _context) => {
 };
 
 const confirmUser = async (_, { token }, _context) => {
+  const match = await findByConfirmationToken(client, token);
+  if (!match) {
+    console.error(`User with confirmationToken: ${token} not found`);
+    return false;
+  }
+  const validUntil = moment(match.data.confirmationValidUntil);
+
+  if (moment().isAfter(validUntil)) {
+    throw new AuthenticationError("ConfirmationTokenExpired");
+  }
+
   try {
-    const match = await findByConfirmationToken(client, token);
-    if (!match) {
-      console.error(`User with confirmationToken: ${token} not found`);
-      return false;
-    }
-    const validUntil = moment(match.data.confirmationValidUntil);
-
-    if (moment().isAfter(validUntil)) {
-      console.error("Not valid anymore need to resend confirmation link");
-      return false;
-    }
-
     await client.query(
       q.Update(q.Ref(match.ref), {
         data: {
@@ -138,6 +137,40 @@ const refresh = async (_, _args, context) => {
   return null;
 };
 
+const resendConfirmation = async (_, { token }, _context) => {
+  const match = await findByConfirmationToken(client, token);
+  if (!match.data) {
+    console.error(`User with confirmationToken: ${token} not found`);
+    return false;
+  }
+  const validUntil = moment(match.data.confirmationValidUntil);
+  console.log(match);
+  if (moment().isAfter(validUntil) && !match.data.confirmed) {
+    const confirmationToken = uuidv4();
+    try {
+      await client.query(
+        q.Update(q.Ref(match.ref), {
+          data: {
+            confirmationToken,
+            confirmationValidUntil: moment()
+              .add(1, "day")
+              .format()
+          }
+        })
+      );
+      await sendEmail(
+        match.data.email,
+        `http://localhost:8888/confirm?token=${confirmationToken}`
+      );
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  }
+  return false;
+};
+
 module.exports = {
   Query: {
     me: getCurrentUser
@@ -146,6 +179,7 @@ module.exports = {
     register,
     login,
     confirmUser,
-    refresh
+    refresh,
+    resendConfirmation
   }
 };

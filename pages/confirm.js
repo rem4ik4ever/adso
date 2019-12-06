@@ -7,9 +7,12 @@ import {
   Link,
   Button
 } from "@material-ui/core";
-import { Check, Error } from "@material-ui/icons/";
+import { Check, Error, Mail } from "@material-ui/icons/";
 import { makeStyles } from "@material-ui/styles";
-import { CONFIRM_USER } from "../src/graphql/authResolvers";
+import {
+  CONFIRM_USER,
+  RESEND_CONFIRMATION
+} from "../src/graphql/authResolvers";
 import { useMutation } from "@apollo/react-hooks";
 import queryString from "query-string";
 
@@ -30,24 +33,39 @@ const useStyles = makeStyles(theme => ({
 const Confirm = () => {
   const classes = useStyles();
   const [confirmed, setState] = useState(false);
+  const [showResend, setShowResend] = useState(false);
+  const [confirmationResent, setResent] = useState(false);
+
   const [confirmUser, { loading, error }] = useMutation(CONFIRM_USER, {
     onCompleted: data => {
-      console.log("User confirmed!");
-      // setTimeout(() => {
-      //   Router.replace("/confirm", "/login", { shallow: true });
-      // }, 4000);
       if (data.confirmUser) {
         setState(true);
+        setTimeout(() => {
+          console.log("SHOULD REDIRECT NOW");
+          location.href = "/sign-in";
+        }, 4000);
       }
     },
     onError: err => {
       console.log("Failed to confirm user");
       console.error(err);
+      if (err.message.includes("ConfirmationTokenExpired")) {
+        setShowResend(true);
+      }
+    }
+  });
+
+  const [resendConfirmation] = useMutation(RESEND_CONFIRMATION, {
+    onCompleted: () => {
+      setShowResend(false);
+      setResent(true);
+    },
+    onError: () => {
+      setShowResend(false);
     }
   });
   useEffect(() => {
     const parsed = queryString.parse(location.search);
-    console.log("parsed", parsed);
     if (parsed.token) {
       confirmUser({
         variables: {
@@ -59,27 +77,52 @@ const Confirm = () => {
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
-        {loading ? (
+        {confirmationResent ? (
           <>
-            <CircularProgress />
-            <Typography>Running confirmation</Typography>
+            <Avatar className={classes.avatar}>
+              <Mail />
+            </Avatar>
+            <Typography>Confirmation has been sent!</Typography>
           </>
         ) : (
           <>
-            {error || !confirmed ? (
+            {loading ? (
               <>
-                <Avatar className={classes.avatar}>
-                  <Error />
-                </Avatar>
-                <Typography>Confirmation failed</Typography>
-                <Button>Try resend confiramtion?</Button>
+                <CircularProgress />
+                <Typography>Running confirmation</Typography>
               </>
             ) : (
               <>
-                <Avatar className={classes.avatar}>
-                  <Check />
-                </Avatar>
-                <Typography>Registration complete!</Typography>
+                {error || !confirmed ? (
+                  <>
+                    <Avatar className={classes.avatar}>
+                      <Error />
+                    </Avatar>
+                    <Typography>Confirmation failed</Typography>
+                    {showResend && (
+                      <Button
+                        onClick={e => {
+                          e.preventDefault();
+                          let parsed = queryString.parse(location.search);
+                          resendConfirmation({
+                            variables: {
+                              token: parsed.token
+                            }
+                          });
+                        }}
+                      >
+                        Try resend confiramtion?
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Avatar className={classes.avatar}>
+                      <Check />
+                    </Avatar>
+                    <Typography>Registration complete!</Typography>
+                  </>
+                )}
               </>
             )}
           </>

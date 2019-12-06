@@ -9,6 +9,9 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
 import Link from "next/link";
+import { useIdentityContext } from "../hooks/useIdentity";
+import { Avatar } from "@material-ui/core";
+import { withIdentity } from "../hoc/withIdentity";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,6 +29,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NavBar = () => {
+  const identity = useIdentityContext();
+  console.log("identity", identity);
+  identity.onLogin("TEST");
   const classes = useStyles();
   return (
     <div>
@@ -42,16 +48,22 @@ const NavBar = () => {
           <Typography variant="h6" className={classes.title}>
             Home
           </Typography>
-          <Link href="/sign-in">
-            <Button>Login</Button>
-          </Link>
-          <Link href="/sign-up">
-            <Button>Sign Up</Button>
-          </Link>
+          {false ? (
+            <Avatar>{user.name}</Avatar>
+          ) : (
+            <>
+              <Link href="/sign-in">
+                <Button>Login</Button>
+              </Link>
+              <Link href="/sign-up">
+                <Button>Sign Up</Button>
+              </Link>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </div>
   );
 };
 
-export default NavBar;
+export default withIdentity(NavBar);

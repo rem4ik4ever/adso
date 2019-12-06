@@ -2,8 +2,12 @@ import Cookies from "js-cookie";
 import ls from "local-storage";
 
 export const setAuthenticationToken = accessToken => {
-  ls.remove("adso-token");
-  ls.set("adso-token", accessToken);
+  return new Promise((resolve, reject) => {
+    ls.remove("adso-token");
+    ls.set("adso-token", accessToken);
+    console.log("Setting token", accessToken);
+    return resolve(true);
+  });
 };
 
 export const setRefreshToken = refreshToken => {

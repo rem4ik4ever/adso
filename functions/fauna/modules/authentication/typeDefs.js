@@ -35,5 +35,6 @@ module.exports = gql`
     login(email: String!, password: String!): AuthResponse
     confirmUser(token: String!): Boolean
     refresh: String
+    resendConfirmation(token: String!): Boolean
   }
 `;
