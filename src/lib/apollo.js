@@ -133,8 +133,11 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const uri = process.env.NETLIFY_DEV
+  ? "http://localhost:8888"
+  : "https://adso-app.netlify.com/";
 const httpLink = createHttpLink({
-  uri: "/.netlify/functions/fauna", // Server URL (must be absolute)
+  uri: `${uri}/.netlify/functions/fauna`, // Server URL (must be absolute)
   credentials: "same-origin", // Additional fetch() options like `credentials` or `headers`
   fetch
 });
