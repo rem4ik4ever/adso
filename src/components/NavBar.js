@@ -29,9 +29,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const NavBar = () => {
-  const identity = useIdentityContext();
-  console.log("identity", identity);
-  identity.onLogin("TEST");
+  const { isLoggedIn, user } = useIdentityContext();
   const classes = useStyles();
   return (
     <div>
@@ -48,7 +46,7 @@ const NavBar = () => {
           <Typography variant="h6" className={classes.title}>
             Home
           </Typography>
-          {false ? (
+          {isLoggedIn ? (
             <Avatar>{user.name}</Avatar>
           ) : (
             <>

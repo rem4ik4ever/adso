@@ -53,11 +53,7 @@ export const withIdentity = WrappedComponent => {
         console.err(`Current user Error: ${err}`);
       }
     });
-    return (
-      <IdentityContextProvider>
-        <WrappedComponent {...props} />
-      </IdentityContextProvider>
-    );
+    return <WrappedComponent {...props} />;
   };
 
   return InternalWrappedComponent;
