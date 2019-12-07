@@ -1,4 +1,4 @@
-const { sign, verify } = require("jsonwebtoken");
+const { sign, verify, decode } = require("jsonwebtoken");
 const createAccessToken = user => {
   return sign(
     {
@@ -23,9 +23,20 @@ const verifyAccessToken = token =>
 const verifyRefreshToken = token =>
   verify(token, process.env.ACCESS_TOKEN_REFRESH_SECRET);
 
+const getHeaderJWT = header => {
+  try {
+    const token = header.split(" ")[1];
+    return token;
+  } catch (error) {
+    console.error("Invalid token");
+    return null;
+  }
+};
+
 module.exports = {
   createAccessToken,
   createRefreshToken,
   verifyAccessToken,
-  verifyRefreshToken
+  verifyRefreshToken,
+  getHeaderJWT
 };

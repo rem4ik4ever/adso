@@ -1,15 +1,22 @@
 const faunadb = require("faunadb");
 const uuidv4 = require("uuid/v4");
+const {
+  getHeaderJWT,
+  verifyAccessToken
+} = require("../authentication/utils/auth");
+const AWS = require("aws-sdk");
 
 const q = faunadb.query;
 
-const client = new faunadb.Client({
-  secret: process.env.FAUNADB_SERVER_SECRET
-});
+const { client } = require("../../db/utils");
 
-const createPost = async (_, { title, description }, _context) => {
+const createPost = async (_, { title, description }, context) => {
   try {
-    const post = { data: { uuid: uuidv4(), title, description } };
+    const token = getHeaderJWT(context.headers.authorization);
+    const payload = verifyAccessToken(token);
+    const post = {
+      data: { uuid: uuidv4(), title, description, authorId: payload.uuid }
+    };
     await client.query(q.Create(q.Ref("classes/posts"), post));
   } catch (err) {
     console.error(err);
@@ -60,6 +67,32 @@ const deletePost = async (_, { id }, _context) => {
   return true;
 };
 
+const s3Bucket = "asdo-bucket";
+const signS3 = async (_, { filename, filetype }, _context) => {
+  const s3 = new AWS.S3({
+    signatureVersion: "v4",
+    region: "us-east-2",
+    accessKeyId: process.env.ADSO_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.ADSO_AWS_SECRET_ACCESS_KEY
+  });
+
+  const s3Parms = {
+    Bucket: s3Bucket,
+    Key: filename,
+    Expires: 60,
+    ContentType: filetype,
+    ACL: "public-read"
+  };
+
+  const signedRequest = await s3.getSignedUrl("putObject", s3Parms);
+  const url = `https://${s3Bucket}.s3.amazonaws.com/${filename}`;
+
+  return {
+    signedRequest,
+    url
+  };
+};
+
 module.exports = {
   Query: {
     allPosts: (root, args, context) => allPosts(root, args, context)
@@ -67,6 +100,7 @@ module.exports = {
   Mutation: {
     createPost: async (root, args, context) => createPost(root, args, context),
     updatePost: async (root, args, context) => updatePost(root, args, context),
-    deletePost: async (root, args, context) => deletePost(root, args, context)
+    deletePost: async (root, args, context) => deletePost(root, args, context),
+    signS3
   }
 };

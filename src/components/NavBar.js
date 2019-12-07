@@ -9,7 +9,9 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
 import Link from "next/link";
-import { useNetlifyIdentity } from "react-netlify-identity";
+import { useIdentityContext } from "../hooks/useIdentity";
+import { Avatar } from "@material-ui/core";
+import { withIdentity } from "../hoc/withIdentity";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,13 +24,13 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   buttonLink: {
-    color: "#fff"
+    color: "white"
   }
 }));
 
 const NavBar = () => {
+  const { isLoggedIn, user, logout } = useIdentityContext();
   const classes = useStyles();
-  const { user } = useNetlifyIdentity();
   return (
     <div>
       <AppBar position="static">
@@ -44,16 +46,30 @@ const NavBar = () => {
           <Typography variant="h6" className={classes.title}>
             Home
           </Typography>
-          <Link href="/sign-in">
-            <Button>Login</Button>
-          </Link>
-          <Link href="/sign-up">
-            <Button>Sign Up</Button>
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <Avatar>
+                {user.firstName[0]}
+                {user.lastName[0]}
+              </Avatar>
+              <Button className={classes.buttonLink} onClick={e => logout()}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link href="/sign-in">
+                <Button className={classes.buttonLink}>Login</Button>
+              </Link>
+              <Link href="/sign-up">
+                <Button className={classes.buttonLink}>Sign Up</Button>
+              </Link>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </div>
   );
 };
 
-export default NavBar;
+export default withIdentity(NavBar);

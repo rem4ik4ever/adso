@@ -6,6 +6,7 @@ import { CssBaseline } from "@material-ui/core";
 import Head from "next/head";
 import { withApollo } from "../src/lib/apollo";
 import NavBar from "../src/components/NavBar";
+import { IdentityContextProvider } from "../src/hooks/useIdentity";
 
 class AdsoApp extends App {
   componentDidMount() {
@@ -19,7 +20,7 @@ class AdsoApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <div>
+      <IdentityContextProvider>
         <Head>
           <title>Adso App</title>
         </Head>
@@ -28,7 +29,7 @@ class AdsoApp extends App {
           <NavBar />
           <Component {...pageProps} />
         </ThemeProvider>
-      </div>
+      </IdentityContextProvider>
     );
   }
 }

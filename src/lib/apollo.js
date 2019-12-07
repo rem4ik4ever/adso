@@ -134,7 +134,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:8888/.netlify/functions/fauna", // Server URL (must be absolute)
+  uri: "/.netlify/functions/fauna", // Server URL (must be absolute)
   credentials: "same-origin", // Additional fetch() options like `credentials` or `headers`
   fetch
 });

@@ -32,6 +32,7 @@ const findByUUID = async (client, uuid) => {
     );
     return exists;
   } catch (error) {
+    console.error(error);
     return false;
   }
 };

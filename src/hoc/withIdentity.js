@@ -1,9 +1,14 @@
 import React from "react";
 import gql from "graphql-tag";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useMutation, useQuery, useLazyQuery } from "@apollo/react-hooks";
+import { setAuthenticationToken, clearTokens } from "../lib/auth";
+import {
+  IdentityContextProvider,
+  useIdentityContext
+} from "../hooks/useIdentity";
 
 const CURRENT_USER = gql`
-  {
+  query me {
     me {
       uuid
       name
@@ -14,25 +19,42 @@ const CURRENT_USER = gql`
   }
 `;
 
-export const withIdentity = WrappedComponent => {
-  const InternalWrappedComponent = props => <WrappedComponent {...props} />;
-  const { data, loading, error } = useQuery(CURRENT_USER);
-  console.log("current_user", data);
-
-  return InternalWrappedComponent;
-};
-
-const LOGIN = gql`
-  mutation login($data: LoginInput!) {
-    login(data: $data) {
-      accessToken
-      refreshToken
-    }
+const CHECK_REFRESH_TOKEN = gql`
+  mutation refresh {
+    refresh
   }
 `;
 
-const loginUser = (email, password) => {
-  const [login, { data, loading, error }] = useMutation(LOGIN);
-  login({ data: { email, password } });
-  return { data, loading, error };
+export const withIdentity = WrappedComponent => {
+  const InternalWrappedComponent = props => {
+    const { onLogin } = useIdentityContext();
+
+    const [checkRefreshToken] = useMutation(CHECK_REFRESH_TOKEN, {
+      onCompleted: data => {
+        setAuthenticationToken(data.refresh).then(_r => {
+          console.log("refetching");
+          refetch();
+        });
+      },
+      onError: () => {
+        clearTokens();
+      }
+    });
+    const { data, refetch } = useQuery(CURRENT_USER, {
+      onCompleted: response => {
+        console.log(`Current user data`, response);
+        if (!response.me) {
+          checkRefreshToken();
+        } else {
+          onLogin(response.me);
+        }
+      },
+      onError: err => {
+        console.err(`Current user Error: ${err}`);
+      }
+    });
+    return <WrappedComponent {...props} />;
+  };
+
+  return InternalWrappedComponent;
 };

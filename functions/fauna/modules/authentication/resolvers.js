@@ -8,18 +8,18 @@ const {
   findByConfirmationToken,
   findByUUID
 } = require("./user/search");
+const { client } = require("../../db/utils");
+const cookie = require("cookie");
 
 const {
   createAccessToken,
   createRefreshToken,
-  verifyAccessToken
+  verifyAccessToken,
+  verifyRefreshToken
 } = require("./utils/auth");
 const { AuthenticationError } = require("apollo-server-lambda");
 
 const q = faunadb.query;
-const client = new faunadb.Client({
-  secret: process.env.FAUNADB_SERVER_SECRET
-});
 
 const register = async (_, { data }, context) => {
   try {
@@ -47,9 +47,10 @@ const register = async (_, { data }, context) => {
     await client.query(q.Create(q.Ref("classes/users"), userData));
     await sendEmail(
       data.email,
-      `http://localhost:8888/user/confirm/${confirmationToken}`
+      `http://localhost:8888/confirm?token=${confirmationToken}`
     );
   } catch (err) {
+    console.error(err);
     return false;
   }
   return true;
@@ -61,13 +62,17 @@ const login = async (_, { email, password }, _context) => {
     match = await client.query(q.Get(q.Match(q.Index("user_by_email"), email)));
   } catch (err) {
     console.error(err);
-    throw new AuthenticationError("Wrong email or password");
+    throw new AuthenticationError("WrongEmailOrPassword");
   }
   const user = match.data;
 
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
-    throw new AuthenticationError("Wrong email or password");
+    throw new AuthenticationError("WrongEmailOrPassword");
+  }
+
+  if (!user.confirmed) {
+    throw new AuthenticationError("EmalNotConfirmed");
   }
   return {
     accessToken: createAccessToken(user),
@@ -76,23 +81,24 @@ const login = async (_, { email, password }, _context) => {
 };
 
 const confirmUser = async (_, { token }, _context) => {
+  const match = await findByConfirmationToken(client, token);
+  if (!match) {
+    console.error(`User with confirmationToken: ${token} not found`);
+    return false;
+  }
+  const validUntil = moment(match.data.confirmationValidUntil);
+
+  if (moment().isAfter(validUntil)) {
+    throw new AuthenticationError("ConfirmationTokenExpired");
+  }
+
   try {
-    const match = await findByConfirmationToken(client, token);
-    if (!match) {
-      console.error(`User with confirmationToken: ${token} not found`);
-      return false;
-    }
-    const validUntil = moment(match.data.confirmationValidUntil);
-
-    if (moment().isAfter(validUntil)) {
-      console.error("Not valid anymore need to resend confirmation link");
-      return false;
-    }
-
     await client.query(
       q.Update(q.Ref(match.ref), {
         data: {
-          confirmed: true
+          confirmed: true,
+          confirmationToken: null,
+          confirmationValidUntil: null
         }
       })
     );
@@ -117,6 +123,58 @@ const getCurrentUser = async (_, _args, { headers }) => {
   }
 };
 
+const refresh = async (_, _args, context) => {
+  try {
+    if (!context.headers.cookie) {
+      return null;
+    }
+    const cookies = cookie.parse(context.headers.cookie);
+    if (cookies.adso_qid) {
+      const { uuid } = verifyRefreshToken(cookies.adso_qid);
+      const match = await findByUUID(client, uuid);
+      const token = createAccessToken(match.data);
+      return token;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+  return null;
+};
+
+const resendConfirmation = async (_, { token }, _context) => {
+  const match = await findByConfirmationToken(client, token);
+  if (!match.data) {
+    console.error(`User with confirmationToken: ${token} not found`);
+    return false;
+  }
+  const validUntil = moment(match.data.confirmationValidUntil);
+  console.log(match);
+  if (moment().isAfter(validUntil) && !match.data.confirmed) {
+    const confirmationToken = uuidv4();
+    try {
+      await client.query(
+        q.Update(q.Ref(match.ref), {
+          data: {
+            confirmationToken,
+            confirmationValidUntil: moment()
+              .add(1, "day")
+              .format()
+          }
+        })
+      );
+      await sendEmail(
+        match.data.email,
+        `http://localhost:8888/confirm?token=${confirmationToken}`
+      );
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  }
+  return false;
+};
+
 module.exports = {
   Query: {
     me: getCurrentUser
@@ -124,6 +182,8 @@ module.exports = {
   Mutation: {
     register,
     login,
-    confirmUser
+    confirmUser,
+    refresh,
+    resendConfirmation
   }
 };
