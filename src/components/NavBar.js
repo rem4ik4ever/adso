@@ -24,12 +24,12 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   buttonLink: {
-    color: "#fff"
+    color: "white"
   }
 }));
 
 const NavBar = () => {
-  const { isLoggedIn, user } = useIdentityContext();
+  const { isLoggedIn, user, logout } = useIdentityContext();
   const classes = useStyles();
   return (
     <div>
@@ -47,14 +47,22 @@ const NavBar = () => {
             Home
           </Typography>
           {isLoggedIn ? (
-            <Avatar>{user.name}</Avatar>
+            <>
+              <Avatar>
+                {user.firstName[0]}
+                {user.lastName[0]}
+              </Avatar>
+              <Button className={classes.buttonLink} onClick={e => logout()}>
+                Logout
+              </Button>
+            </>
           ) : (
             <>
               <Link href="/sign-in">
-                <Button>Login</Button>
+                <Button className={classes.buttonLink}>Login</Button>
               </Link>
               <Link href="/sign-up">
-                <Button>Sign Up</Button>
+                <Button className={classes.buttonLink}>Sign Up</Button>
               </Link>
             </>
           )}

@@ -70,6 +70,10 @@ const login = async (_, { email, password }, _context) => {
   if (!valid) {
     throw new AuthenticationError("WrongEmailOrPassword");
   }
+
+  if (!user.confirmed) {
+    throw new AuthenticationError("EmalNotConfirmed");
+  }
   return {
     accessToken: createAccessToken(user),
     refreshToken: createRefreshToken(user)

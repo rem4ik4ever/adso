@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { clearTokens } from "../lib/auth";
 
 const [_useIdentityContext, _IdentityCtxProvider] = createCtx();
 export const useIdentityContext = _useIdentityContext;
@@ -27,10 +28,16 @@ const useIdentity = () => {
     _setUser(user);
   };
 
+  const logout = () => {
+    clearTokens();
+    _setUser(null);
+  };
+
   return {
     user,
     onLogin,
-    isLoggedIn: !!user
+    isLoggedIn: !!user,
+    logout
   };
 };
 

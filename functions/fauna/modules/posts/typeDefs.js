@@ -9,12 +9,18 @@ module.exports = gql`
     uuid: String!
     title: String!
     description: String!
-    author: User!
+    authorId: String!
+  }
+
+  type S3Payload {
+    url: String!
+    signedRequest: String!
   }
 
   extend type Mutation {
     createPost(title: String!, description: String!): Boolean!
     updatePost(id: String!, title: String!, description: String!): Boolean!
     deletePost(id: String!): Boolean!
+    signS3(filename: String!, filetype: String!): S3Payload!
   }
 `;
