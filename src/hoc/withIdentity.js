@@ -32,8 +32,9 @@ export const withIdentity = WrappedComponent => {
     const [checkRefreshToken] = useMutation(CHECK_REFRESH_TOKEN, {
       onCompleted: data => {
         setAuthenticationToken(data.refresh).then(_r => {
-          console.log("refetching");
+          // console.log("refetching");
           refetch();
+          // location.reload()
         });
       },
       onError: () => {

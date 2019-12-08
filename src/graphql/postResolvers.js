@@ -10,7 +10,17 @@ export const SIGN_S3 = gql`
 `;
 
 export const CREATE_POST = gql`
-  mutation CreatePost($title: String!, $description: String!) {
-    createPost(title: $title, description: $description)
+  mutation CreatePost(
+    $title: String!
+    $description: String!
+    $images: [String!]
+    $tags: [String!]
+  ) {
+    createPost(
+      title: $title
+      description: $description
+      images: $images
+      tags: $tags
+    )
   }
 `;

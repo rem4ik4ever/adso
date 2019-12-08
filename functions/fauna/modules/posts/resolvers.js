@@ -1,5 +1,6 @@
 const faunadb = require("faunadb");
 const uuidv4 = require("uuid/v4");
+const moment = require("moment");
 const {
   getHeaderJWT,
   verifyAccessToken
@@ -10,12 +11,23 @@ const q = faunadb.query;
 
 const { client } = require("../../db/utils");
 
-const createPost = async (_, { title, description }, context) => {
+const createPost = async (_, { title, description, tags, images }, context) => {
   try {
     const token = getHeaderJWT(context.headers.authorization);
     const payload = verifyAccessToken(token);
+    const now = moment().format("x");
     const post = {
-      data: { uuid: uuidv4(), title, description, authorId: payload.uuid }
+      data: {
+        uuid: uuidv4(),
+        title,
+        description,
+        authorId: payload.uuid,
+        tags,
+        images,
+        active: true,
+        createdAt: now,
+        updatedAt: now
+      }
     };
     await client.query(q.Create(q.Ref("classes/posts"), post));
   } catch (err) {

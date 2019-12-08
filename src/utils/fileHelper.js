@@ -6,7 +6,7 @@ export const formatFilename = filename => {
   const date = moment().format("YYYYMMDD");
   const randomString = v4();
   const cleanFileName = filename.toLowerCase().replace(/[^a-z0-9]/g, "-");
-  const newFilename = `images/${date}-${randomString}-${cleanFileName}`;
+  const newFilename = `images-tmp-fld/${date}-${randomString}-${cleanFileName}`;
   return newFilename.substring(0, 60);
 };
 
