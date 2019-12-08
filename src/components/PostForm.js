@@ -13,7 +13,8 @@ const CreatePost = () => {
     onCompleted: async data => {
       console.log("signed", data);
       const { signS3 } = data;
-      uploadToS3(image, signS3.signedRequest);
+      const result = await uploadToS3(image, signS3.signedRequest);
+      console.log("Uploaded", result);
     }
   });
   const formRef = React.createRef();
