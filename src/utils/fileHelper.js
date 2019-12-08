@@ -11,9 +11,11 @@ export const formatFilename = filename => {
 };
 
 export const uploadToS3 = async (file, signedRequest) => {
+  console.log("File", file);
+  console.log("signedRequest", signedRequest);
   const options = {
     headers: {
-      "Content-Type": file.type
+      "Access-Control-Allow-Origin": "*"
     }
   };
   await axios.put(signedRequest, file, options);

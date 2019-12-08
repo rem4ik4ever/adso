@@ -67,7 +67,7 @@ const deletePost = async (_, { id }, _context) => {
   return true;
 };
 
-const s3Bucket = "asdo-bucket";
+const s3Bucket = "adso-bucket";
 const signS3 = async (_, { filename, filetype }, _context) => {
   const s3 = new AWS.S3({
     signatureVersion: "v4",
