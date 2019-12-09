@@ -22,20 +22,32 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function Dropzone({ onFileDrop }) {
-  const [signS3] = useMutation(SIGN_S3, {
-    onCompleted: async data => {
-      const { signS3 } = data;
-      await uploadToS3(acceptedFiles[0], signS3.signedRequest);
-      onFileDrop(signS3.url);
-    }
-  });
-  const onDrop = React.useCallback(acceptedFiles => {
-    signS3({
-      variables: {
-        filename: formatFilename(acceptedFiles[0].name),
-        filetype: acceptedFiles[0].type
-      }
+  const [signS3] = useMutation(SIGN_S3);
+
+  const uploadFiles = async acceptedFiles => {
+    return new Promise(async (resolve, _reject) => {
+      const uploads = acceptedFiles.map(async file => {
+        return new Promise(async (resolve, _reject) => {
+          const upload = await signS3({
+            variables: {
+              filename: formatFilename(file.name),
+              filetype: file.type
+            }
+          });
+          await uploadToS3(file, upload.data.signS3.signedRequest);
+          resolve(upload.data.signS3.url);
+        });
+      });
+      Promise.all(uploads).then(values => {
+        resolve(values);
+      });
     });
+  };
+  const onDrop = React.useCallback(async acceptedFiles => {
+    console.log("acceptedFiles", acceptedFiles);
+    const urls = await uploadFiles(acceptedFiles);
+    console.log("Resolve URLs:", urls);
+    onFileDrop(urls);
   }, []);
   const classes = useStyles();
   const {

@@ -6,6 +6,8 @@ import { formatFilename, uploadToS3 } from "../utils/fileHelper";
 import { Dropzone } from "./FileUpload";
 import { Typography, Box } from "@material-ui/core";
 import TagsInput from "./util/TagsInput";
+import { PostLocationForm } from "./PostLocationForm";
+import { ImageList } from "./ImageList";
 
 const CreatePost = () => {
   const [images, setImages] = React.useState([]);
@@ -20,10 +22,9 @@ const CreatePost = () => {
     return <div>{error.message}</div>;
   }
 
-  const onDrop = url => {
-    const updatedImages = [...images, url];
+  const onDrop = urls => {
+    const updatedImages = [...images, ...urls];
     setImages(updatedImages);
-    console.log(updatedImages);
   };
   return (
     <div>
@@ -49,6 +50,7 @@ const CreatePost = () => {
           Description:
           <input type="text" name="description" />
         </label>
+        <ImageList imagesUrls={images} />
         <Dropzone onFileDrop={onDrop} />
         <TagsInput
           onChange={tags => {
@@ -61,6 +63,7 @@ const CreatePost = () => {
           }}
           tags={tags}
         />
+        <PostLocationForm />
         <input type="submit" label="Save" />
       </form>
     </div>
