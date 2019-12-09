@@ -65,7 +65,7 @@ const MapContainer = props => {
 };
 
 export const GoogleMap = GoogleApiWrapper({
-  apiKey: "AIzaSyCK3IXFOHFx-vPMjUQBFE38QDZWntXgEGw"
+  apiKey: process.env.GOOGLE_MAPS_API_KEY
 })(MapContainer);
 
 //AIzaSyCK3IXFOHFx-vPMjUQBFE38QDZWntXgEGw
