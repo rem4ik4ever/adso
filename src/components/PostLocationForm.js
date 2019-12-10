@@ -1,5 +1,7 @@
 import React from "react";
-import { usePosition, GoogleMap } from "../hooks/usePosition";
+import { usePosition } from "../hooks/usePosition";
+import { GoogleMap } from "./Location/GoogleMap";
+import { PlaceAutocomplete } from "./Location/PlaceAutocomplete";
 
 export const PostLocationForm = () => {
   const { longitude, latitude, error } = usePosition();
@@ -9,6 +11,7 @@ export const PostLocationForm = () => {
         <li>longitude: {longitude}</li>
         <li>latitude: {latitude}</li>
       </ul>
+      <PlaceAutocomplete />
       {longitude && latitude && (
         <GoogleMap latitude={latitude} longitude={longitude} />
       )}

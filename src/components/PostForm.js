@@ -1,10 +1,7 @@
-import React, { useEffect } from "react";
-import gql from "graphql-tag";
+import React from "react";
 import { useMutation } from "@apollo/react-hooks";
-import { CREATE_POST, SIGN_S3 } from "../graphql/postResolvers";
-import { formatFilename, uploadToS3 } from "../utils/fileHelper";
+import { CREATE_POST } from "../graphql/postResolvers";
 import { Dropzone } from "./FileUpload";
-import { Typography, Box } from "@material-ui/core";
 import TagsInput from "./util/TagsInput";
 import { PostLocationForm } from "./PostLocationForm";
 import { ImageList } from "./ImageList";

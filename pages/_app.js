@@ -7,6 +7,7 @@ import Head from "next/head";
 import { withApollo } from "../src/lib/apollo";
 import NavBar from "../src/components/NavBar";
 import { IdentityContextProvider } from "../src/hooks/useIdentity";
+import { GoogleApiWrapper } from "google-maps-react";
 
 class AdsoApp extends App {
   componentDidMount() {
@@ -33,4 +34,8 @@ class AdsoApp extends App {
     );
   }
 }
-export default withApollo(AdsoApp);
+export default GoogleApiWrapper({
+  apiKey: process.env.NETLIFY_DEV
+    ? process.env.GOOGLE_MAPS_DEV_API_KEY
+    : process.env.GOOGLE_MAPS_API_KEY
+})(withApollo(AdsoApp));
