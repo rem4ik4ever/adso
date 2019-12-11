@@ -15,7 +15,6 @@ const useStyles = makeStyles(theme => ({
     border: "1px solid #ccc",
     textAlign: "center",
     borderStyle: "dashed",
-    margin: theme.spacing(2),
     padding: theme.spacing(2),
     cursor: "pointer"
   }

@@ -14,7 +14,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { setAuthenticationToken, setRefreshToken } from "../src/lib/auth";
+import {
+  setAuthenticationToken,
+  setRefreshToken,
+  validateEmail
+} from "../src/lib/auth";
+import { useRouter } from "next/router";
+import { useIdentityContext } from "../src/hooks/useIdentity";
 
 function Copyright() {
   return (
@@ -61,29 +67,43 @@ const LOGIN = gql`
   }
 `;
 
+const CURRENT_USER = gql`
+  query me {
+    me {
+      uuid
+      name
+      firstName
+      lastName
+      email
+    }
+  }
+`;
+
 const SignIn = () => {
+  const router = useRouter();
   const classes = useStyles();
-  const [login, { data, loading, error }] = useMutation(LOGIN, {
+  const [login, { loading }] = useMutation(LOGIN, {
     onCompleted: ({ login }) => {
       setAuthenticationToken(login.accessToken);
       setRefreshToken(login.refreshToken);
+      location.reload();
+    },
+    onError: err => {
+      if (err && err.message.includes("WrongEmailOrPassword")) {
+        setMsg("Wrong email or password");
+      }
     }
   });
   const [msg, setMsg] = useState("");
   const formRef = React.createRef();
 
-  const onLogin = event => {
+  const onSignIn = event => {
     event.preventDefault();
     const email = formRef.current.email.value;
+    if (!validateEmail(email)) return setMsg("Invalid email");
     const password = formRef.current.password.value;
-    const remember = formRef.current.remember.checked;
-    console.log(email, password, remember);
     login({ variables: { email, password } });
-    console.log("DATA", data);
   };
-  if (error) return `Error while logging you in: ${error.message}`;
-  if (loading) return "Loggin you in...";
-  if (data) console.log("here you go!", data);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -101,7 +121,7 @@ const SignIn = () => {
         <form
           className={classes.form}
           noValidate
-          onSubmit={onLogin}
+          onSubmit={onSignIn}
           ref={formRef}
         >
           <TextField
@@ -125,10 +145,6 @@ const SignIn = () => {
             type="password"
             id="password"
             autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox name="remember" color="primary" />}
-            label="Remember me"
           />
           <Button
             type="submit"

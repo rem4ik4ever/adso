@@ -11,15 +11,9 @@ export function IdentityContextProvider({ children }) {
   );
 }
 
-// export const useIdentity = () => useContext(IdentityContext);
-
 const useIdentity = () => {
   const [user, setUser] = React.useState(undefined);
-  useEffect(() => {
-    console.log("User updated", user);
-  }, [user]);
   const _setUser = _user => {
-    console.log("Setting user", _user);
     setUser(_user);
     return _user;
   };

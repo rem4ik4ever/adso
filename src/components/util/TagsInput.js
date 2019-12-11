@@ -17,9 +17,11 @@ const TagsInput = ({ onChange, onAdd, tags }) => {
   const onTagEnter = e => {
     if (enterCodes.includes(e.keyCode)) {
       e.preventDefault();
-      const tag = e.target.value.toLowerCase();
-      onAdd(tag);
-      e.target.value = "";
+      const tag = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, "-");
+      if (tag !== "") {
+        onAdd(tag);
+        e.target.value = "";
+      }
     }
   };
 
@@ -33,7 +35,7 @@ const TagsInput = ({ onChange, onAdd, tags }) => {
           onDelete={() => handleDelete(index)}
         />
       ))}
-      <TextField label="Add tag" onKeyDown={onTagEnter} />
+      <TextField label="Add tags (Space to add)" onKeyDown={onTagEnter} />
     </Box>
   );
 };

@@ -7,10 +7,6 @@ export const PostLocationForm = () => {
   const { longitude, latitude, error } = usePosition();
   return (
     <div>
-      <ul>
-        <li>longitude: {longitude}</li>
-        <li>latitude: {latitude}</li>
-      </ul>
       <PlaceAutocomplete />
       {longitude && latitude && (
         <GoogleMap latitude={latitude} longitude={longitude} />

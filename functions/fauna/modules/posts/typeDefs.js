@@ -26,6 +26,10 @@ module.exports = gql`
     tags: [String!]
     images: [String!]
     active: Boolean!
+    price: Int
+    address: String
+    latitude: String
+    longitude: String
     createdAt: String!
     updatedAt: String!
   }

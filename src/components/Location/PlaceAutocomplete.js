@@ -17,9 +17,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export const PlaceAutocomplete = () => {
+export const PlaceAutocomplete = ({ value, onChange }) => {
   const classes = useStyles();
-  const [inputValue, setInputValue] = React.useState("");
+  const [inputValue, setInputValue] = React.useState(value);
   const [options, setOptions] = React.useState([]);
   const handleChange = event => {
     setInputValue(event.target.value);
@@ -62,7 +62,6 @@ export const PlaceAutocomplete = () => {
   return (
     <Autocomplete
       id="google-map-demo"
-      style={{ width: 300 }}
       getOptionLabel={option =>
         typeof option === "string" ? option : option.description
       }
@@ -72,6 +71,7 @@ export const PlaceAutocomplete = () => {
       includeInputInList
       freeSolo
       disableOpenOnFocus
+      onChange={(e, val) => onChange(val ? val.description : val)}
       renderInput={params => (
         <TextField
           {...params}

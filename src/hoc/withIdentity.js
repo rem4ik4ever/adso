@@ -41,9 +41,8 @@ export const withIdentity = WrappedComponent => {
         clearTokens();
       }
     });
-    const { data, refetch } = useQuery(CURRENT_USER, {
+    const { refetch } = useQuery(CURRENT_USER, {
       onCompleted: response => {
-        console.log(`Current user data`, response);
         if (!response.me) {
           checkRefreshToken();
         } else {
