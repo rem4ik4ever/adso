@@ -43,18 +43,15 @@ export function Dropzone({ onFileDrop }) {
     });
   };
   const onDrop = React.useCallback(async acceptedFiles => {
-    console.log("acceptedFiles", acceptedFiles);
     const urls = await uploadFiles(acceptedFiles);
-    console.log("Resolve URLs:", urls);
     onFileDrop(urls);
   }, []);
   const classes = useStyles();
-  const {
-    acceptedFiles,
-    getRootProps,
-    getInputProps,
-    isDragActive
-  } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: ["image/png", "image/jpeg"],
+    maxSize: 20000000
+  });
   const { ref, ...rootProps } = getRootProps();
 
   return (
@@ -66,23 +63,33 @@ export function Dropzone({ onFileDrop }) {
               multiple: true
             })}
           />
-          {isDragActive ? (
+          <Box display={{ xs: "none", sm: "block" }}>
+            {isDragActive ? (
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <AddPhotoAlternateIcon fontSize="large" />
+                <Typography variant="subtitle1">
+                  Drop the files here ...
+                </Typography>
+              </Box>
+            ) : (
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <ImageIcon fontSize="large" />
+                <Typography variant="subtitle1">
+                  Drag 'n' drop some files here, or
+                </Typography>
+                <TouchAppIcon />
+                <Typography variant="subtitle1">to select files</Typography>
+              </Box>
+            )}
+          </Box>
+          <Box display={{ xs: "block", sm: "none" }}>
             <Box display="flex" alignItems="center" justifyContent="center">
-              <AddPhotoAlternateIcon fontSize="large" />
-              <Typography variant="subtitle1">
-                Drop the files here ...
-              </Typography>
-            </Box>
-          ) : (
-            <Box display="flex" alignItems="center" justifyContent="center">
-              <ImageIcon fontSize="large" />
-              <Typography variant="subtitle1">
-                Drag 'n' drop some files here, or
-              </Typography>
               <TouchAppIcon />
-              <Typography variant="subtitle1">to select files</Typography>
+              <Typography variant="subtitle1">
+                click to upload images
+              </Typography>
             </Box>
-          )}
+          </Box>
         </div>
       </>
     </RootRef>

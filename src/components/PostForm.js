@@ -11,7 +11,7 @@ import { validatePost } from "./Post/validation";
 import { makeStyles } from "@material-ui/styles";
 import { PlaceAutocomplete } from "./Location/PlaceAutocomplete";
 import { usePosition } from "../hooks/usePosition";
-
+import { getLatLngFromAddress } from "./Location/geocoding";
 const useStyles = makeStyles(theme => ({
   errorText: {
     color: theme.palette.error.main
@@ -33,7 +33,7 @@ const CreatePost = () => {
   const [validationErrors, setErrors] = React.useState([]);
   const formRef = React.createRef();
   const classes = useStyles();
-  const { longitude, latitude } = usePosition();
+  const { latitude, longitude } = usePosition();
 
   if (loading) return "Loading...";
   if (error) {
@@ -44,8 +44,9 @@ const CreatePost = () => {
     const updatedImages = [...images, ...urls];
     setImages(updatedImages);
   };
-  const onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault();
+    const latlng = await getLatLngFromAddress(address);
     const variables = {
       title: formRef.current.title.value,
       description,
@@ -55,14 +56,17 @@ const CreatePost = () => {
       longitude,
       latitude
     };
-    console.log(variables);
+    if (latlng) {
+      variables.longitude = latlng.longitude;
+      variables.latitude = latlng.latitude;
+    }
     const { valid, errors } = validatePost(variables);
     if (!valid) {
       setErrors(errors);
     } else {
-      // createPost({
-      //   variables
-      // });
+      createPost({
+        variables
+      });
     }
   };
   return (
@@ -72,8 +76,12 @@ const CreatePost = () => {
           <Box display="flex" flexDirection="column" height="100%">
             <Box padding="16px" flexGrow="1" overflow="auto">
               <Box display="flex" flexDirection="column">
-                {validationErrors.map(error => (
-                  <Typography variant="caption" className={classes.errorText}>
+                {validationErrors.map((error, idx) => (
+                  <Typography
+                    variant="caption"
+                    className={classes.errorText}
+                    key={`error-${idx}`}
+                  >
                     {error}
                   </Typography>
                 ))}

@@ -10,7 +10,8 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
     minHeight: "120px",
     maxHeight: "120px",
-    borderRadius: "6px"
+    borderRadius: "6px",
+    overflow: "auto"
   }
 }));
 

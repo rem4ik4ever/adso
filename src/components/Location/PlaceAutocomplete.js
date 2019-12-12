@@ -48,11 +48,16 @@ export const PlaceAutocomplete = ({ value, onChange }) => {
       return undefined;
     }
 
-    fetch({ input: inputValue }, results => {
-      if (active) {
-        setOptions(results, []);
+    fetch(
+      { input: inputValue, componentRestrictions: { country: "ca" } },
+      results => {
+        if (active && results) {
+          setOptions(results, []);
+        } else {
+          setOptions([], []);
+        }
       }
-    });
+    );
 
     return () => {
       active = false;

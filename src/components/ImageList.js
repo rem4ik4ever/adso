@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 export const ImageList = ({ imagesUrls }) => {
   const classes = useStyles();
   return (
-    <Box display="flex">
+    <Box display="flex" overflow="auto">
       {imagesUrls.map((url, index) => (
         <Box className={classes.container} key={`img-${index}`}>
           <img className={classes.thumbnail} src={url} />

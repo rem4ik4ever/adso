@@ -2,6 +2,7 @@ export const validatePost = ({
   title,
   description,
   tags,
+  images,
   address,
   latitude,
   longitude
@@ -15,11 +16,17 @@ export const validatePost = ({
   }
 
   if (!tags || tags.length < 1) {
-    errors.push("At least one tag is requried");
+    errors.push("Please add at least one tag");
   }
 
-  if (!address && !latitude && !longitude) {
+  if (!address || address === "") {
     errors.push("Please add your City or Postal Code");
+  } else if (!latitude || !longitude) {
+    errors.push("Please enter a valid address");
+  }
+
+  if (!images || images.length == 0) {
+    errors.push("Please add at least one images");
   }
   return { valid: errors.length == 0, errors };
 };
