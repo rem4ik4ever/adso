@@ -5,7 +5,17 @@ import { Dropzone } from "./FileUpload";
 import TagsInput from "./util/TagsInput";
 import { PostLocationForm } from "./PostLocationForm";
 import { ImageList } from "./ImageList";
-import { Paper, TextField, Typography, Box, Button } from "@material-ui/core";
+import {
+  Paper,
+  TextField,
+  Typography,
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from "@material-ui/core";
 import { Description } from "./Post/Description";
 import { validatePost } from "./Post/validation";
 import { makeStyles } from "@material-ui/styles";
@@ -29,6 +39,8 @@ const CreatePost = () => {
   const [tags, setTags] = React.useState([]);
   const [description, setDescription] = React.useState("");
   const [address, onAddressChange] = React.useState("");
+  const [priceInfo, setPriceInfo] = React.useState("Fixed");
+
   const [createPost, { loading, error }] = useMutation(CREATE_POST);
   const [validationErrors, setErrors] = React.useState([]);
   const formRef = React.createRef();
@@ -49,6 +61,8 @@ const CreatePost = () => {
     const latlng = await getLatLngFromAddress(address);
     const variables = {
       title: formRef.current.title.value,
+      priceInfo,
+      price: +formRef.current.price.value,
       description,
       images,
       tags,
@@ -91,6 +105,37 @@ const CreatePost = () => {
               </Box>
               <Box mb="16px">
                 <Description value={description} onChange={setDescription} />
+              </Box>
+              <Box mb="16px" display="flex">
+                <FormControl>
+                  <InputLabel id="price-info">Price</InputLabel>
+                  <Select
+                    labelId="price-info"
+                    id="price-info-select"
+                    value={priceInfo}
+                    onChange={e => {
+                      setPriceInfo(e.target.value);
+                    }}
+                  >
+                    <MenuItem value={"Fixed"}>Fixed</MenuItem>
+                    <MenuItem value={"Contact for price"}>
+                      Contact for price
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+                {priceInfo === "Fixed" && (
+                  <Box ml="8px">
+                    <TextField
+                      type="number"
+                      label="Enter price"
+                      name="price"
+                      fullWidth
+                      inputProps={{
+                        step: 0.01
+                      }}
+                    />
+                  </Box>
+                )}
               </Box>
               <Box mb="16px">
                 <PlaceAutocomplete onChange={onAddressChange} value={address} />

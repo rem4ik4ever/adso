@@ -15,12 +15,22 @@ export const CREATE_POST = gql`
     $description: String!
     $images: [String!]
     $tags: [String!]
+    $priceInfo: String!
+    $price: Float
+    $address: String!
+    $latitude: Float!
+    $longitude: Float!
   ) {
     createPost(
       title: $title
       description: $description
       images: $images
       tags: $tags
+      priceInfo: $priceInfo
+      price: $price
+      address: $address
+      latitude: $latitude
+      longitude: $longitude
     )
   }
 `;

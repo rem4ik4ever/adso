@@ -11,7 +11,21 @@ const q = faunadb.query;
 
 const { client } = require("../../db/utils");
 
-const createPost = async (_, { title, description, tags, images }, context) => {
+const createPost = async (
+  _,
+  {
+    title,
+    description,
+    tags,
+    images,
+    priceInfo,
+    price,
+    address,
+    latitude,
+    longitude
+  },
+  context
+) => {
   try {
     const token = getHeaderJWT(context.headers.authorization);
     const payload = verifyAccessToken(token);
@@ -24,6 +38,11 @@ const createPost = async (_, { title, description, tags, images }, context) => {
         authorId: payload.uuid,
         tags,
         images,
+        priceInfo,
+        price,
+        address,
+        latitude,
+        longitude,
         active: true,
         createdAt: now,
         updatedAt: now

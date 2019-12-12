@@ -26,10 +26,11 @@ module.exports = gql`
     tags: [String!]
     images: [String!]
     active: Boolean!
-    price: Int
+    priceInfo: String!
+    price: Float
     address: String
-    latitude: String
-    longitude: String
+    latitude: Float!
+    longitude: Float!
     createdAt: String!
     updatedAt: String!
   }
@@ -45,6 +46,11 @@ module.exports = gql`
       description: String!
       images: [String!]
       tags: [String!]
+      priceInfo: String!
+      price: Float
+      address: String!
+      latitude: Float!
+      longitude: Float!
     ): Boolean!
     updatePost(id: String!, title: String!, description: String!): Boolean!
     deletePost(id: String!): Boolean!
