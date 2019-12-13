@@ -24,16 +24,35 @@ const convert = sampleMarkup => {
   return state;
 };
 
-export const Description = ({ value, onChange }) => {
+export const Description = ({ value, onChange, limit = 2000 }) => {
   const classes = useStyles();
   const editorRef = React.createRef();
   const [editorState, setState] = React.useState(
     EditorState.createWithContent(convert(value))
   );
-  const change = editorState => {
-    setState(editorState);
-    const html = stateToHTML(editorState.getCurrentContent());
-    onChange(html);
+
+  const change = editState => {
+    const contentState = editState.getCurrentContent();
+    const oldContent = editorState.getCurrentContent();
+    if (
+      contentState === oldContent ||
+      contentState.getPlainText().length <= limit
+    ) {
+      setState(editState);
+      const html = stateToHTML(editState.getCurrentContent());
+      onChange(html);
+    } else {
+      const editState = EditorState.undo(
+        EditorState.push(
+          editorState,
+          ContentState.createFromText(oldContent.getPlainText()),
+          "delete-character"
+        )
+      );
+      setState(editState);
+      const html = stateToHTML(editState.getCurrentContent());
+      onChange(html);
+    }
   };
 
   const onClick = () => {

@@ -56,6 +56,7 @@ const CreatePost = () => {
     const updatedImages = [...images, ...urls];
     setImages(updatedImages);
   };
+
   const onSubmit = async e => {
     e.preventDefault();
     const latlng = await getLatLngFromAddress(address);
@@ -101,10 +102,23 @@ const CreatePost = () => {
                 ))}
               </Box>
               <Box mb="16px">
-                <TextField type="text" label="Title" name="title" fullWidth />
+                <TextField
+                  type="text"
+                  label="Title"
+                  name="title"
+                  fullWidth
+                  inputProps={{
+                    maxlength: 120,
+                    minlength: 12
+                  }}
+                />
               </Box>
               <Box mb="16px">
-                <Description value={description} onChange={setDescription} />
+                <Description
+                  value={description}
+                  onChange={setDescription}
+                  limit={2000}
+                />
               </Box>
               <Box mb="16px" display="flex">
                 <FormControl>
@@ -153,7 +167,12 @@ const CreatePost = () => {
                 />
               </Box>
               <Box mb="16px">
-                <Dropzone onFileDrop={onDrop} />
+                <Dropzone
+                  onFileDrop={onDrop}
+                  limit={12}
+                  currentCount={images.length}
+                  images={images}
+                />
                 <ImageList imagesUrls={images} />
               </Box>
             </Box>

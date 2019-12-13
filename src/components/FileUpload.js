@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { makeStyles } from "@material-ui/styles";
 import { Typography, Box } from "@material-ui/core";
@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export function Dropzone({ onFileDrop }) {
+export function Dropzone({ onFileDrop, limit, currentCount, images }) {
   const [signS3] = useMutation(SIGN_S3);
 
   const uploadFiles = async acceptedFiles => {
@@ -42,10 +42,18 @@ export function Dropzone({ onFileDrop }) {
       });
     });
   };
-  const onDrop = React.useCallback(async acceptedFiles => {
-    const urls = await uploadFiles(acceptedFiles);
-    onFileDrop(urls);
-  }, []);
+  const onDrop = React.useCallback(
+    async acceptedFiles => {
+      console.log(acceptedFiles, currentCount, limit);
+      if (acceptedFiles.length + currentCount > limit) {
+        return alert(`Sorry, maximum ${limit} images`);
+      } else {
+        const urls = await uploadFiles(acceptedFiles);
+        onFileDrop(urls);
+      }
+    },
+    [currentCount]
+  );
   const classes = useStyles();
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
