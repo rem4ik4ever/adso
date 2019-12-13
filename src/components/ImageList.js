@@ -5,6 +5,7 @@ import clsx from "clsx";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import ArrowLeft from "@material-ui/icons/ArrowLeft";
 import ArrowRight from "@material-ui/icons/ArrowRight";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import posed from "react-pose";
 

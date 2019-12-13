@@ -21,7 +21,7 @@ const { AuthenticationError } = require("apollo-server-lambda");
 
 const q = faunadb.query;
 
-const register = async (_, { data }, context) => {
+const register = async (_, { data }, _context) => {
   try {
     const exists = await findByEmail(client, data.email);
     if (exists) {
@@ -33,7 +33,7 @@ const register = async (_, { data }, context) => {
     const userData = {
       data: {
         ...data,
-        name: `${data.firstName} ${data.lastName}`,
+        name: `${data.firstName.trim()} ${data.lastName.trim()}`,
         uuid: uuidv4(),
         password: hashedPassword,
         confirmationToken,
@@ -59,7 +59,9 @@ const register = async (_, { data }, context) => {
 const login = async (_, { email, password }, _context) => {
   let match = null;
   try {
-    match = await client.query(q.Get(q.Match(q.Index("user_by_email"), email)));
+    match = await client.query(
+      q.Get(q.Match(q.Index("user_by_email"), email.trim().toLowerCase()))
+    );
   } catch (err) {
     console.error(err);
     throw new AuthenticationError("WrongEmailOrPassword");

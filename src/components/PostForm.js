@@ -90,102 +90,100 @@ const CreatePost = () => {
     <Paper className={classes.main}>
       <Box height="100%">
         <form onSubmit={onSubmit} className={classes.postForm}>
-          <Box display="flex" flexDirection="column" height="100%">
-            <Box padding="16px" flexGrow="1" overflow="auto">
-              <Box display="flex" flexDirection="column">
-                {validationErrors.map((error, idx) => (
-                  <Typography
-                    variant="caption"
-                    className={classes.errorText}
-                    key={`error-${idx}`}
-                  >
-                    {error}
-                  </Typography>
-                ))}
-              </Box>
-              <Box mb="16px">
-                <TextField
-                  type="text"
-                  label="Title"
-                  name="title"
-                  value={title}
-                  onChange={e => setTitle(e.target.value)}
-                  fullWidth
-                  inputProps={{
-                    maxLength: 120,
-                    minLength: 12
-                  }}
-                />
-              </Box>
-              <Box mb="16px">
-                <Description
-                  value={description}
-                  onChange={setDescription}
-                  limit={2000}
-                />
-              </Box>
-              <Box mb="16px" display="flex">
-                <FormControl>
-                  <InputLabel id="price-info">Price</InputLabel>
-                  <Select
-                    labelId="price-info"
-                    id="price-info-select"
-                    value={priceInfo}
-                    onChange={e => {
-                      setPriceInfo(e.target.value);
-                    }}
-                  >
-                    <MenuItem value={"Fixed"}>Fixed</MenuItem>
-                    <MenuItem value={"Contact for price"}>
-                      Contact for price
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-                {priceInfo === "Fixed" && (
-                  <Box ml="8px">
-                    <TextField
-                      type="number"
-                      label="Enter price"
-                      name="price"
-                      value={price}
-                      onChange={e => setPrice(e.target.value)}
-                      fullWidth
-                      inputProps={{
-                        step: 0.01
-                      }}
-                    />
-                  </Box>
-                )}
-              </Box>
-              <Box mb="16px">
-                <PlaceAutocomplete onChange={onAddressChange} value={address} />
-              </Box>
-              <Box mb="16px">
-                <TagsInput
-                  onChange={tags => {
-                    setTags(tags);
-                  }}
-                  onAdd={tag => {
-                    const tTags = [...tags, tag];
-                    setTags(tTags);
-                  }}
-                  tags={tags}
-                />
-              </Box>
-              <Box mb="16px">
-                <Dropzone
-                  onFileDrop={onDrop}
-                  limit={12}
-                  currentCount={images.length}
-                  images={images}
-                />
-                <ImageList imagesUrls={images} />
-              </Box>
+          <Box padding="16px">
+            <Box display="flex" flexDirection="column">
+              {validationErrors.map((error, idx) => (
+                <Typography
+                  variant="caption"
+                  className={classes.errorText}
+                  key={`error-${idx}`}
+                >
+                  {error}
+                </Typography>
+              ))}
             </Box>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              Submit
-            </Button>
+            <Box mb="16px">
+              <TextField
+                type="text"
+                label="Title"
+                name="title"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                fullWidth
+                inputProps={{
+                  maxLength: 120,
+                  minLength: 12
+                }}
+              />
+            </Box>
+            <Box mb="16px">
+              <Description
+                value={description}
+                onChange={setDescription}
+                limit={2000}
+              />
+            </Box>
+            <Box mb="16px" display="flex">
+              <FormControl>
+                <InputLabel id="price-info">Price</InputLabel>
+                <Select
+                  labelId="price-info"
+                  id="price-info-select"
+                  value={priceInfo}
+                  onChange={e => {
+                    setPriceInfo(e.target.value);
+                  }}
+                >
+                  <MenuItem value={"Fixed"}>Fixed</MenuItem>
+                  <MenuItem value={"Contact for price"}>
+                    Contact for price
+                  </MenuItem>
+                </Select>
+              </FormControl>
+              {priceInfo === "Fixed" && (
+                <Box ml="8px">
+                  <TextField
+                    type="number"
+                    label="Enter price"
+                    name="price"
+                    value={price}
+                    onChange={e => setPrice(e.target.value)}
+                    fullWidth
+                    inputProps={{
+                      step: 0.01
+                    }}
+                  />
+                </Box>
+              )}
+            </Box>
+            <Box mb="16px">
+              <PlaceAutocomplete onChange={onAddressChange} value={address} />
+            </Box>
+            <Box mb="16px">
+              <TagsInput
+                onChange={tags => {
+                  setTags(tags);
+                }}
+                onAdd={tag => {
+                  const tTags = [...tags, tag];
+                  setTags(tTags);
+                }}
+                tags={tags}
+              />
+            </Box>
+            <Box mb="16px">
+              <Dropzone
+                onFileDrop={onDrop}
+                limit={12}
+                currentCount={images.length}
+                images={images}
+              />
+              <ImageList imagesUrls={images} />
+            </Box>
           </Box>
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Submit
+          </Button>
           {/* <PostLocationForm /> */}
         </form>
       </Box>

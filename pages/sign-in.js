@@ -67,21 +67,13 @@ const LOGIN = gql`
   }
 `;
 
-const CURRENT_USER = gql`
-  query me {
-    me {
-      uuid
-      name
-      firstName
-      lastName
-      email
-    }
-  }
-`;
-
 const SignIn = () => {
   const router = useRouter();
   const classes = useStyles();
+  const { isLoggedIn } = useIdentityContext();
+  if (isLoggedIn) {
+    router.push("/");
+  }
   const [login, { loading }] = useMutation(LOGIN, {
     onCompleted: ({ login }) => {
       setAuthenticationToken(login.accessToken);
