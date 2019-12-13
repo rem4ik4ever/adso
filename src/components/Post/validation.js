@@ -4,6 +4,8 @@ export const validatePost = ({
   tags,
   images,
   address,
+  priceInfo,
+  price,
   latitude,
   longitude
 }) => {
@@ -27,6 +29,9 @@ export const validatePost = ({
 
   if (!images || images.length == 0) {
     errors.push("Please add at least one images");
+  }
+  if (priceInfo == "Fixed" && (!price || price == 0)) {
+    errors.push("Please enter price");
   }
   return { valid: errors.length == 0, errors };
 };

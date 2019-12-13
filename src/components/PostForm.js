@@ -38,12 +38,13 @@ const CreatePost = () => {
   const [images, setImages] = React.useState([]);
   const [tags, setTags] = React.useState([]);
   const [description, setDescription] = React.useState("");
+  const [title, setTitle] = React.useState("");
   const [address, onAddressChange] = React.useState("");
+  const [price, setPrice] = React.useState(0);
   const [priceInfo, setPriceInfo] = React.useState("Fixed");
 
   const [createPost, { loading, error }] = useMutation(CREATE_POST);
   const [validationErrors, setErrors] = React.useState([]);
-  const formRef = React.createRef();
   const classes = useStyles();
   const { latitude, longitude } = usePosition();
 
@@ -59,11 +60,12 @@ const CreatePost = () => {
 
   const onSubmit = async e => {
     e.preventDefault();
+    setErrors([]);
     const latlng = await getLatLngFromAddress(address);
     const variables = {
-      title: formRef.current.title.value,
+      title,
       priceInfo,
-      price: +formRef.current.price.value,
+      price: +price,
       description,
       images,
       tags,
@@ -87,7 +89,7 @@ const CreatePost = () => {
   return (
     <Paper className={classes.main}>
       <Box height="100%">
-        <form onSubmit={onSubmit} ref={formRef} className={classes.postForm}>
+        <form onSubmit={onSubmit} className={classes.postForm}>
           <Box display="flex" flexDirection="column" height="100%">
             <Box padding="16px" flexGrow="1" overflow="auto">
               <Box display="flex" flexDirection="column">
@@ -106,10 +108,12 @@ const CreatePost = () => {
                   type="text"
                   label="Title"
                   name="title"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
                   fullWidth
                   inputProps={{
-                    maxlength: 120,
-                    minlength: 12
+                    maxLength: 120,
+                    minLength: 12
                   }}
                 />
               </Box>
@@ -143,6 +147,8 @@ const CreatePost = () => {
                       type="number"
                       label="Enter price"
                       name="price"
+                      value={price}
+                      onChange={e => setPrice(e.target.value)}
                       fullWidth
                       inputProps={{
                         step: 0.01

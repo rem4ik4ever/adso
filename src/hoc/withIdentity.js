@@ -50,7 +50,7 @@ export const withIdentity = WrappedComponent => {
         }
       },
       onError: err => {
-        console.err(`Current user Error: ${err}`);
+        console.error(`Current user Error: ${err}`);
       }
     });
     return <WrappedComponent {...props} />;
