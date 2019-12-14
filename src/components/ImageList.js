@@ -44,23 +44,22 @@ const useStyles = makeStyles(theme => ({
     position: "absolute"
   }
 }));
-const urls = [
-  "https://adso-bucket.s3.amazonaws.com/images-tmp-fld/20191212-0b358d81-5fc0-4c27-8765-bc2023a25740",
-  "https://adso-bucket.s3.amazonaws.com/images-tmp-fld/20191212-14826d06-8d05-4f90-a8ee-352cb1140a81",
-  "https://adso-bucket.s3.amazonaws.com/images-tmp-fld/20191212-d854c7ba-7df7-4cea-b1a5-a612a96cf5ff",
-  "https://adso-bucket.s3.amazonaws.com/images-tmp-fld/20191212-f26cc803-9beb-419e-a20a-0490075bbe0b",
-  "https://adso-bucket.s3.amazonaws.com/images-tmp-fld/20191212-ec3d2270-5e77-418b-be2d-2cea5c242293"
-];
-export const ImageList = ({ onDelete, onChange }) => {
-  const [imagesUrls, setUrls] = React.useState(urls);
+// const urls = [
+//   "https://adso-bucket.s3.amazonaws.com/images-tmp-fld/20191212-0b358d81-5fc0-4c27-8765-bc2023a25740",
+//   "https://adso-bucket.s3.amazonaws.com/images-tmp-fld/20191212-14826d06-8d05-4f90-a8ee-352cb1140a81",
+//   "https://adso-bucket.s3.amazonaws.com/images-tmp-fld/20191212-d854c7ba-7df7-4cea-b1a5-a612a96cf5ff",
+//   "https://adso-bucket.s3.amazonaws.com/images-tmp-fld/20191212-f26cc803-9beb-419e-a20a-0490075bbe0b",
+//   "https://adso-bucket.s3.amazonaws.com/images-tmp-fld/20191212-ec3d2270-5e77-418b-be2d-2cea5c242293"
+// ];
+export const ImageList = ({ imagesUrls, onChange }) => {
+  // const [imagesUrls, setUrls] = React.useState(urls);
   const classes = useStyles();
   const [selected, setSelected] = React.useState(null);
-  const [keepSelected, setKeepSelected] = React.useState(false);
 
   const handleDelete = (e, index) => {
     e.preventDefault();
     console.log("should delete");
-    setUrls([
+    onChange([
       ...imagesUrls.slice(0, index),
       ...imagesUrls.slice(index + 1, imagesUrls.length)
     ]);
@@ -74,7 +73,7 @@ export const ImageList = ({ onDelete, onChange }) => {
     const item2 = newList[newIndex];
     newList[index] = item2;
     newList[newIndex] = item1;
-    setUrls(newList);
+    onChange(newList);
   };
 
   return (
@@ -90,11 +89,7 @@ export const ImageList = ({ onDelete, onChange }) => {
             if (!selected || selected !== url) {
               setSelected(url);
             } else {
-              if (selected !== url && keepSelected) {
-                setKeepSelected(false);
-              } else {
-                setSelected(null);
-              }
+              setSelected(null);
             }
           }}
           key={`img-${index}`}

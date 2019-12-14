@@ -32,43 +32,41 @@ const NavBar = () => {
   const { isLoggedIn, user, logout } = useIdentityContext();
   const classes = useStyles();
   return (
-    <div>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="menu-button"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Home
-          </Typography>
-          {isLoggedIn ? (
-            <>
-              <Avatar>
-                {user.firstName[0]}
-                {user.lastName[0]}
-              </Avatar>
-              <Button className={classes.buttonLink} onClick={e => logout()}>
-                Logout
-              </Button>
-            </>
-          ) : (
-            <>
-              <Link href="/sign-in">
-                <Button className={classes.buttonLink}>Login</Button>
-              </Link>
-              <Link href="/sign-up">
-                <Button className={classes.buttonLink}>Sign Up</Button>
-              </Link>
-            </>
-          )}
-        </Toolbar>
-      </AppBar>
-    </div>
+    <AppBar position="sticky">
+      <Toolbar>
+        <IconButton
+          edge="start"
+          className={classes.menuButton}
+          color="inherit"
+          aria-label="menu-button"
+        >
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" className={classes.title}>
+          Home
+        </Typography>
+        {isLoggedIn ? (
+          <>
+            <Avatar>
+              {user.firstName[0]}
+              {user.lastName[0]}
+            </Avatar>
+            <Button className={classes.buttonLink} onClick={e => logout()}>
+              Logout
+            </Button>
+          </>
+        ) : (
+          <>
+            <Link href="/sign-in">
+              <Button className={classes.buttonLink}>Login</Button>
+            </Link>
+            <Link href="/sign-up">
+              <Button className={classes.buttonLink}>Sign Up</Button>
+            </Link>
+          </>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 };
 

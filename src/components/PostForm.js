@@ -178,7 +178,7 @@ const CreatePost = () => {
                 currentCount={images.length}
                 images={images}
               />
-              <ImageList imagesUrls={images} />
+              <ImageList imagesUrls={images} onChange={setImages} />
             </Box>
           </Box>
           <Button type="submit" variant="contained" color="secondary" fullWidth>

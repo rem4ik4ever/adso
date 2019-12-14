@@ -1,5 +1,6 @@
 import React from "react";
 import Head from "next/head";
+import { PostList } from "../src/components/Post/PostList";
 
 const Home = () => {
   return (
@@ -9,7 +10,7 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* <Hello /> */}
-      This is index page
+      <PostList />
     </div>
   );
 };
