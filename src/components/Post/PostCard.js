@@ -30,7 +30,6 @@ const useStyles = makeStyles(theme => ({
 
 export const PostCard = ({ post }) => {
   const classes = useStyles();
-  console.log("POST", post);
   return (
     <Card className={classes.card}>
       <CardHeader

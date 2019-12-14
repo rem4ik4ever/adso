@@ -69,18 +69,18 @@ const allPosts = async (_, { after, perPage }, _context) => {
       opts.after = match.ref;
     }
     const response = await client.query(
-      q.Paginate(q.Match(q.Ref("indexes/all_posts")), opts)
+      q.Map(
+        q.Paginate(q.Match(q.Ref("indexes/all_posts")), opts),
+        q.Lambda("X", q.Get(q.Var("X")))
+      )
     );
-    const itemsRefs = response.data;
-    const allItemsDataQuery = itemsRefs.map(ref => q.Get(ref));
-    const items = await client.query(allItemsDataQuery);
     let afterObject = null;
     if (response.after) {
       afterObject = await client.query(q.Get(response.after[0]));
     }
     return {
       after: afterObject ? afterObject.data.uuid : "",
-      data: items.map(item => {
+      data: response.data.map(item => {
         return item.data;
       }),
       perPage
