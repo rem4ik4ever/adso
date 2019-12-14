@@ -181,7 +181,7 @@ const CreatePost = () => {
               <ImageList imagesUrls={images} />
             </Box>
           </Box>
-          <Button type="submit" variant="contained" color="primary" fullWidth>
+          <Button type="submit" variant="contained" color="secondary" fullWidth>
             Submit
           </Button>
           {/* <PostLocationForm /> */}

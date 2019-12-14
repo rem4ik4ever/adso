@@ -3,8 +3,14 @@ const { gql } = require("apollo-server-lambda");
 module.exports = gql`
   scalar Date
 
+  type PaginateResponse {
+    data: [Post!]
+    after: String!
+    perPage: Int!
+  }
+
   extend type Query {
-    allPosts: [Post!]
+    allPosts(after: String, perPage: Int!): PaginateResponse!
   }
 
   type PostLocation {

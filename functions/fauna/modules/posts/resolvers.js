@@ -56,18 +56,37 @@ const createPost = async (
   return true;
 };
 
-const allPosts = async (_, _args, _context) => {
+const allPosts = async (_, { after, perPage }, _context) => {
   try {
+    let opts = {
+      size: perPage
+    };
+    let match = null;
+    if (after) {
+      match = await client.query(
+        q.Get(q.Match(q.Index("posts_by_uuid"), after))
+      );
+      opts.after = match.ref;
+    }
     const response = await client.query(
-      q.Paginate(q.Match(q.Ref("indexes/all_posts")))
+      q.Paginate(q.Match(q.Ref("indexes/all_posts")), opts)
     );
     const itemsRefs = response.data;
     const allItemsDataQuery = itemsRefs.map(ref => q.Get(ref));
     const items = await client.query(allItemsDataQuery);
-    return items.map(item => {
-      return item.data;
-    });
+    let afterObject = null;
+    if (response.after) {
+      afterObject = await client.query(q.Get(response.after[0]));
+    }
+    return {
+      after: afterObject ? afterObject.data.uuid : "",
+      data: items.map(item => {
+        return item.data;
+      }),
+      perPage
+    };
   } catch (err) {
+    console.error(err);
     return [];
   }
 };
