@@ -8,12 +8,14 @@ import {
   Typography,
   Box,
   CardActions,
-  IconButton
+  IconButton,
+  CardActionArea
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import moment from "moment";
 import MessageIcon from "@material-ui/icons/Message";
 import ShareIcon from "@material-ui/icons/Share";
+import { useRouter } from "next/dist/client/router";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -30,13 +32,16 @@ const useStyles = makeStyles(theme => ({
 
 export const PostCard = ({ post }) => {
   const classes = useStyles();
+  const router = useRouter();
   return (
     <Card className={classes.card}>
-      <CardHeader
-        avatar={<Avatar aria-label="author">RK</Avatar>}
-        title={post.title}
-        subheader={moment(+post.createdAt).fromNow()}
-      />
+      <CardActionArea onClick={e => router.push(`/p/${post.uuid}`)}>
+        <CardHeader
+          avatar={<Avatar aria-label="author">RK</Avatar>}
+          title={post.title}
+          subheader={moment(+post.createdAt).fromNow()}
+        />
+      </CardActionArea>
       <CardMedia
         className={classes.media}
         image={post.images[0]}

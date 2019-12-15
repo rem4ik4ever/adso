@@ -10,7 +10,7 @@ export const PostList = () => {
   const [after, setAfter] = useState("");
   const { data, loading, error, fetchMore } = useQuery(ALL_POSTS, {
     variables: {
-      perPage: 2
+      perPage: 10
     },
     onCompleted: response => {
       console.log("response", response);
