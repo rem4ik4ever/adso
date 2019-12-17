@@ -52,3 +52,21 @@ export const ALL_POSTS = gql`
     }
   }
 `;
+
+export const GET_POST = gql`
+  query getPost($id: String!) {
+    getPost(id: $id) {
+      uuid
+      title
+      description
+      priceInfo
+      price
+      images
+      tags
+      address
+      latitude
+      longitude
+      createdAt
+    }
+  }
+`;

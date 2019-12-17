@@ -3,7 +3,6 @@ import { useMutation } from "@apollo/react-hooks";
 import { CREATE_POST } from "../graphql/postResolvers";
 import { Dropzone } from "./FileUpload";
 import TagsInput from "./util/TagsInput";
-import { PostLocationForm } from "./PostLocationForm";
 import { ImageList } from "./ImageList";
 import {
   Paper,
@@ -184,7 +183,6 @@ const CreatePost = () => {
           <Button type="submit" variant="contained" color="secondary" fullWidth>
             Submit
           </Button>
-          {/* <PostLocationForm /> */}
         </form>
       </Box>
     </Paper>

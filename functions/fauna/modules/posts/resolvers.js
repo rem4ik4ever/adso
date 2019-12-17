@@ -66,20 +66,25 @@ const allPosts = async (_, { after, perPage }, _context) => {
       match = await client.query(
         q.Get(q.Match(q.Index("posts_by_uuid"), after))
       );
-      opts.after = match.ref;
+      opts.after = match.data.createdAt;
     }
     const response = await client.query(
       q.Map(
-        q.Paginate(q.Match(q.Ref("indexes/all_posts")), opts),
-        q.Lambda("X", q.Get(q.Var("X")))
+        q.Paginate(q.Match(q.Index("posts_by_created_at_desc")), opts),
+        q.Lambda(["createdAt", "ref"], q.Get(q.Var("ref")))
       )
     );
     let afterObject = null;
-    if (response.after) {
-      afterObject = await client.query(q.Get(response.after[0]));
+    let beforeObject = null;
+    if (response.after && response.after[1]) {
+      afterObject = await client.query(q.Get(response.after[1]));
+    }
+    if (response.before && response.before[1]) {
+      beforeObject = await client.query(q.Get(response.before[1]));
     }
     return {
       after: afterObject ? afterObject.data.uuid : "",
+      before: beforeObject ? beforeObject.data.uuid : "",
       data: response.data.map(item => {
         return item.data;
       }),
@@ -143,9 +148,17 @@ const signS3 = async (_, { filename, filetype }, _context) => {
   };
 };
 
+const getPost = async (_root, { id }, _context) => {
+  const { data } = await client.query(
+    q.Get(q.Match(q.Index("posts_by_uuid"), id))
+  );
+  return data;
+};
+
 module.exports = {
   Query: {
-    allPosts: (root, args, context) => allPosts(root, args, context)
+    allPosts: (root, args, context) => allPosts(root, args, context),
+    getPost
   },
   Mutation: {
     createPost: async (root, args, context) => createPost(root, args, context),

@@ -4,13 +4,15 @@ import { Box, Typography, Button } from "@material-ui/core";
 import { ALL_POSTS } from "../../graphql/postResolvers";
 import { PostCard } from "./PostCard";
 
+const PER_PAGE = 10;
+
 export const PostList = () => {
   const [posts, setState] = useState([]);
   const [page, setPage] = useState(1);
   const [after, setAfter] = useState("");
   const { data, loading, error, fetchMore } = useQuery(ALL_POSTS, {
     variables: {
-      perPage: 10
+      perPage: PER_PAGE
     },
     onCompleted: response => {
       console.log("response", response);
@@ -26,7 +28,7 @@ export const PostList = () => {
   const loadMore = e => {
     fetchMore({
       variables: {
-        perPage: 2,
+        perPage: PER_PAGE,
         after
       },
       updateQuery: (prev, { fetchMoreResult, ...rest }) => {

@@ -5,12 +5,14 @@ module.exports = gql`
 
   type PaginateResponse {
     data: [Post!]
-    after: String!
+    after: String
+    before: String
     perPage: Int!
   }
 
   extend type Query {
     allPosts(after: String, perPage: Int!): PaginateResponse!
+    getPost(id: String!): Post
   }
 
   type PostLocation {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Map, InfoWindow, Marker } from "google-maps-react";
+import { width } from "dom-helpers";
 
 export const GoogleMap = props => {
   useEffect(() => {
@@ -24,6 +25,11 @@ export const GoogleMap = props => {
   const onInfoWindowClose = data => {
     console.log("info close", data);
   };
+  const style = {
+    height: "240px",
+    width: "100%",
+    position: "relative"
+  };
 
   return (
     <Map
@@ -31,8 +37,10 @@ export const GoogleMap = props => {
         lat: props.latitude,
         lng: props.longitude
       }}
+      className={"gmap"}
       google={google}
       zoom={14}
+      style={style}
     >
       <Marker onClick={onMarkerClick} name={"Current location"} />
 
