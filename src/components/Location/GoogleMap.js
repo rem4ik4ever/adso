@@ -3,21 +3,21 @@ import { Map, InfoWindow, Marker } from "google-maps-react";
 import { width } from "dom-helpers";
 
 export const GoogleMap = props => {
-  useEffect(() => {
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode(
-      {
-        location: {
-          lat: props.latitude,
-          lng: props.longitude
-        }
-      },
-      (result, status) => {
-        console.log("Result", result);
-        console.log("status", status);
-      }
-    );
-  }, []);
+  // useEffect(() => {
+  //   const geocoder = new google.maps.Geocoder();
+  //   geocoder.geocode(
+  //     {
+  //       location: {
+  //         lat: props.latitude,
+  //         lng: props.longitude
+  //       }
+  //     },
+  //     (result, status) => {
+  //       console.log("Result", result);
+  //       console.log("status", status);
+  //     }
+  //   );
+  // }, []);
   const onMarkerClick = data => {
     console.log("marker", data);
   };

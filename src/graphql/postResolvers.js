@@ -67,6 +67,11 @@ export const GET_POST = gql`
       latitude
       longitude
       createdAt
+      author {
+        firstName
+        lastName
+        name
+      }
     }
   }
 `;

@@ -24,7 +24,12 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   buttonLink: {
-    color: "white"
+    color: "black"
+  },
+  navbar: {
+    backgroundColor: "#fff",
+    color: "black",
+    boxShadow: "none"
   }
 }));
 
@@ -32,8 +37,8 @@ const NavBar = () => {
   const { isLoggedIn, user, logout } = useIdentityContext();
   const classes = useStyles();
   return (
-    <AppBar position="sticky">
-      <Toolbar>
+    <AppBar position="sticky" className={classes.navbar}>
+      <Toolbar variant="dense">
         <IconButton
           edge="start"
           className={classes.menuButton}

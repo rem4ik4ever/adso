@@ -152,7 +152,13 @@ const getPost = async (_root, { id }, _context) => {
   const { data } = await client.query(
     q.Get(q.Match(q.Index("posts_by_uuid"), id))
   );
-  return data;
+  const author = await client.query(
+    q.Get(q.Match(q.Index("user_by_uuid"), data.authorId))
+  );
+  return {
+    ...data,
+    author: author.data
+  };
 };
 
 module.exports = {

@@ -41,6 +41,7 @@ module.exports = gql`
     longitude: Float!
     createdAt: String!
     updatedAt: String!
+    author: User!
   }
 
   type S3Payload {
