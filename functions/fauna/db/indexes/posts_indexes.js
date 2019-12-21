@@ -8,7 +8,7 @@ const allPosts = {
 };
 
 const postByUuid = {
-  name: "post_by_uuid",
+  name: "posts_by_uuid",
   create: true,
   update: true,
   params: {
