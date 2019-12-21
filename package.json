@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node ./scripts/installer.js",
+    "migrate": "node ./functions/fauna/db/migrate.js",
+    "prebuild": "node ./scripts/installer.js && yarn migrate",
     "build": "next build && next export",
     "start": "next start"
   },
