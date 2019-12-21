@@ -92,7 +92,7 @@ const PostView = ({ id }) => {
           </Box>
           <Box mt="16px">
             <Typography className={classes.descriptionTitle}>Price</Typography>
-            <p>
+            <Box mt="1em" mb="1em">
               {post.priceInfo.toLowerCase() === "fixed" ? (
                 <Typography className={classes.description}>
                   ${post.price}
@@ -102,7 +102,7 @@ const PostView = ({ id }) => {
                   {post.priceInfo}
                 </Typography>
               )}
-            </p>
+            </Box>
           </Box>
           <Box mt="16px">
             <Typography className={classes.descriptionTitle}>
