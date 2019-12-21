@@ -35,7 +35,7 @@ export const PostCard = ({ post }) => {
   const router = useRouter();
   return (
     <Card className={classes.card}>
-      <CardActionArea onClick={e => router.push(`/p/${post.uuid}`)}>
+      <CardActionArea onClick={e => router.push(`/p?id=${post.uuid}`)}>
         <CardHeader
           avatar={<Avatar aria-label="author">RK</Avatar>}
           title={post.title}
