@@ -33,6 +33,11 @@ const useStyles = makeStyles(theme => ({
   },
   description: {
     fontSize: "0.85rem"
+  },
+  map: {
+    ">div": {
+      position: "relative"
+    }
   }
 }));
 
@@ -113,8 +118,13 @@ const PostView = ({ id }) => {
               dangerouslySetInnerHTML={{ __html: post.description }}
             />
           </Box>
-          <Box position="relative">
-            <PostMap longitude={post.longitude} latitude={post.latitude} />
+          <Box mt="16px">
+            <Typography className={classes.descriptionTitle}>
+              We can meet here
+            </Typography>
+            <p>
+              <PostMap longitude={post.longitude} latitude={post.latitude} />
+            </p>
           </Box>
         </Box>
       </Paper>
