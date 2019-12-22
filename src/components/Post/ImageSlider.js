@@ -6,8 +6,14 @@ import { Card, Box } from "@material-ui/core";
 const useStyles = makeStyles(theme => ({
   card: {
     // margin: theme.spacing(1),
-    top: "48px",
+    [theme.breakpoints.down("sm")]: {
+      top: 48
+    },
+    [theme.breakpoints.up("sm")]: {
+      top: 48 + theme.spacing(1)
+    },
     position: "sticky"
+    // height: "fit-content"
   }
 }));
 const ImageSlider = ({ images }) => {
