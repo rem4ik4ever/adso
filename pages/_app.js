@@ -2,7 +2,7 @@ import App from "next/app";
 import React from "react";
 import { ThemeProvider } from "@material-ui/styles";
 import theme from "../src/theme";
-import { CssBaseline } from "@material-ui/core";
+import { CssBaseline, Container } from "@material-ui/core";
 import Head from "next/head";
 import { withApollo } from "../src/lib/apollo";
 import NavBar from "../src/components/NavBar";

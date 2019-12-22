@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
-import { Box, Typography, Button } from "@material-ui/core";
+import { Box, Typography, Button, Container } from "@material-ui/core";
 import { ALL_POSTS } from "../../graphql/postResolvers";
 import { PostCard } from "./PostCard";
 
@@ -40,20 +40,17 @@ export const PostList = () => {
     });
   };
   return (
-    <Box>
-      <Typography>This is Post list</Typography>
-      <div>
-        {posts.map(post => (
-          <PostCard key={post.uuid} post={post} />
-        ))}
-        {after !== "" && (
-          <Box display="flex" justifyContent="center" m="16px">
-            <Button onClick={loadMore} variant="outlined" color="secondary">
-              Load more
-            </Button>
-          </Box>
-        )}
-      </div>
-    </Box>
+    <Container maxWidth="sm">
+      {posts.map(post => (
+        <PostCard key={post.uuid} post={post} />
+      ))}
+      {after !== "" && (
+        <Box display="flex" justifyContent="center" m="16px">
+          <Button onClick={loadMore} variant="outlined" color="secondary">
+            Load more
+          </Button>
+        </Box>
+      )}
+    </Container>
   );
 };

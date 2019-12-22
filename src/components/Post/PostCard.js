@@ -27,9 +27,24 @@ const useStyles = makeStyles(theme => ({
   },
   price: {
     color: theme.palette.primary.dark
+  },
+  contentImage: {
+    width: 130,
+    marginRight: theme.spacing(1)
+  },
+  img: {
+    width: "inherit"
   }
 }));
 
+const Image = ({ url }) => {
+  const classes = useStyles();
+  return (
+    <Box className={classes.contentImage}>
+      <img src={url} className={classes.img} />
+    </Box>
+  );
+};
 export const PostCard = ({ post }) => {
   const classes = useStyles();
   const router = useRouter();
@@ -42,11 +57,18 @@ export const PostCard = ({ post }) => {
           subheader={moment(+post.createdAt).fromNow()}
         />
       </CardActionArea>
-      <CardMedia
+      {/* <CardMedia
         className={classes.media}
         image={post.images[0]}
         title={post.title}
-      />
+      /> */}
+      <CardContent>
+        <Box display="flex" overflow="auto">
+          {post.images.map(url => (
+            <Image url={url} />
+          ))}
+        </Box>
+      </CardContent>
       <CardActions>
         <Box display="flex" justifyContent="space-between" flexGrow="1">
           <Box>

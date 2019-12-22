@@ -122,9 +122,9 @@ const PostView = ({ id }) => {
             <Typography className={classes.descriptionTitle}>
               We can meet here
             </Typography>
-            <p>
+            <Box mt="1em" mb="1em">
               <PostMap longitude={post.longitude} latitude={post.latitude} />
-            </p>
+            </Box>
           </Box>
         </Box>
       </Paper>

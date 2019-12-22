@@ -80,7 +80,7 @@ export const PlaceAutocomplete = ({ value, onChange }) => {
       renderInput={params => (
         <TextField
           {...params}
-          label="Add a location"
+          label="Place to meet"
           variant="outlined"
           fullWidth
           onChange={handleChange}
