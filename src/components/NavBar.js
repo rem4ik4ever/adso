@@ -1,16 +1,25 @@
 import React from "react";
-import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
 import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import MenuIcon from "@material-ui/icons/Menu";
+import { Settings, ExitToApp } from "@material-ui/icons";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
 import Link from "next/link";
 import { useIdentityContext } from "../hooks/useIdentity";
-import { Avatar } from "@material-ui/core";
+import {
+  Avatar,
+  Popper,
+  Grow,
+  ClickAwayListener,
+  MenuList,
+  MenuItem,
+  Paper,
+  Hidden,
+  ListItemIcon
+} from "@material-ui/core";
 import { withIdentity } from "../hoc/withIdentity";
 
 const useStyles = makeStyles(theme => ({
@@ -27,38 +36,114 @@ const useStyles = makeStyles(theme => ({
     color: "black"
   },
   navbar: {
-    backgroundColor: "#fff",
-    color: "black",
-    boxShadow: "none"
+    // backgroundColor: "#fff",
+    // color: "black",
+    // boxShadow: "none"
   }
 }));
 
 const NavBar = () => {
+  const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef(null);
+  const handleToggle = () => {
+    setOpen(prevOpen => !prevOpen);
+  };
+
+  const handleClose = event => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  function handleListKeyDown(event) {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      setOpen(false);
+    }
+  }
+
+  // return focus to the button when we transitioned from !open -> open
+  const prevOpen = React.useRef(open);
+  React.useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+      anchorRef.current.focus();
+    }
+
+    prevOpen.current = open;
+  }, [open]);
   const { isLoggedIn, user, logout } = useIdentityContext();
   const classes = useStyles();
   return (
     <AppBar position="sticky" className={classes.navbar}>
       <Toolbar variant="dense">
-        <IconButton
-          edge="start"
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="menu-button"
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          Home
-        </Typography>
+        <Link href="/">
+          <Typography variant="h6" className={classes.title}>
+            tugogo
+          </Typography>
+        </Link>
         {isLoggedIn ? (
           <>
-            <Avatar>
-              {user.firstName[0]}
-              {user.lastName[0]}
-            </Avatar>
-            <Button className={classes.buttonLink} onClick={e => logout()}>
-              Logout
-            </Button>
+            <IconButton ref={anchorRef} onClick={handleToggle}>
+              <Avatar>
+                {user.firstName[0]}
+                {user.lastName[0]}
+              </Avatar>
+            </IconButton>
+            <Popper
+              open={open}
+              anchorEl={anchorRef.current}
+              role={undefined}
+              transition
+              disablePortal
+            >
+              {({ TransitionProps, placement }) => (
+                <Grow
+                  {...TransitionProps}
+                  style={{
+                    transformOrigin:
+                      placement === "bottom" ? "center top" : "center bottom"
+                  }}
+                >
+                  <Paper>
+                    <ClickAwayListener onClickAway={handleClose}>
+                      <MenuList
+                        autoFocusItem={open}
+                        id="menu-list-grow"
+                        onKeyDown={handleListKeyDown}
+                      >
+                        <Hidden only="sm">
+                          <Link href="/settings">
+                            <MenuItem
+                              onClick={e => {
+                                handleClose();
+                              }}
+                            >
+                              <ListItemIcon>
+                                <Settings />
+                              </ListItemIcon>
+                              Settings
+                            </MenuItem>
+                          </Link>
+                        </Hidden>
+                        <MenuItem
+                          onClick={e => {
+                            logout();
+                            handleClose();
+                          }}
+                        >
+                          <ListItemIcon>
+                            <ExitToApp />
+                          </ListItemIcon>
+                          Logout
+                        </MenuItem>
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Popper>
           </>
         ) : (
           <>

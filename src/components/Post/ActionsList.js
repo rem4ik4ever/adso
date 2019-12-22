@@ -26,6 +26,15 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       display: "none"
     }
+  },
+  header: {
+    boxShadow: "0 0 3px"
+  },
+  list: {
+    padding: 0
+  },
+  listItem: {
+    borderBottom: "1px solid #eaeaea"
   }
 }));
 
@@ -33,11 +42,11 @@ const ActionsList = () => {
   const classes = useStyles();
   return (
     <Card className={classes.actionsList}>
-      <CardHeader title="Actions" />
-      <CardContent>
-        <List>
+      <CardHeader title="Actions" className={classes.header} />
+      <div>
+        <List className={classes.list}>
           <Link href="/my-ads">
-            <ListItem button>
+            <ListItem button className={classes.listItem}>
               <ListItemIcon>
                 <FormatListBulleted />
               </ListItemIcon>
@@ -45,7 +54,7 @@ const ActionsList = () => {
             </ListItem>
           </Link>
           <Link href="/post-ad">
-            <ListItem button>
+            <ListItem button className={classes.listItem}>
               <ListItemIcon>
                 <Create />
               </ListItemIcon>
@@ -53,7 +62,7 @@ const ActionsList = () => {
             </ListItem>
           </Link>
           <Link href="/settings">
-            <ListItem button>
+            <ListItem button className={classes.listItem}>
               <ListItemIcon>
                 <Settings />
               </ListItemIcon>
@@ -61,7 +70,7 @@ const ActionsList = () => {
             </ListItem>
           </Link>
         </List>
-      </CardContent>
+      </div>
     </Card>
   );
 };

@@ -27,7 +27,6 @@ const Home = () => {
         <Box display="flex">
           <ActionsList />
           <PostList />
-          <Box></Box>
         </Box>
       </Container>
     </div>
