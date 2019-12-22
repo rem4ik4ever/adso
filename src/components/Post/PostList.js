@@ -3,10 +3,20 @@ import { useQuery } from "@apollo/react-hooks";
 import { Box, Typography, Button, Container } from "@material-ui/core";
 import { ALL_POSTS } from "../../graphql/postResolvers";
 import { PostCard } from "./PostCard";
+import { makeStyles } from "@material-ui/styles";
 
 const PER_PAGE = 10;
 
+const useStyles = makeStyles(theme => ({
+  container: {
+    [theme.breakpoints.down("sm")]: {
+      padding: 0
+    }
+  }
+}));
+
 export const PostList = () => {
+  const classes = useStyles();
   const [posts, setState] = useState([]);
   const [page, setPage] = useState(1);
   const [after, setAfter] = useState("");
@@ -40,7 +50,7 @@ export const PostList = () => {
     });
   };
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" className={classes.container}>
       {posts.map(post => (
         <PostCard key={post.uuid} post={post} />
       ))}

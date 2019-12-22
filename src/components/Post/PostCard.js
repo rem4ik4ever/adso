@@ -19,7 +19,8 @@ import { useRouter } from "next/dist/client/router";
 
 const useStyles = makeStyles(theme => ({
   card: {
-    margin: theme.spacing(1)
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   },
   media: {
     height: 0,
@@ -64,8 +65,8 @@ export const PostCard = ({ post }) => {
       /> */}
       <CardContent>
         <Box display="flex" overflow="auto">
-          {post.images.map(url => (
-            <Image url={url} />
+          {post.images.map((url, index) => (
+            <Image url={url} key={`img-${index}`} />
           ))}
         </Box>
       </CardContent>

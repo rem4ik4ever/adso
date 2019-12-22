@@ -15,12 +15,17 @@ import Link from "next/link";
 
 const useStyles = makeStyles(theme => ({
   actionsList: {
-    margin: theme.spacing(1),
-    position: "relative",
-    width: "300px",
-    height: "fit-content",
-    position: "sticky",
-    top: theme.spacing(1) + 48
+    [theme.breakpoints.up("sm")]: {
+      margin: theme.spacing(1),
+      position: "relative",
+      width: "300px",
+      height: "fit-content",
+      position: "sticky",
+      top: theme.spacing(1) + 48
+    },
+    [theme.breakpoints.down("sm")]: {
+      display: "none"
+    }
   }
 }));
 
