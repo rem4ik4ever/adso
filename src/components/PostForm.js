@@ -127,6 +127,14 @@ const CreatePost = () => {
     {
       label: "What are you offering?",
       description: "Good titile is half of the success!",
+      field: "title",
+      isValid: () => {
+        const { errors } = validatePost({ title });
+        if (errors["title"]) {
+          return false;
+        }
+        return true;
+      },
       component: () => (
         <Box mt={1}>
           <TextField
@@ -147,6 +155,14 @@ const CreatePost = () => {
     },
     {
       label: "Add description",
+      field: "description",
+      isValid: () => {
+        const { errors } = validatePost({ description });
+        if (errors["description"]) {
+          return false;
+        }
+        return true;
+      },
       description: "Provide details and information about it",
       component: () => (
         <Description
@@ -160,6 +176,14 @@ const CreatePost = () => {
       label: "How much you ask?",
       description:
         "If you know how much you want set Fixed price if you want to negotiate set 'Contact for price'",
+      field: "price",
+      isValid: () => {
+        const { errors } = validatePost({ price, priceInfo });
+        if (errors["price"]) {
+          return false;
+        }
+        return true;
+      },
       component: () => (
         <Box display="flex" mt={1}>
           <FormControl>
@@ -198,6 +222,14 @@ const CreatePost = () => {
       label: "Where would you like to meet?",
       description:
         "Home? Mall? Moon? pick a place where you feel comfortable to meet",
+      field: "address",
+      isValid: () => {
+        const { errors } = validatePost({ address });
+        if (errors["address"]) {
+          return false;
+        }
+        return true;
+      },
       component: () => (
         <Box mt={1}>
           <PlaceAutocomplete onChange={onAddressChange} value={address} />
@@ -208,6 +240,14 @@ const CreatePost = () => {
       label: "Add some tags",
       description:
         "This will help other people to find you Ad. Don't be shy add some tags!",
+      field: "tags",
+      isValid: () => {
+        const { errors } = validatePost({ tags });
+        if (errors["tags"]) {
+          return false;
+        }
+        return true;
+      },
       component: () => (
         <TagsInput
           onChange={tags => {
@@ -225,6 +265,14 @@ const CreatePost = () => {
       label: "Upload images",
       description:
         "Make sure you use high quality images. People like to see images with good light and sharp details",
+      field: "images",
+      isValid: () => {
+        const { errors } = validatePost({ images });
+        if (errors["images"]) {
+          return false;
+        }
+        return true;
+      },
       component: () => (
         <Box mt={1}>
           <Dropzone
@@ -259,7 +307,6 @@ const CreatePost = () => {
           <form onSubmit={onSubmit} className={classes.postForm}>
             <Stepper activeStep={activeStep} orientation="vertical">
               {steps.map((step, index) => {
-                console.log("step", step, index);
                 return (
                   <Step key={index}>
                     <StepLabel>{step.label}</StepLabel>
@@ -286,8 +333,9 @@ const CreatePost = () => {
                             variant="contained"
                             color="secondary"
                             fullWidth
+                            disabled={!step.isValid()}
                           >
-                            Submit
+                            post
                           </Button>
                         ) : (
                           <Button
@@ -295,6 +343,7 @@ const CreatePost = () => {
                             variant="outlined"
                             onClick={handleNext}
                             color="primary"
+                            disabled={!step.isValid()}
                           >
                             Next
                           </Button>

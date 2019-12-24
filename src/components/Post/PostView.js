@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -14,6 +14,8 @@ import ImageSlider from "./ImageSlider";
 import Head from "next/head";
 import { PostMap } from "../PostMap";
 import { Message, Phone } from "@material-ui/icons";
+import { PoseGroup } from "react-pose";
+import { Appear } from "../../animations/appear";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -66,10 +68,27 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       padding: 0
     }
+  },
+  imageSlider: {
+    // margin: theme.spacing(1),
+    [theme.breakpoints.down("sm")]: {
+      top: 48
+    },
+    [theme.breakpoints.up("sm")]: {
+      top: 48 + theme.spacing(1)
+    },
+    position: "sticky"
+    // height: "fit-content"
   }
 }));
 
 const PostView = ({ id }) => {
+  const [animate, setAnimate] = useState(false);
+  useEffect(() => {
+    setTimeout(() => {
+      setAnimate(true);
+    }, 1000);
+  }, []);
   const classes = useStyles();
   const { data, loading, error } = useQuery(GET_POST, {
     variables: { id }
@@ -92,75 +111,93 @@ const PostView = ({ id }) => {
         />
       </Head>
       <Box className={classes.root}>
-        <ImageSlider images={post.images} />
-        <Paper className={classes.paper}>
-          <Box padding="16px">
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Box display="flex" alignItems="center" mb="16px">
-                <Avatar>
-                  {post.author.firstName[0]}
-                  {post.author.lastName[0]}
-                </Avatar>
-                <Box ml={"16px"}>
-                  <Typography className={classes.postedBy} variant="caption">
-                    posted by
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    {post.author.name}
-                  </Typography>
+        <PoseGroup>
+          {animate && [
+            <Appear key="slider" i={0} className={classes.imageSlider}>
+              <Box maxWidth={"500px"}>
+                <ImageSlider images={post.images} />
+              </Box>
+            </Appear>,
+            <Appear key="form" i={1}>
+              <Paper className={classes.paper}>
+                <Box padding="16px">
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Box display="flex" alignItems="center" mb="16px">
+                      <Avatar>
+                        {post.author.firstName[0]}
+                        {post.author.lastName[0]}
+                      </Avatar>
+                      <Box ml={"16px"}>
+                        <Typography
+                          className={classes.postedBy}
+                          variant="caption"
+                        >
+                          posted by
+                        </Typography>
+                        <Typography variant="subtitle1">
+                          {post.author.name}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box>
+                      <IconButton color="primary">
+                        <Message />
+                      </IconButton>
+                      <IconButton color="primary">
+                        <Phone />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                  <Box>
+                    <Typography className={classes.title}>
+                      {post.title}
+                    </Typography>
+                  </Box>
+                  <Box mt="16px">
+                    <Typography className={classes.descriptionTitle}>
+                      Price
+                    </Typography>
+                    <Box mt="1em" mb="1em">
+                      {post.priceInfo.toLowerCase() === "fixed" ? (
+                        <Typography className={classes.description}>
+                          ${post.price}
+                        </Typography>
+                      ) : (
+                        <Typography className={classes.description}>
+                          {post.priceInfo}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Box>
+                  <Box mt="16px">
+                    <Typography className={classes.descriptionTitle}>
+                      Description
+                    </Typography>
+                    <div
+                      className={classes.description}
+                      dangerouslySetInnerHTML={{ __html: post.description }}
+                    />
+                  </Box>
+                  <Box mt="16px">
+                    <Typography className={classes.descriptionTitle}>
+                      We can meet here
+                    </Typography>
+                    <Box mt="1em" mb="1em">
+                      <PostMap
+                        longitude={post.longitude}
+                        latitude={post.latitude}
+                      />
+                    </Box>
+                  </Box>
                 </Box>
-              </Box>
-              <Box>
-                <IconButton color="primary">
-                  <Message />
-                </IconButton>
-                <IconButton color="primary">
-                  <Phone />
-                </IconButton>
-              </Box>
-            </Box>
-            <Box>
-              <Typography className={classes.title}>{post.title}</Typography>
-            </Box>
-            <Box mt="16px">
-              <Typography className={classes.descriptionTitle}>
-                Price
-              </Typography>
-              <Box mt="1em" mb="1em">
-                {post.priceInfo.toLowerCase() === "fixed" ? (
-                  <Typography className={classes.description}>
-                    ${post.price}
-                  </Typography>
-                ) : (
-                  <Typography className={classes.description}>
-                    {post.priceInfo}
-                  </Typography>
-                )}
-              </Box>
-            </Box>
-            <Box mt="16px">
-              <Typography className={classes.descriptionTitle}>
-                Description
-              </Typography>
-              <div
-                className={classes.description}
-                dangerouslySetInnerHTML={{ __html: post.description }}
-              />
-            </Box>
-            <Box mt="16px">
-              <Typography className={classes.descriptionTitle}>
-                We can meet here
-              </Typography>
-              <Box mt="1em" mb="1em">
-                <PostMap longitude={post.longitude} latitude={post.latitude} />
-              </Box>
-            </Box>
-          </Box>
-        </Paper>
+              </Paper>
+            </Appear>
+          ]}
+        </PoseGroup>
       </Box>
     </Container>
   );

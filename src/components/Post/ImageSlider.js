@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     // height: "fit-content"
   }
 }));
-const ImageSlider = ({ images }) => {
+const ImageSlider = ({ images, ...props }) => {
   const settings = {
     arrows: true,
     infinite: true,
@@ -26,7 +26,7 @@ const ImageSlider = ({ images }) => {
   };
   const classes = useStyles();
   return (
-    <Card className={classes.card}>
+    <Card {...props}>
       <Slider {...settings}>
         {images.map((imageSrc, index) => (
           <img key={`img-${index}`} src={imageSrc} />

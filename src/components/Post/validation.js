@@ -9,29 +9,34 @@ export const validatePost = ({
   latitude,
   longitude
 }) => {
-  let errors = [];
-  if (!title || title.trim() == "" || title.trim().length > 70) {
-    errors.push("Missing title");
+  let errors = {};
+  if (
+    !title ||
+    title.trim() == "" ||
+    title.trim().length > 70 ||
+    title.trim().length < 7
+  ) {
+    errors["title"] = "Missing title";
   }
   if (!description || description.trim() == "") {
-    errors.push("Missing description");
+    errors["description"] = "Missing description";
   }
 
   if (!tags || tags.length < 1) {
-    errors.push("Please add at least one tag");
+    errors["tags"] = "Please add at least one tag";
   }
 
   if (!address || address === "") {
-    errors.push("Please add your City or Postal Code");
+    errors["address"] = "Please add your City or Postal Code";
   } else if (!latitude || !longitude) {
-    errors.push("Please enter a valid address");
+    errors["latitude-longitude"] = "Please enter a valid address";
   }
 
   if (!images || images.length == 0) {
-    errors.push("Please add at least one images");
+    errors["images"] = "Please add at least one images";
   }
   if (priceInfo == "Fixed" && (!price || price == 0)) {
-    errors.push("Please enter price");
+    errors["price"] = "Please enter price";
   }
   return { valid: errors.length == 0, errors };
 };
