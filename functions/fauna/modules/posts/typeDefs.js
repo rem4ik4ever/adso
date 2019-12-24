@@ -60,7 +60,7 @@ module.exports = gql`
       address: String!
       latitude: Float!
       longitude: Float!
-    ): Boolean!
+    ): Post
     updatePost(id: String!, title: String!, description: String!): Boolean!
     deletePost(id: String!): Boolean!
     signS3(filename: String!, filetype: String!): S3Payload!

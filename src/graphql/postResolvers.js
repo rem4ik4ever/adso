@@ -31,7 +31,9 @@ export const CREATE_POST = gql`
       address: $address
       latitude: $latitude
       longitude: $longitude
-    )
+    ) {
+      uuid
+    }
   }
 `;
 

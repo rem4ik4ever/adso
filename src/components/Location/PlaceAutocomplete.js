@@ -14,6 +14,9 @@ const useStyles = makeStyles(theme => ({
   icon: {
     color: theme.palette.text.secondary,
     marginRight: theme.spacing(2)
+  },
+  input: {
+    borderRadius: theme.spacing(1)
   }
 }));
 
@@ -67,6 +70,7 @@ export const PlaceAutocomplete = ({ value, onChange }) => {
   return (
     <Autocomplete
       id="google-map-demo"
+      className={classes.input}
       getOptionLabel={option =>
         typeof option === "string" ? option : option.description
       }

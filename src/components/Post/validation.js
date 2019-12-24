@@ -10,7 +10,7 @@ export const validatePost = ({
   longitude
 }) => {
   let errors = [];
-  if (!title || title.trim() == "") {
+  if (!title || title.trim() == "" || title.trim().length > 70) {
     errors.push("Missing title");
   }
   if (!description || description.trim() == "") {

@@ -65,9 +65,10 @@ export const PostCard = ({ post }) => {
       /> */}
       <CardContent>
         <Box display="flex" overflow="auto">
-          {post.images.map((url, index) => (
-            <Image url={url} key={`img-${index}`} />
-          ))}
+          {post.images &&
+            post.images.map((url, index) => (
+              <Image url={url} key={`img-${index}`} />
+            ))}
         </Box>
       </CardContent>
       <CardActions>

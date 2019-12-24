@@ -48,12 +48,12 @@ const createPost = async (
         updatedAt: now
       }
     };
-    await client.query(q.Create(q.Ref("classes/posts"), post));
+    const { data } = await client.query(q.Create(q.Ref("classes/posts"), post));
+    return data;
   } catch (err) {
     console.error(err);
-    return false;
+    return null;
   }
-  return true;
 };
 
 const allPosts = async (_, { after, perPage }, _context) => {
