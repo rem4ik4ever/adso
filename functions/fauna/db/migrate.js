@@ -28,7 +28,6 @@ const importIndexes = () => {
 async function runMigrations() {
   const dbCollections = importCollections();
   const dbIndexes = importIndexes();
-  console.log(dbIndexes);
 
   const res = require("dotenv").config();
   if (res.error) {
