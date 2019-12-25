@@ -23,7 +23,6 @@ export const PostList = () => {
       perPage: PER_PAGE
     },
     onCompleted: response => {
-      console.log("response", response);
       setState(response.allPosts.data);
       setAfter(response.allPosts.after);
     }
@@ -41,7 +40,6 @@ export const PostList = () => {
       },
       updateQuery: (prev, { fetchMoreResult, ...rest }) => {
         if (!fetchMoreResult) return prev;
-        console.log("fetchMoreResult", fetchMoreResult);
         setState([...posts, ...fetchMoreResult.allPosts.data]);
         setAfter(fetchMoreResult.allPosts.after);
       }

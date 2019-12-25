@@ -20,7 +20,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export const PlaceAutocomplete = ({ value, onChange }) => {
+export const PlaceAutocomplete = ({
+  value,
+  onChange,
+  label = "Place to meet",
+  variant = "outlined"
+}) => {
   const classes = useStyles();
   const [inputValue, setInputValue] = React.useState(value);
   const [options, setOptions] = React.useState([]);
@@ -84,8 +89,8 @@ export const PlaceAutocomplete = ({ value, onChange }) => {
       renderInput={params => (
         <TextField
           {...params}
-          label="Place to meet"
-          variant="outlined"
+          label={label}
+          variant={variant}
           fullWidth
           onChange={handleChange}
         />

@@ -4,6 +4,7 @@ import { PostList } from "../src/components/Post/PostList";
 import { Container, Box } from "@material-ui/core";
 import ActionsList from "../src/components/Post/ActionsList";
 import { makeStyles } from "@material-ui/styles";
+import Search from "../src/components/Post/Search";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -24,6 +25,9 @@ const Home = () => {
       </Head>
       {/* <Hello /> */}
       <Container maxWidth="md" className={classes.container}>
+        <Box>
+          <Search placeholder="Looking for something?" />
+        </Box>
         <Box display="flex">
           <ActionsList />
           <PostList />

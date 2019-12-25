@@ -16,3 +16,24 @@ export const getLatLngFromAddress = address => {
     });
   });
 };
+
+export const getAddressFromLatLng = (lat, lng) => {
+  return new Promise((resolve, _reject) => {
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode(
+      {
+        location: {
+          lat,
+          lng
+        }
+      },
+      (result, status) => {
+        if (status == google.maps.GeocoderStatus.OK) {
+          resolve(result);
+        } else {
+          resolve("");
+        }
+      }
+    );
+  });
+};
