@@ -12,6 +12,13 @@ module.exports = gql`
 
   extend type Query {
     allPosts(after: String, perPage: Int!): PaginateResponse!
+    allPostsByLocation(
+      longitude: Int!
+      latitude: Int!
+      distance: Int!
+      after: String
+      perPage: Int!
+    ): PaginateResponse!
     getPost(id: String!): Post
   }
 
