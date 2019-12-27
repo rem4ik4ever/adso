@@ -55,6 +55,7 @@ const Search = ({ placeholder, onChange }) => {
   };
   const toggleOptions = e => {
     e.preventDefault();
+    setFocused(true);
     toggleFilters(showFilters => !showFilters);
   };
   return (
