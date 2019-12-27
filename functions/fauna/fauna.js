@@ -17,7 +17,8 @@ const server = new ApolloServer({
       event,
       context
     };
-  }
+  },
+  playground: process.env.NETLIFY_DEV
 });
 
 exports.handler = server.createHandler();
