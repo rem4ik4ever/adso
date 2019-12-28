@@ -61,8 +61,9 @@ const Search = ({ placeholder, onChange }) => {
   return (
     <ClickAwayListener
       onClickAway={e => {
-        setFocused(false);
-        toggleFilters(false);
+        if (!showFilters) {
+          setFocused(false);
+        }
       }}
     >
       <Box>
@@ -87,6 +88,7 @@ const Search = ({ placeholder, onChange }) => {
                 e.preventDefault();
                 setFocused(true);
               }}
+              onChange={e => onChange("searchTerm", e.target.value)}
               inputProps={{ "aria-label": "search" }}
             />
             <IconButton size="small" onClick={toggleOptions}>
@@ -99,7 +101,7 @@ const Search = ({ placeholder, onChange }) => {
             </IconButton>
           </Box>
           <Collapse in={showFilters}>
-            <Filters />
+            <Filters onChange={onChange} />
           </Collapse>
         </div>
       </Box>

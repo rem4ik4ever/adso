@@ -10,6 +10,17 @@ module.exports = gql`
     perPage: Int!
   }
 
+  input LocationSearchInput {
+    distance: Int!
+    latitude: Float!
+    longitude: Float!
+  }
+
+  input PriceSearchInput {
+    from: Int!
+    to: Int
+  }
+
   extend type Query {
     allPosts(after: String, perPage: Int!): PaginateResponse!
     postsBySearchTerm(
@@ -17,12 +28,14 @@ module.exports = gql`
       perPage: Int!
       searchTerm: String!
     ): PaginateResponse!
+
     postsByPriceRange(
       after: String
       perPage: Int!
       fromPrice: Int!
       toPrice: Int!
     ): PaginateResponse!
+
     postsByLocation(
       longitude: Float!
       latitude: Float!
@@ -30,6 +43,15 @@ module.exports = gql`
       after: String
       perPage: Int!
     ): PaginateResponse!
+
+    postsByFlexSearch(
+      location: LocationSearchInput
+      priceRange: PriceSearchInput
+      searchTerm: String!
+      perPage: Int!
+      after: String
+    ): PaginateResponse!
+
     getPost(id: String!): Post
   }
 

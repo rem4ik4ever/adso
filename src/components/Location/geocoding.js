@@ -11,7 +11,7 @@ export const getLatLngFromAddress = address => {
           longitude
         });
       } else {
-        resolve("");
+        resolve({ latitude: null, longitude: null });
       }
     });
   });

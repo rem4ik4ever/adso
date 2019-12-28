@@ -77,3 +77,33 @@ export const GET_POST = gql`
     }
   }
 `;
+
+export const FLEX_SEARCH_POSTS = gql`
+  query postsByFlexSearch(
+    $searchTerm: String!
+    $location: LocationSearchInput
+    $priceRange: PriceSearchInput
+    $perPage: Int!
+    $after: String
+  ) {
+    postsByFlexSearch(
+      searchTerm: $searchTerm
+      location: $location
+      priceRange: $priceRange
+      perPage: $perPage
+      after: $after
+    ) {
+      data {
+        uuid
+        title
+        price
+        priceInfo
+        images
+        tags
+        createdAt
+      }
+      perPage
+      after
+    }
+  }
+`;

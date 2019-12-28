@@ -16,7 +16,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2)
   },
   input: {
-    borderRadius: theme.spacing(1)
+    borderRadius: theme.spacing(1),
+    width: "100%"
   }
 }));
 
@@ -29,6 +30,7 @@ export const PlaceAutocomplete = ({
   const classes = useStyles();
   const [inputValue, setInputValue] = React.useState(value);
   const [options, setOptions] = React.useState([]);
+  const [selectedOption, setSelectedOption] = React.useState(null);
   const handleChange = event => {
     setInputValue(event.target.value);
   };
@@ -40,6 +42,24 @@ export const PlaceAutocomplete = ({
       }, 200),
     []
   );
+  React.useEffect(() => {
+    if (!autocompleteService.current && google) {
+      autocompleteService.current = new google.maps.places.AutocompleteService();
+    }
+    if (value) {
+      fetch(
+        { input: value, componentRestrictions: { country: "ca" } },
+        results => {
+          if (results) {
+            setOptions(results, []);
+            setSelectedOption(results[0]);
+          } else {
+            setOptions([], []);
+          }
+        }
+      );
+    }
+  }, [value]);
 
   React.useEffect(() => {
     let active = true;
@@ -55,17 +75,18 @@ export const PlaceAutocomplete = ({
       setOptions([]);
       return undefined;
     }
-
-    fetch(
-      { input: inputValue, componentRestrictions: { country: "ca" } },
-      results => {
-        if (active && results) {
-          setOptions(results, []);
-        } else {
-          setOptions([], []);
+    if (inputValue) {
+      fetch(
+        { input: inputValue, componentRestrictions: { country: "ca" } },
+        results => {
+          if (active && results) {
+            setOptions(results, []);
+          } else {
+            setOptions([], []);
+          }
         }
-      }
-    );
+      );
+    }
 
     return () => {
       active = false;
@@ -85,7 +106,13 @@ export const PlaceAutocomplete = ({
       includeInputInList
       freeSolo
       disableOpenOnFocus
-      onChange={(e, val) => onChange(val ? val.description : val)}
+      value={selectedOption}
+      onChange={(e, option) => {
+        if (option) {
+          setSelectedOption(option);
+          onChange(option.description);
+        }
+      }}
       renderInput={params => (
         <TextField
           {...params}

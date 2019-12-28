@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { Box, Typography, Button, Container } from "@material-ui/core";
-import { ALL_POSTS } from "../../graphql/postResolvers";
+import { ALL_POSTS, FLEX_SEARCH_POSTS } from "../../graphql/postResolvers";
 import { PostCard } from "./PostCard";
 import { makeStyles } from "@material-ui/styles";
+import { throttle, debounce } from "lodash";
 
 const PER_PAGE = 10;
 
@@ -13,38 +14,60 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export const PostList = () => {
+export const PostList = filters => {
   const classes = useStyles();
   const [posts, setState] = useState([]);
   const [page, setPage] = useState(1);
   const [after, setAfter] = useState("");
-  const { data, loading, error, fetchMore } = useQuery(ALL_POSTS, {
+  const fetch = React.useMemo(
+    () =>
+      debounce(filters => {
+        loadMore(filters);
+      }, 2000),
+    []
+  );
+
+  useEffect(() => {
+    setAfter("");
+    setState([]);
+    fetch(filters);
+  }, [filters]);
+  const { data, loading, error, fetchMore } = useQuery(FLEX_SEARCH_POSTS, {
     variables: {
-      perPage: PER_PAGE
+      perPage: PER_PAGE,
+      searchTerm: filters.searchTerm || "",
+      location: filters.location,
+      priceRange: filters.priceRange
     },
     onCompleted: response => {
-      setState(response.allPosts.data);
-      setAfter(response.allPosts.after);
+      if (response) {
+        setState(response.postsByFlexSearch.data);
+        setAfter(response.postsByFlexSearch.after);
+      }
     }
   });
+  const loadMore = ({ filters }) => {
+    fetchMore({
+      variables: {
+        perPage: PER_PAGE,
+        searchTerm: filters.searchTerm || "",
+        location: filters.location || null,
+        priceRange: filters.priceRange || null,
+        after
+      },
+      updateQuery: (prev, { fetchMoreResult, ...rest }) => {
+        if (!fetchMoreResult) return prev;
+        setState([...posts, ...fetchMoreResult.postsByFlexSearch.data]);
+        setAfter(fetchMoreResult.postsByFlexSearch.after);
+      }
+    });
+  };
+
   if (loading) return "Loading posts";
   if (error) {
     console.error(error);
   }
 
-  const loadMore = e => {
-    fetchMore({
-      variables: {
-        perPage: PER_PAGE,
-        after
-      },
-      updateQuery: (prev, { fetchMoreResult, ...rest }) => {
-        if (!fetchMoreResult) return prev;
-        setState([...posts, ...fetchMoreResult.allPosts.data]);
-        setAfter(fetchMoreResult.allPosts.after);
-      }
-    });
-  };
   return (
     <Container maxWidth="sm" className={classes.container}>
       {posts.map(post => (

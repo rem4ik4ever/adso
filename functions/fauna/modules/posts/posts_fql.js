@@ -139,8 +139,43 @@ const SearchByPriceRange = (fromPrice, toPrice, opts) =>
     q.Lambda(["createdAt", "ref"], q.Select(["data"], q.Get(q.Var("ref"))))
   );
 
+const FlexSearchQuery = (
+  searchTerm,
+  location = null,
+  priceRange = null,
+  opts = { perPage: 20 }
+) => {
+  let searchPrefs = [
+    q.Any([
+      matchByTitleRegex(searchTerm),
+      matchByDescriptionRegex(searchTerm),
+      matchByTags(
+        searchTerm
+          .split(" ")
+          .map(str => str.toLowerCase().replace(/[^a-z0-9]/g, "-"))
+      )
+    ])
+  ];
+  if (location) {
+    searchPrefs.push(
+      queryByDistance(location.distance, location.latitude, location.longitude)
+    );
+  }
+  if (priceRange) {
+    searchPrefs.push(queryByPrice(priceRange.from, priceRange.to));
+  }
+  return q.Map(
+    q.Filter(
+      q.Paginate(q.Match(q.Index("posts_by_created_at_desc")), opts),
+      q.Lambda(["createdAt", "ref"], q.All(searchPrefs))
+    ),
+    q.Lambda(["createdAt", "ref"], q.Select(["data"], q.Get(q.Var("ref"))))
+  );
+};
+
 module.exports = {
   LocationDistanceQuery,
   QueryBySearchTerm,
-  SearchByPriceRange
+  SearchByPriceRange,
+  FlexSearchQuery
 };

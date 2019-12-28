@@ -13,7 +13,8 @@ const { client } = require("../../db/utils");
 const {
   LocationDistanceQuery,
   QueryBySearchTerm,
-  SearchByPriceRange
+  SearchByPriceRange,
+  FlexSearchQuery
 } = require("./posts_fql");
 
 const createPost = async (
@@ -269,13 +270,49 @@ const postsByPriceRange = async (
   return result;
 };
 
+const postsByFlexSearch = async (
+  _root,
+  { searchTerm, location, priceRange, perPage, after },
+  _context
+) => {
+  let opts = {
+    size: perPage
+  };
+  let match = null;
+  if (after) {
+    match = await client.query(q.Get(q.Match(q.Index("posts_by_uuid"), after)));
+    opts.after = match.data.createdAt;
+  }
+  const response = await client.query(
+    FlexSearchQuery(searchTerm, location, priceRange, opts)
+  );
+  let afterObject = null;
+  let beforeObject = null;
+  if (response.after && response.after[1]) {
+    afterObject = await client.query(q.Get(response.after[1]));
+  }
+  if (response.before && response.before[1]) {
+    beforeObject = await client.query(q.Get(response.before[1]));
+  }
+  const result = {
+    after: afterObject ? afterObject.data.uuid : "",
+    before: beforeObject ? beforeObject.data.uuid : "",
+    data: response.data.map(item => {
+      return item;
+    }),
+    perPage
+  };
+  return result;
+};
+
 module.exports = {
   Query: {
     allPosts: (root, args, context) => allPosts(root, args, context),
     getPost,
     postsByLocation,
     postsBySearchTerm,
-    postsByPriceRange
+    postsByPriceRange,
+    postsByFlexSearch
   },
   Mutation: {
     createPost: async (root, args, context) => createPost(root, args, context),
