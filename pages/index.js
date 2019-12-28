@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { PostList } from "../src/components/Post/PostList";
 import { Container, Box } from "@material-ui/core";
 import ActionsList from "../src/components/Post/ActionsList";
 import { makeStyles } from "@material-ui/styles";
 import Search from "../src/components/Post/Search";
-import { getLatLngFromAddress } from "../src/components/Location/geocoding";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -16,60 +16,30 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const getLocationFromFilters = async loc => {
-  let location = null;
-  if (loc) {
-    const { latitude, longitude } = await getLatLngFromAddress(loc);
-    if (latitude && longitude) {
-      location = {
-        latitude,
-        longitude
-      };
-    }
-  }
-  return location;
-};
-
 const Home = () => {
   const classes = useStyles();
   const [filters, setFilters] = useState({});
-  const handleFilters = (prop, value) => {
-    let newFilters = { ...filters };
-    if (prop == "location") {
-      getLocationFromFilters(value).then(({ latitude, longitude }) => {
-        newFilters.location = {
-          ...newFilters.location,
-          latitude,
-          longitude
-        };
-        if (!newFilters.distance) {
-          newFilters.location.distance = 30;
-        }
-        setFilters(newFilters);
-      });
-    } else if (prop == "distance") {
-      newFilters.location = {
-        ...newFilters.location,
-        distance: value
-      };
-      setFilters(newFilters);
-    } else if (prop == "priceFrom") {
-      newFilters.priceRange = {
-        ...newFilters.priceRange,
-        from: value
-      };
-      setFilters(newFilters);
-    } else if (prop == "priceTo") {
-      newFilters.priceRange = {
-        ...newFilters.priceRange,
-        to: value
-      };
-      setFilters(newFilters);
-    } else if (prop == "searchTerm") {
-      newFilters.searchTerm = value;
-      setFilters(newFilters);
+  const router = useRouter();
+  useEffect(() => {
+    let newFilters = {};
+    if (router.query.search) {
+      newFilters.searchTerm = router.query.search;
     }
-  };
+    if (router.query.location) {
+      newFilters.location = {
+        latitude: +router.query.location[0],
+        longitude: +router.query.location[1],
+        distance: +router.query.location[2]
+      };
+    }
+    if (router.query.priceRange) {
+      newFilters.priceRange = {
+        from: +router.query.priceRange[0],
+        to: +router.query.priceRange[1]
+      };
+    }
+    setFilters(newFilters);
+  }, [router.query]);
   return (
     <div>
       <Head>
@@ -78,10 +48,7 @@ const Home = () => {
       </Head>
       <Container maxWidth="md" className={classes.container}>
         <Box>
-          <Search
-            placeholder="Looking for something?"
-            onChange={handleFilters}
-          />
+          <Search placeholder="Looking for something?" />
         </Box>
         <Box display="flex">
           <ActionsList />

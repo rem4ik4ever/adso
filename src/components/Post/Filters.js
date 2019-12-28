@@ -6,6 +6,7 @@ import { PlaceAutocomplete } from "../Location/PlaceAutocomplete";
 import { usePosition } from "../../hooks/usePosition";
 import { getAddressFromLatLng } from "../Location/geocoding";
 import DistanceSelect from "./DistanceSelect";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -18,19 +19,38 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Filters = ({ onChange, filters }) => {
+const Filters = ({ onChange }) => {
   const classes = useStyles();
+  const router = useRouter();
   const { latitude, longitude } = usePosition();
   const [currentLocation, setCurrentLocation] = useState("");
   const [distance, setDistance] = useState(30);
+  const [priceFrom, setFromPrice] = useState(0);
+  const [priceTo, setToPrice] = useState("");
   useEffect(() => {
-    if (latitude && longitude) {
-      const result = getAddressFromLatLng(latitude, longitude);
-      result.then(response => {
-        if (response.length) {
-          setCurrentLocation(response[0].formatted_address);
-        }
-      });
+    if (router.query.priceRange) {
+      setFromPrice(+router.query.priceRange[0]);
+      setToPrice(+router.query.priceRange[1]);
+    }
+    if (router.query.location) {
+      if (router.query.location[0] && router.query.location[1]) {
+        const latitude = +router.query.location[0];
+        const longitude = +router.query.location[1];
+        getAddressFromLatLng(latitude, longitude).then(response => {
+          if (response.length) {
+            setCurrentLocation(response[0].formatted_address);
+            setDistance(router.query.location[2] || 30);
+          }
+        });
+      }
+    } else {
+      if (latitude && longitude) {
+        getAddressFromLatLng(latitude, longitude).then(response => {
+          if (response.length) {
+            setCurrentLocation(response[0].formatted_address);
+          }
+        });
+      }
     }
   }, [latitude, longitude]);
   const handleLocationChange = newLocation => {
@@ -62,16 +82,24 @@ const Filters = ({ onChange, filters }) => {
           id="standard-basic"
           label="Price from"
           type="number"
+          value={priceFrom}
           inputProps={{ "aria-label": "range-to" }}
-          onChange={e => onChange("fromPrice", +e.target.value)}
+          onChange={e => {
+            setFromPrice(+e.target.value);
+            onChange("fromPrice", +e.target.value);
+          }}
         />
         <TrendingFlatIcon className={classes.rangeIcon} />
         <TextField
           id="standard-basic"
           label="To"
           type="number"
+          value={priceTo}
           inputProps={{ "aria-label": "range-to" }}
-          onChange={e => onChange("toPrice", +e.target.value)}
+          onChange={e => {
+            setToPrice(+e.target.value);
+            onChange("toPrice", +e.target.value);
+          }}
         />
       </Box>
     </Box>

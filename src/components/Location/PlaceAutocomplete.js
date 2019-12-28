@@ -104,7 +104,6 @@ export const PlaceAutocomplete = ({
       options={options}
       autoComplete
       includeInputInList
-      freeSolo
       disableOpenOnFocus
       value={selectedOption}
       onChange={(e, option) => {

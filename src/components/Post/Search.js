@@ -1,4 +1,4 @@
-import React, { useState, createRef } from "react";
+import React, { useState, createRef, useEffect } from "react";
 import {
   InputBase,
   ClickAwayListener,
@@ -12,6 +12,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import TuneIcon from "@material-ui/icons/Tune";
 import clsx from "clsx";
 import Filters from "./Filters";
+import { useRouter } from "next/router";
+import queryString from "query-string";
+import { getLatLngFromAddress } from "../Location/geocoding";
 
 const useStyles = makeStyles(theme => ({
   base: {
@@ -40,24 +43,103 @@ const useStyles = makeStyles(theme => ({
   },
   inActiveSearchIcon: {
     color: "#ccc"
+  },
+  activeFilters: {
+    color: theme.palette.secondary.light
   }
 }));
 
-const Search = ({ placeholder, onChange }) => {
+const getLocationFromFilters = async loc => {
+  let location = null;
+  if (loc) {
+    const { latitude, longitude } = await getLatLngFromAddress(loc);
+    if (latitude && longitude) {
+      location = {
+        latitude,
+        longitude
+      };
+    }
+  }
+  return location;
+};
+
+const Search = ({ placeholder }) => {
+  const router = useRouter();
   const [focused, setFocused] = useState(false);
   const [showFilters, toggleFilters] = useState(false);
   const inputRef = createRef();
   const classes = useStyles();
+  const [filters, setFilters] = useState({});
 
-  const handleClick = e => {
-    e.preventDefault();
-    // inputRef.current.focus();
+  useEffect(() => {
+    if (router.query.search) inputRef.current.value = router.query.search;
+  }, []);
+
+  const handleFilters = (prop, value) => {
+    let newFilters = { ...filters };
+    if (prop == "location") {
+      getLocationFromFilters(value).then(({ latitude, longitude }) => {
+        newFilters.location = {
+          ...newFilters.location,
+          latitude,
+          longitude
+        };
+        if (!newFilters.distance) {
+          newFilters.location.distance = 30;
+        }
+        setFilters(newFilters);
+      });
+    } else if (prop == "distance") {
+      newFilters.location = {
+        ...newFilters.location,
+        distance: value
+      };
+      setFilters(newFilters);
+    } else if (prop == "fromPrice") {
+      newFilters.priceRange = {
+        ...newFilters.priceRange,
+        from: value
+      };
+      setFilters(newFilters);
+    } else if (prop == "toPrice") {
+      newFilters.priceRange = {
+        ...newFilters.priceRange,
+        to: value
+      };
+      setFilters(newFilters);
+    } else if (prop == "searchTerm") {
+      newFilters.searchTerm = value;
+      setFilters(newFilters);
+    }
   };
+
   const toggleOptions = e => {
     e.preventDefault();
     setFocused(true);
     toggleFilters(showFilters => !showFilters);
   };
+
+  const triggerFilter = e => {
+    e.preventDefault();
+    console.log("Filters", filters);
+    const parsed = queryString.parse(location.search);
+    parsed.search = "";
+    if (filters.searchTerm) {
+      parsed.search = filters.searchTerm;
+    }
+    if (filters.location) {
+      parsed.location = [
+        filters.location.latitude,
+        filters.location.longitude,
+        filters.location.distance
+      ];
+    }
+    if (filters.priceRange) {
+      parsed.priceRange = [filters.priceRange.from, filters.priceRange.to];
+    }
+    router.replace(`/?${queryString.stringify(parsed)}`);
+  };
+
   return (
     <ClickAwayListener
       onClickAway={e => {
@@ -66,45 +148,44 @@ const Search = ({ placeholder, onChange }) => {
         }
       }}
     >
-      <Box>
-        <div
-          className={clsx([classes.base, focused && classes.active])}
-          onClick={handleClick}
-        >
-          <Box display="flex" alignItems="center">
-            <IconButton size="small">
-              <SearchIcon
-                className={clsx([
-                  classes.icon,
-                  !focused && classes.inActiveSearchIcon
-                ])}
-              />
-            </IconButton>
-            <InputBase
-              className={classes.searchInput}
-              placeholder={placeholder}
-              inputRef={inputRef}
-              onFocus={e => {
-                e.preventDefault();
-                setFocused(true);
-              }}
-              onChange={e => onChange("searchTerm", e.target.value)}
-              inputProps={{ "aria-label": "search" }}
+      <div className={clsx([classes.base, focused && classes.active])}>
+        <Box display="flex" alignItems="center">
+          <IconButton size="small" onClick={toggleOptions}>
+            <TuneIcon
+              className={clsx([
+                classes.icon,
+                !focused && classes.inActiveSearchIcon,
+                showFilters && classes.activeFilters
+              ])}
             />
-            <IconButton size="small" onClick={toggleOptions}>
-              <TuneIcon
-                className={clsx([
-                  classes.icon,
-                  !focused && classes.inActiveSearchIcon
-                ])}
-              />
-            </IconButton>
-          </Box>
-          <Collapse in={showFilters}>
-            <Filters onChange={onChange} />
-          </Collapse>
-        </div>
-      </Box>
+          </IconButton>
+          <InputBase
+            className={classes.searchInput}
+            placeholder={placeholder}
+            inputRef={inputRef}
+            onFocus={e => {
+              e.preventDefault();
+              setFocused(true);
+            }}
+            onChange={e => {
+              handleFilters("searchTerm", e.target.value);
+            }}
+            inputProps={{ "aria-label": "search" }}
+          />
+
+          <IconButton size="small" onClick={triggerFilter}>
+            <SearchIcon
+              className={clsx([
+                classes.icon,
+                !focused && classes.inActiveSearchIcon
+              ])}
+            />
+          </IconButton>
+        </Box>
+        <Collapse in={showFilters}>
+          <Filters onChange={handleFilters} />
+        </Collapse>
+      </div>
     </ClickAwayListener>
   );
 };

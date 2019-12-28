@@ -23,7 +23,7 @@ export const PostList = filters => {
     () =>
       debounce(filters => {
         loadMore(filters);
-      }, 2000),
+      }, 200),
     []
   );
 
