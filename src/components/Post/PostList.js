@@ -17,7 +17,6 @@ const useStyles = makeStyles(theme => ({
 export const PostList = filters => {
   const classes = useStyles();
   const [posts, setState] = useState([]);
-  const [page, setPage] = useState(1);
   const [after, setAfter] = useState("");
   const fetch = React.useMemo(
     () =>
@@ -28,10 +27,13 @@ export const PostList = filters => {
   );
 
   useEffect(() => {
-    setAfter("");
-    setState([]);
-    fetch(filters);
+    if (filters) {
+      setAfter("");
+      setState([]);
+      fetch(filters);
+    }
   }, [filters]);
+
   const { data, loading, error, fetchMore } = useQuery(FLEX_SEARCH_POSTS, {
     variables: {
       perPage: PER_PAGE,
@@ -41,25 +43,38 @@ export const PostList = filters => {
     },
     onCompleted: response => {
       if (response) {
+        console.log("Initial completed");
         setState(response.postsByFlexSearch.data);
         setAfter(response.postsByFlexSearch.after);
       }
     }
   });
-  const loadMore = ({ filters }) => {
+  const loadMore = data => {
+    let variables = {
+      perPage: PER_PAGE,
+      after
+    };
+    console.log("FILT", data.filters);
+    const filters = data.filters;
+    if (filters) {
+      variables.searchTerm = filters.searchTerm || "";
+      if (filters.location) {
+        variables.location = filters.location;
+      }
+      if (filters.priceRange) {
+        variables.priceRange = filters.priceRange || null;
+      }
+    }
+    console.log("VARS", variables);
     fetchMore({
-      variables: {
-        perPage: PER_PAGE,
-        searchTerm: filters.searchTerm || "",
-        location: filters.location || null,
-        priceRange: filters.priceRange || null,
-        after
-      },
+      variables,
       updateQuery: (prev, { fetchMoreResult, ...rest }) => {
+        console.log("fetchMoreResult", fetchMoreResult);
         if (!fetchMoreResult) return prev;
         setState([...posts, ...fetchMoreResult.postsByFlexSearch.data]);
         setAfter(fetchMoreResult.postsByFlexSearch.after);
-      }
+      },
+      notifyOnNetworkStatusChange: true
     });
   };
 
@@ -70,12 +85,17 @@ export const PostList = filters => {
 
   return (
     <Container maxWidth="sm" className={classes.container}>
+      {posts.length == 0 && <Typography>Sorry, no results</Typography>}
       {posts.map(post => (
         <PostCard key={post.uuid} post={post} />
       ))}
       {after !== "" && (
         <Box display="flex" justifyContent="center" m="16px">
-          <Button onClick={loadMore} variant="outlined" color="secondary">
+          <Button
+            onClick={e => loadMore(filters)}
+            variant="outlined"
+            color="secondary"
+          >
             Load more
           </Button>
         </Box>

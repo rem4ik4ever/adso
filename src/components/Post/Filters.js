@@ -38,7 +38,7 @@ const Filters = ({ onChange }) => {
         const longitude = +router.query.location[1];
         getAddressFromLatLng(latitude, longitude).then(response => {
           if (response.length) {
-            setCurrentLocation(response[0].formatted_address);
+            setCurrentLocation(response[2].formatted_address);
             setDistance(router.query.location[2] || 30);
           }
         });
@@ -47,7 +47,8 @@ const Filters = ({ onChange }) => {
       if (latitude && longitude) {
         getAddressFromLatLng(latitude, longitude).then(response => {
           if (response.length) {
-            setCurrentLocation(response[0].formatted_address);
+            setCurrentLocation(response[2].formatted_address);
+            onChange("location", response[2].formatted_address);
           }
         });
       }

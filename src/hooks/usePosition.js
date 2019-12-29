@@ -24,10 +24,10 @@ export const usePosition = () => {
       setError("Geolocation is not supported");
       return;
     }
+    geo.getCurrentPosition(onChange, onError);
+    // const watcher = geo.watchPosition(onChange, onError);
 
-    const watcher = geo.watchPosition(onChange, onError);
-
-    return () => geo.clearWatch(watcher);
+    // return () => geo.clearWatch(watcher);
   }, []);
 
   return {

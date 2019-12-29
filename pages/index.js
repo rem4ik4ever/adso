@@ -6,6 +6,7 @@ import ActionsList from "../src/components/Post/ActionsList";
 import { makeStyles } from "@material-ui/styles";
 import Search from "../src/components/Post/Search";
 import { useRouter } from "next/router";
+import { usePosition } from "../src/hooks/usePosition";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -20,6 +21,7 @@ const Home = () => {
   const classes = useStyles();
   const [filters, setFilters] = useState({});
   const router = useRouter();
+  // const { latitude, longitude } = usePosition();
   useEffect(() => {
     let newFilters = {};
     if (router.query.search) {

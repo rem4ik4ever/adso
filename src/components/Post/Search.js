@@ -121,7 +121,6 @@ const Search = ({ placeholder }) => {
 
   const triggerFilter = e => {
     e.preventDefault();
-    console.log("Filters", filters);
     const parsed = queryString.parse(location.search);
     parsed.search = "";
     if (filters.searchTerm) {
@@ -138,6 +137,11 @@ const Search = ({ placeholder }) => {
       parsed.priceRange = [filters.priceRange.from, filters.priceRange.to];
     }
     router.replace(`/?${queryString.stringify(parsed)}`);
+  };
+  const handleEnter = e => {
+    if (e.keyCode == 13 && !showFilters) {
+      triggerFilter(e);
+    }
   };
 
   return (
@@ -167,6 +171,7 @@ const Search = ({ placeholder }) => {
               e.preventDefault();
               setFocused(true);
             }}
+            onKeyDown={handleEnter}
             onChange={e => {
               handleFilters("searchTerm", e.target.value);
             }}
