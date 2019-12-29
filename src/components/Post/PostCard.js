@@ -20,7 +20,12 @@ import { useRouter } from "next/dist/client/router";
 const useStyles = makeStyles(theme => ({
   card: {
     marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1)
+    marginBottom: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    [theme.breakpoints.up("sm")]: {
+      maxWidth: 260,
+      minWidth: 260
+    }
   },
   media: {
     height: 0,
@@ -58,16 +63,16 @@ export const PostCard = ({ post }) => {
           subheader={moment(+post.createdAt).fromNow()}
         />
       </CardActionArea>
-      {/* <CardMedia
+      <CardMedia
         className={classes.media}
         image={post.images[0]}
         title={post.title}
-      /> */}
-      <CardContent>
+      />
+      {/* <CardContent>
         <Box display="flex" overflow="auto">
           {post.images && <Image url={post.images[0]} />}
         </Box>
-      </CardContent>
+      </CardContent> */}
       <CardActions>
         <Box display="flex" justifyContent="space-between" flexGrow="1">
           <Box>

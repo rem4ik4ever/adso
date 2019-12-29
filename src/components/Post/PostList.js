@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
-import { Box, Typography, Button, Container } from "@material-ui/core";
+import {
+  Box,
+  Typography,
+  Button,
+  Container,
+  GridList,
+  GridListTile
+} from "@material-ui/core";
 import { ALL_POSTS, FLEX_SEARCH_POSTS } from "../../graphql/postResolvers";
 import { PostCard } from "./PostCard";
 import { makeStyles } from "@material-ui/styles";
@@ -84,9 +91,15 @@ export const PostList = filters => {
   return (
     <Container maxWidth="sm" className={classes.container}>
       {posts.length == 0 && <Typography>Sorry, no results</Typography>}
-      {posts.map(post => (
-        <PostCard key={post.uuid} post={post} />
-      ))}
+      <Box
+        display="flex"
+        flexDirection={{ xs: "column", sm: "row" }}
+        flexWrap={{ xs: "none", sm: "wrap" }}
+      >
+        {posts.map(post => (
+          <PostCard key={post.uuid} post={post} />
+        ))}
+      </Box>
       {after !== "" && (
         <Box display="flex" justifyContent="center" m="16px">
           <Button
