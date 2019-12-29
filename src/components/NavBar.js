@@ -91,6 +91,11 @@ const NavBar = () => {
                 {user.lastName[0]}
               </Avatar>
             </IconButton>
+            <Link href="/post-ad">
+              <Button variant="contained" color="secondary">
+                POST Ad
+              </Button>
+            </Link>
             <Popper
               open={open}
               anchorEl={anchorRef.current}

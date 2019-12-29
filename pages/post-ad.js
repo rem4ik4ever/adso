@@ -21,7 +21,7 @@ const PostAd = () => {
   useEffect(() => {
     setTimeout(() => {
       setAnimate(true);
-    }, 1000);
+    }, 400);
   }, []);
   const { isLoggedIn } = useIdentityContext();
   if (!isLoggedIn) return <SignIn />;

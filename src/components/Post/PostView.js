@@ -88,7 +88,7 @@ const PostView = ({ id }) => {
   useEffect(() => {
     setTimeout(() => {
       setAnimate(true);
-    }, 1000);
+    }, 400);
   }, []);
   const classes = useStyles();
   const { data, loading, error } = useQuery(GET_POST, {

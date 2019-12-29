@@ -16,6 +16,7 @@ import moment from "moment";
 import MessageIcon from "@material-ui/icons/Message";
 import ShareIcon from "@material-ui/icons/Share";
 import { useRouter } from "next/dist/client/router";
+import Link from "next/link";
 
 const useStyles = makeStyles(theme => ({
   priceText: {
@@ -40,7 +41,14 @@ const useStyles = makeStyles(theme => ({
     boxShadow: `0 0 8px ${theme.palette.shadow.main}`,
     position: "relative",
     width: 180,
-    height: 260
+    height: 260,
+    cursor: "pointer",
+    transition: "all ease-in-out 200ms",
+    transform: "scale(0.9)",
+    "&:hover": {
+      boxShadow: `0 0 8px #000`,
+      transform: "scale(1)"
+    }
   },
   cardBox: {
     position: "relative",
@@ -70,36 +78,38 @@ export const PostScrollCard = ({ post }) => {
   const router = useRouter();
 
   return (
-    <div className={classes.box}>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        className={classes.cardBox}
-      >
-        <img src={post.images[0]} art={post.title} className={classes.img} />
-      </Box>
-      <Box className={classes.textOverlay}>
-        <Box>
-          <Typography className={classes.whiteText}>
-            {post.title.slice(0, 20)}
-            {post.title.length > 20 ? "..." : ""}
-          </Typography>
+    <Link href={`/p?id=${post.uuid}`}>
+      <div className={classes.box}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          className={classes.cardBox}
+        >
+          <img src={post.images[0]} art={post.title} className={classes.img} />
         </Box>
-        <Box>
-          {post.priceInfo.toLowerCase() == "fixed" ? (
-            <Box>
-              <Typography className={classes.priceText}>
-                ${post.price}
-              </Typography>
-            </Box>
-          ) : (
-            <Typography variant="subtitle2" className={classes.whiteText}>
-              Contact for Price
+        <Box className={classes.textOverlay}>
+          <Box>
+            <Typography className={classes.whiteText}>
+              {post.title.slice(0, 20)}
+              {post.title.length > 20 ? "..." : ""}
             </Typography>
-          )}
+          </Box>
+          <Box>
+            {post.priceInfo.toLowerCase() == "fixed" ? (
+              <Box>
+                <Typography className={classes.priceText}>
+                  ${post.price}
+                </Typography>
+              </Box>
+            ) : (
+              <Typography variant="subtitle2" className={classes.whiteText}>
+                Contact for Price
+              </Typography>
+            )}
+          </Box>
         </Box>
-      </Box>
-    </div>
+      </div>
+    </Link>
   );
 };
