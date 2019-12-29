@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/styles";
 import Search from "../src/components/Post/Search";
 import { useRouter } from "next/router";
 import { usePosition } from "../src/hooks/usePosition";
+import RecentlyAdded from "../src/components/Post/RecentlyAdded";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -51,8 +52,9 @@ const Home = () => {
         <Box>
           <Search placeholder="Looking for something?" />
         </Box>
-        <Box display="flex">
-          <ActionsList />
+        <Box display="flex" flexDirection="column">
+          <RecentlyAdded />
+          {/* <ActionsList /> */}
           <PostList filters={filters} />
         </Box>
       </Container>

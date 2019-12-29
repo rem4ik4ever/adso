@@ -21,7 +21,11 @@ const theme = createMuiTheme({
     },
     sub: {
       main: "#bdb8b8"
-    }
+    },
+    shadow: {
+      main: "#bfbfbf"
+    },
+    white: "#fff"
   }
 });
 

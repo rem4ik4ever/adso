@@ -68,11 +68,6 @@ export const PostCard = ({ post }) => {
         image={post.images[0]}
         title={post.title}
       />
-      {/* <CardContent>
-        <Box display="flex" overflow="auto">
-          {post.images && <Image url={post.images[0]} />}
-        </Box>
-      </CardContent> */}
       <CardActions>
         <Box display="flex" justifyContent="space-between" flexGrow="1">
           <Box>
