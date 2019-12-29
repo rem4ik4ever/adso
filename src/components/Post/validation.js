@@ -38,5 +38,5 @@ export const validatePost = ({
   if (priceInfo == "Fixed" && (!price || price == 0)) {
     errors["price"] = "Please enter price";
   }
-  return { valid: errors.length == 0, errors };
+  return { valid: Object.keys(errors).length == 0, errors };
 };

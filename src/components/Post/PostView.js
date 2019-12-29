@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
   paper: {
     // margin: theme.spacing(1),
     [theme.breakpoints.down("sm")]: {
+      boxShadow: "0 0 2px #808080",
       marginTop: -theme.spacing(3),
       borderTopLeftRadius: theme.spacing(3),
       borderTopRightRadius: theme.spacing(3)

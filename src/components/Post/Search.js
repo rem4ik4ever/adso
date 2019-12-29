@@ -126,7 +126,11 @@ const Search = ({ placeholder }) => {
     if (filters.searchTerm) {
       parsed.search = filters.searchTerm;
     }
-    if (filters.location) {
+    if (
+      filters.location &&
+      filters.location.latitude &&
+      filters.location.longitude
+    ) {
       parsed.location = [
         filters.location.latitude,
         filters.location.longitude,

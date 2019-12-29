@@ -21,7 +21,6 @@ const Home = () => {
   const classes = useStyles();
   const [filters, setFilters] = useState({});
   const router = useRouter();
-  // const { latitude, longitude } = usePosition();
   useEffect(() => {
     let newFilters = {};
     if (router.query.search) {

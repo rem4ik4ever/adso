@@ -114,6 +114,7 @@ const CreatePost = () => {
       variables.latitude = latlng.latitude;
     }
     const { valid, errors } = validatePost(variables);
+    console.log("Submitting", valid, errors, variables);
     if (!valid) {
       setErrors(errors);
     } else {

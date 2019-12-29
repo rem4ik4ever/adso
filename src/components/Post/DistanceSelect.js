@@ -5,7 +5,7 @@ const DistanceSelect = ({ value, onChange }) => {
   const distances = [30, 50, 100, 150, 200];
   return (
     <FormControl>
-      <InputLabel id="select-distance">Distance</InputLabel>
+      <InputLabel id="select-distance">Within</InputLabel>
       <Select
         labelId="select-distance"
         id="select-distance-control"

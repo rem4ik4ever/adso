@@ -18,6 +18,7 @@ export const PostList = filters => {
   const classes = useStyles();
   const [posts, setState] = useState([]);
   const [after, setAfter] = useState("");
+  const [loading, setLoading] = useState(true);
   const fetch = React.useMemo(
     () =>
       debounce(filters => {
@@ -29,12 +30,11 @@ export const PostList = filters => {
   useEffect(() => {
     if (filters) {
       setAfter("");
-      setState([]);
       fetch(filters);
     }
   }, [filters]);
 
-  const { data, loading, error, fetchMore } = useQuery(FLEX_SEARCH_POSTS, {
+  const { data, error, fetchMore } = useQuery(FLEX_SEARCH_POSTS, {
     variables: {
       perPage: PER_PAGE,
       searchTerm: filters.searchTerm || "",
@@ -43,7 +43,6 @@ export const PostList = filters => {
     },
     onCompleted: response => {
       if (response) {
-        console.log("Initial completed");
         setState(response.postsByFlexSearch.data);
         setAfter(response.postsByFlexSearch.after);
       }
@@ -54,7 +53,6 @@ export const PostList = filters => {
       perPage: PER_PAGE,
       after
     };
-    console.log("FILT", data.filters);
     const filters = data.filters;
     if (filters) {
       variables.searchTerm = filters.searchTerm || "";
@@ -65,11 +63,11 @@ export const PostList = filters => {
         variables.priceRange = filters.priceRange || null;
       }
     }
-    console.log("VARS", variables);
+    setLoading(true);
     fetchMore({
       variables,
-      updateQuery: (prev, { fetchMoreResult, ...rest }) => {
-        console.log("fetchMoreResult", fetchMoreResult);
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setLoading(false);
         if (!fetchMoreResult) return prev;
         setState([...posts, ...fetchMoreResult.postsByFlexSearch.data]);
         setAfter(fetchMoreResult.postsByFlexSearch.after);

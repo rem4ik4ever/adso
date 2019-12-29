@@ -59,7 +59,7 @@ const Filters = ({ onChange }) => {
     onChange("location", newLocation);
   };
   return (
-    <Box px={{ md: 4 }} py={2}>
+    <Box px={{ md: 4 }} pt={2}>
       <Box display="flex" flexDirection="row" alignItems="center">
         <Box display="flex" flexGrow="1">
           <PlaceAutocomplete
@@ -69,16 +69,18 @@ const Filters = ({ onChange }) => {
             variant="standard"
           />
         </Box>
-        <DistanceSelect
-          value={distance}
-          onChange={e => {
-            e.preventDefault();
-            setDistance(e.target.value);
-            onChange("distance", +e.target.value);
-          }}
-        />
+        {currentLocation !== "" && (
+          <DistanceSelect
+            value={distance}
+            onChange={e => {
+              e.preventDefault();
+              setDistance(e.target.value);
+              onChange("distance", +e.target.value);
+            }}
+          />
+        )}
       </Box>
-      <Box display="flex" alignItems="flex-end">
+      <Box display="flex" alignItems="flex-end" mt={1}>
         <TextField
           id="standard-basic"
           label="Price from"
