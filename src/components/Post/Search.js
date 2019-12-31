@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     transition: "all 300ms ease-in-out",
     border: "1px solid #ccc",
     padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
-    marginTop: theme.spacing(2),
+    // marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
     borderRadius: theme.spacing(5),
     fontSize: "1.4rem",
@@ -149,53 +149,55 @@ const Search = ({ placeholder }) => {
   };
 
   return (
-    <ClickAwayListener
-      onClickAway={e => {
-        if (!showFilters) {
-          setFocused(false);
-        }
-      }}
-    >
-      <div className={clsx([classes.base, focused && classes.active])}>
-        <Box display="flex" alignItems="center">
-          <IconButton size="small" onClick={toggleOptions}>
-            <TuneIcon
-              className={clsx([
-                classes.icon,
-                !focused && classes.inActiveSearchIcon,
-                showFilters && classes.activeFilters
-              ])}
+    <Box pt={2}>
+      <ClickAwayListener
+        onClickAway={e => {
+          if (!showFilters) {
+            setFocused(false);
+          }
+        }}
+      >
+        <div className={clsx([classes.base, focused && classes.active])}>
+          <Box display="flex" alignItems="center">
+            <IconButton size="small" onClick={toggleOptions}>
+              <TuneIcon
+                className={clsx([
+                  classes.icon,
+                  !focused && classes.inActiveSearchIcon,
+                  showFilters && classes.activeFilters
+                ])}
+              />
+            </IconButton>
+            <InputBase
+              className={classes.searchInput}
+              placeholder={placeholder}
+              inputRef={inputRef}
+              onFocus={e => {
+                e.preventDefault();
+                setFocused(true);
+              }}
+              onKeyDown={handleEnter}
+              onChange={e => {
+                handleFilters("searchTerm", e.target.value);
+              }}
+              inputProps={{ "aria-label": "search" }}
             />
-          </IconButton>
-          <InputBase
-            className={classes.searchInput}
-            placeholder={placeholder}
-            inputRef={inputRef}
-            onFocus={e => {
-              e.preventDefault();
-              setFocused(true);
-            }}
-            onKeyDown={handleEnter}
-            onChange={e => {
-              handleFilters("searchTerm", e.target.value);
-            }}
-            inputProps={{ "aria-label": "search" }}
-          />
 
-          <IconButton size="small" onClick={triggerFilter}>
-            <SearchIcon
-              className={clsx([
-                classes.icon,
-                !focused && classes.inActiveSearchIcon
-              ])}
-            />
-          </IconButton>
-        </Box>
-        <Collapse in={showFilters}>
-          <Filters onChange={handleFilters} />
-        </Collapse>
-      </div>
-    </ClickAwayListener>
+            <IconButton size="small" onClick={triggerFilter}>
+              <SearchIcon
+                className={clsx([
+                  classes.icon,
+                  !focused && classes.inActiveSearchIcon
+                ])}
+              />
+            </IconButton>
+          </Box>
+          <Collapse in={showFilters}>
+            <Filters onChange={handleFilters} />
+          </Collapse>
+        </div>
+      </ClickAwayListener>
+    </Box>
   );
 };
 

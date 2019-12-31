@@ -89,12 +89,13 @@ export const PostList = filters => {
   }
 
   return (
-    <Container maxWidth="sm" className={classes.container}>
+    <Box>
       {posts.length == 0 && <Typography>Sorry, no results</Typography>}
       <Box
         display="flex"
         flexDirection={{ xs: "column", sm: "row" }}
         flexWrap={{ xs: "none", sm: "wrap" }}
+        justifyContent="center"
       >
         {posts.map(post => (
           <PostCard key={post.uuid} post={post} />
@@ -111,6 +112,6 @@ export const PostList = filters => {
           </Button>
         </Box>
       )}
-    </Container>
+    </Box>
   );
 };

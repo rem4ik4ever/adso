@@ -8,6 +8,8 @@ import Search from "../src/components/Post/Search";
 import { useRouter } from "next/router";
 import { usePosition } from "../src/hooks/usePosition";
 import RecentlyAdded from "../src/components/Post/RecentlyAdded";
+import Section from "../src/components/Post/Section";
+import Categories from "../src/components/Post/Categories";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -49,10 +51,9 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container maxWidth="md" className={classes.container}>
-        <Box>
-          <Search placeholder="Looking for something?" />
-        </Box>
+        <Search placeholder="Looking for something?" />
         <Box display="flex" flexDirection="column">
+          <Categories />
           <RecentlyAdded />
           {/* <ActionsList /> */}
           <PostList filters={filters} />

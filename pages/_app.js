@@ -8,6 +8,7 @@ import { withApollo } from "../src/lib/apollo";
 import NavBar from "../src/components/NavBar";
 import { IdentityContextProvider } from "../src/hooks/useIdentity";
 import { GoogleApiWrapper } from "google-maps-react";
+import Footer from "../src/components/Footer";
 
 class AdsoApp extends App {
   componentDidMount() {
@@ -33,6 +34,7 @@ class AdsoApp extends App {
           <CssBaseline />
           <NavBar />
           <Component {...pageProps} />
+          <Footer />
         </ThemeProvider>
       </IdentityContextProvider>
     );

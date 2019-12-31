@@ -44,10 +44,12 @@ const useStyles = makeStyles(theme => ({
     height: 260,
     cursor: "pointer",
     transition: "all ease-in-out 200ms",
-    transform: "scale(0.9)",
-    "&:hover": {
-      boxShadow: `0 0 8px #000`,
-      transform: "scale(1)"
+    [theme.breakpoints.up("sm")]: {
+      transform: "scale(0.9)",
+      "&:hover": {
+        boxShadow: `0 0 8px #000`,
+        transform: "scale(1)"
+      }
     }
   },
   cardBox: {

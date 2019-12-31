@@ -19,12 +19,13 @@ import { useRouter } from "next/dist/client/router";
 
 const useStyles = makeStyles(theme => ({
   card: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    marginRight: theme.spacing(1),
     [theme.breakpoints.up("sm")]: {
-      maxWidth: 260,
-      minWidth: 260
+      margin: theme.spacing(2),
+      maxWidth: 240,
+      minWidth: 240
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginTop: theme.spacing(2)
     }
   },
   media: {
@@ -59,7 +60,7 @@ export const PostCard = ({ post }) => {
       <CardActionArea onClick={e => router.push(`/p?id=${post.uuid}`)}>
         <CardHeader
           avatar={<Avatar aria-label="author">RK</Avatar>}
-          title={post.title}
+          title={`${post.title.slice(0, 20)}${post.title.length > 20 && "..."}`}
           subheader={moment(+post.createdAt).fromNow()}
         />
       </CardActionArea>
