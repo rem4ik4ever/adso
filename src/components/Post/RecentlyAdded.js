@@ -14,7 +14,7 @@ const RecentlyAdded = () => {
   if (error) return "";
   return (
     <Box mt={2}>
-      <Section posts={data.allPosts.data} label={"Recently Added"} />;
+      <Section posts={data.allPosts.data} label={"Recently Added"} />
     </Box>
   );
 };

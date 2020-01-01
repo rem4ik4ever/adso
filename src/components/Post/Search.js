@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     border: "1px solid #ccc",
     padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
     // marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
+    // marginBottom: theme.spacing(2),
     borderRadius: theme.spacing(5),
     fontSize: "1.4rem",
     lineHeight: "2rem",
