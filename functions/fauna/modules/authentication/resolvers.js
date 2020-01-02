@@ -6,7 +6,8 @@ const sendEmail = require("./utils/sendEmail");
 const {
   findByEmail,
   findByConfirmationToken,
-  findByUUID
+  findByUUID,
+  currentUser
 } = require("./user/search");
 const { client } = require("../../db/utils");
 const cookie = require("cookie");
@@ -14,7 +15,6 @@ const cookie = require("cookie");
 const {
   createAccessToken,
   createRefreshToken,
-  verifyAccessToken,
   verifyRefreshToken
 } = require("./utils/auth");
 const { AuthenticationError } = require("apollo-server-lambda");
@@ -113,12 +113,7 @@ const confirmUser = async (_, { token }, _context) => {
 
 const getCurrentUser = async (_, _args, { headers }) => {
   try {
-    const authorization = headers.authorization;
-    if (!authorization) return null;
-    const token = authorization.split(" ")[1];
-    const { uuid } = verifyAccessToken(token);
-    const match = await findByUUID(client, uuid);
-    return match.data;
+    return await currentUser(headers);
   } catch (err) {
     console.error(err);
     return null;

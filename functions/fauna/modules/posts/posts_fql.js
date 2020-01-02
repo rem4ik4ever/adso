@@ -130,6 +130,11 @@ const queryByPrice = (fromPrice = 0, toPrice = null) => {
   ]);
 };
 
+const matchByAuthor = authorUUID => {
+  const author_uuid = q.Select(["data", "authorId"], q.Get(q.Var("ref")));
+  return q.Equals(authorUUID, author_uuid);
+};
+
 const SearchByPriceRange = (fromPrice, toPrice, opts) =>
   q.Map(
     q.Filter(
@@ -173,9 +178,27 @@ const FlexSearchQuery = (
   );
 };
 
+const SearchByAuthor = (authorId, searchTerm, opts = { perPage: 20 }) => {
+  let searchPrefs = [
+    q.All([
+      matchByTitleRegex(searchTerm),
+      matchByDescriptionRegex(searchTerm),
+      matchByAuthor(authorId)
+    ])
+  ];
+  return q.Map(
+    q.Filter(
+      q.Paginate(q.Match(q.Index("posts_by_created_at_desc")), opts),
+      q.Lambda(["createdAt", "ref"], q.All(searchPrefs))
+    ),
+    q.Lambda(["createdAt", "ref"], q.Select(["data"], q.Get(q.Var("ref"))))
+  );
+};
+
 module.exports = {
   LocationDistanceQuery,
   QueryBySearchTerm,
   SearchByPriceRange,
-  FlexSearchQuery
+  FlexSearchQuery,
+  SearchByAuthor
 };

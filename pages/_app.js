@@ -34,7 +34,7 @@ class AdsoApp extends App {
           <CssBaseline />
           <NavBar />
           <Component {...pageProps} />
-          <Footer />
+          {/* <Footer /> */}
         </ThemeProvider>
       </IdentityContextProvider>
     );

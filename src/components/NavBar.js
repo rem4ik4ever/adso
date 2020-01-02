@@ -4,7 +4,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import MenuIcon from "@material-ui/icons/Menu";
-import { Settings, ExitToApp } from "@material-ui/icons";
+import { Settings, ExitToApp, ListAlt } from "@material-ui/icons";
 import Toolbar from "@material-ui/core/Toolbar";
 import { makeStyles } from "@material-ui/core/styles";
 import Link from "next/link";
@@ -118,20 +118,30 @@ const NavBar = () => {
                         id="menu-list-grow"
                         onKeyDown={handleListKeyDown}
                       >
-                        <Hidden only="sm">
-                          <Link href="/settings">
-                            <MenuItem
-                              onClick={e => {
-                                handleClose();
-                              }}
-                            >
-                              <ListItemIcon>
-                                <Settings />
-                              </ListItemIcon>
-                              Settings
-                            </MenuItem>
-                          </Link>
-                        </Hidden>
+                        <Link href="/My Ads">
+                          <MenuItem
+                            onClick={e => {
+                              handleClose();
+                            }}
+                          >
+                            <ListItemIcon>
+                              <ListAlt />
+                            </ListItemIcon>
+                            My Ads
+                          </MenuItem>
+                        </Link>
+                        <Link href="/settings">
+                          <MenuItem
+                            onClick={e => {
+                              handleClose();
+                            }}
+                          >
+                            <ListItemIcon>
+                              <Settings />
+                            </ListItemIcon>
+                            Settings
+                          </MenuItem>
+                        </Link>
                         <MenuItem
                           onClick={e => {
                             logout();

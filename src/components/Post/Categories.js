@@ -33,42 +33,44 @@ const Categories = () => {
   const classes = useStyles();
   return (
     <Box mt={2}>
-      <Section label={"Browse by Category"}>
-        <Box mt={1} display="flex" overflow="auto" pt={2} pb={1}>
-          <div className={classes.category}>
-            <IconButton className={classes.categoryButton} color="primary">
-              <Storefront />
-            </IconButton>
-            <Typography className={classes.categoryTitle}>All</Typography>
-          </div>
-          <div className={classes.category}>
-            <IconButton className={classes.categoryButton} color="primary">
-              <Computer />
-            </IconButton>
-            <Typography className={classes.categoryTitle}>
-              Electronics
-            </Typography>
-          </div>
-          <div className={classes.category}>
-            <IconButton className={classes.categoryButton} color="primary">
-              <DriveEta />
-            </IconButton>
-            <Typography className={classes.categoryTitle}>Cars</Typography>
-          </div>
-          <div className={classes.category}>
-            <IconButton className={classes.categoryButton} color="primary">
-              <HomeWork />
-            </IconButton>
-            <Typography className={classes.categoryTitle}>Rentals</Typography>
-          </div>
-          <div className={classes.category}>
-            <IconButton className={classes.categoryButton} color="primary">
-              <Deck />
-            </IconButton>
-            <Typography className={classes.categoryTitle}>Furniture</Typography>
-          </div>
-        </Box>
-      </Section>
+      <Box
+        mt={1}
+        display="flex"
+        overflow="auto"
+        pb={1}
+        justifyContent={{ md: "center" }}
+      >
+        <div className={classes.category}>
+          <IconButton className={classes.categoryButton} color="primary">
+            <Storefront />
+          </IconButton>
+          <Typography className={classes.categoryTitle}>All</Typography>
+        </div>
+        <div className={classes.category}>
+          <IconButton className={classes.categoryButton} color="primary">
+            <Computer />
+          </IconButton>
+          <Typography className={classes.categoryTitle}>Electronics</Typography>
+        </div>
+        <div className={classes.category}>
+          <IconButton className={classes.categoryButton} color="primary">
+            <DriveEta />
+          </IconButton>
+          <Typography className={classes.categoryTitle}>Cars</Typography>
+        </div>
+        <div className={classes.category}>
+          <IconButton className={classes.categoryButton} color="primary">
+            <HomeWork />
+          </IconButton>
+          <Typography className={classes.categoryTitle}>Rentals</Typography>
+        </div>
+        <div className={classes.category}>
+          <IconButton className={classes.categoryButton} color="primary">
+            <Deck />
+          </IconButton>
+          <Typography className={classes.categoryTitle}>Furniture</Typography>
+        </div>
+      </Box>
     </Box>
   );
 };

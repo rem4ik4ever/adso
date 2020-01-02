@@ -1,5 +1,8 @@
 const faunadb = require("faunadb");
 
+const { verifyAccessToken } = require("../utils/auth");
+const { client } = require("./../../../db/utils");
+
 const q = faunadb.query;
 
 const findByEmail = async (client, email) => {
@@ -37,7 +40,17 @@ const findByUUID = async (client, uuid) => {
   }
 };
 
+const currentUser = async headers => {
+  const authorization = headers.authorization;
+  if (!authorization) return null;
+  const token = authorization.split(" ")[1];
+  const { uuid } = verifyAccessToken(token);
+  const match = await findByUUID(client, uuid);
+  return match.data;
+};
+
 module.exports = {
+  currentUser,
   findByEmail,
   findByConfirmationToken,
   findByUUID
