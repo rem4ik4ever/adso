@@ -38,7 +38,7 @@ const Categories = () => {
         display="flex"
         overflow="auto"
         pb={1}
-        justifyContent={{ md: "center" }}
+        justifyContent={{ sm: "center" }}
       >
         <div className={classes.category}>
           <IconButton className={classes.categoryButton} color="primary">

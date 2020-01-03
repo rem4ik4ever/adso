@@ -181,8 +181,10 @@ const FlexSearchQuery = (
 const SearchByAuthor = (authorId, searchTerm, opts = { perPage: 20 }) => {
   let searchPrefs = [
     q.All([
-      matchByTitleRegex(searchTerm),
-      matchByDescriptionRegex(searchTerm),
+      q.Any([
+        matchByTitleRegex(searchTerm),
+        matchByDescriptionRegex(searchTerm)
+      ]),
       matchByAuthor(authorId)
     ])
   ];

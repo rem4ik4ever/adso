@@ -10,6 +10,8 @@ import { usePosition } from "../src/hooks/usePosition";
 import RecentlyAdded from "../src/components/Post/RecentlyAdded";
 import Section from "../src/components/Post/Section";
 import Categories from "../src/components/Post/Categories";
+import { FLEX_SEARCH_POSTS } from "../src/graphql/postResolvers";
+import { useFilters } from "../src/hooks/useFilters";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -22,28 +24,8 @@ const useStyles = makeStyles(theme => ({
 
 const Home = () => {
   const classes = useStyles();
-  const [filters, setFilters] = useState({});
   const router = useRouter();
-  useEffect(() => {
-    let newFilters = {};
-    if (router.query.search) {
-      newFilters.searchTerm = router.query.search;
-    }
-    if (router.query.location) {
-      newFilters.location = {
-        latitude: +router.query.location[0],
-        longitude: +router.query.location[1],
-        distance: +router.query.location[2]
-      };
-    }
-    if (router.query.priceRange) {
-      newFilters.priceRange = {
-        from: +router.query.priceRange[0],
-        to: +router.query.priceRange[1]
-      };
-    }
-    setFilters(newFilters);
-  }, [router.query]);
+  const filters = useFilters(router.query);
   return (
     <div>
       <Head>
@@ -56,7 +38,7 @@ const Home = () => {
           <Categories />
           <RecentlyAdded />
           {/* <ActionsList /> */}
-          <PostList filters={filters} />
+          <PostList filters={filters} query={FLEX_SEARCH_POSTS} />
         </Box>
       </Container>
     </div>

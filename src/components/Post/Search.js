@@ -63,7 +63,7 @@ const getLocationFromFilters = async loc => {
   return location;
 };
 
-const Search = ({ placeholder }) => {
+const Search = ({ placeholder, withAdvanced = true }) => {
   const router = useRouter();
   const [focused, setFocused] = useState(false);
   const [showFilters, toggleFilters] = useState(false);
@@ -126,21 +126,23 @@ const Search = ({ placeholder }) => {
     if (filters.searchTerm) {
       parsed.search = filters.searchTerm;
     }
-    if (
-      filters.location &&
-      filters.location.latitude &&
-      filters.location.longitude
-    ) {
-      parsed.location = [
-        filters.location.latitude,
-        filters.location.longitude,
-        filters.location.distance
-      ];
+    if (withAdvanced) {
+      if (
+        filters.location &&
+        filters.location.latitude &&
+        filters.location.longitude
+      ) {
+        parsed.location = [
+          filters.location.latitude,
+          filters.location.longitude,
+          filters.location.distance
+        ];
+      }
+      if (filters.priceRange) {
+        parsed.priceRange = [filters.priceRange.from, filters.priceRange.to];
+      }
     }
-    if (filters.priceRange) {
-      parsed.priceRange = [filters.priceRange.from, filters.priceRange.to];
-    }
-    router.replace(`/?${queryString.stringify(parsed)}`);
+    router.replace(`${location.pathname}?${queryString.stringify(parsed)}`);
   };
   const handleEnter = e => {
     if (e.keyCode == 13 && !showFilters) {
@@ -159,15 +161,17 @@ const Search = ({ placeholder }) => {
       >
         <div className={clsx([classes.base, focused && classes.active])}>
           <Box display="flex" alignItems="center">
-            <IconButton size="small" onClick={toggleOptions}>
-              <TuneIcon
-                className={clsx([
-                  classes.icon,
-                  !focused && classes.inActiveSearchIcon,
-                  showFilters && classes.activeFilters
-                ])}
-              />
-            </IconButton>
+            {withAdvanced && (
+              <IconButton size="small" onClick={toggleOptions}>
+                <TuneIcon
+                  className={clsx([
+                    classes.icon,
+                    !focused && classes.inActiveSearchIcon,
+                    showFilters && classes.activeFilters
+                  ])}
+                />
+              </IconButton>
+            )}
             <InputBase
               className={classes.searchInput}
               placeholder={placeholder}

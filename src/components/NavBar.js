@@ -21,6 +21,7 @@ import {
   ListItemIcon
 } from "@material-ui/core";
 import { withIdentity } from "../hoc/withIdentity";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,12 +46,17 @@ const useStyles = makeStyles(theme => ({
 const NavBar = () => {
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
+  const router = useRouter();
   const handleToggle = () => {
     setOpen(prevOpen => !prevOpen);
   };
 
   const handleClose = event => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+    if (
+      event &&
+      anchorRef.current &&
+      anchorRef.current.contains(event.target)
+    ) {
       return;
     }
 
@@ -67,7 +73,7 @@ const NavBar = () => {
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open);
   React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
+    if (prevOpen.current === true && open === false && anchorRef.current) {
       anchorRef.current.focus();
     }
 
@@ -118,30 +124,28 @@ const NavBar = () => {
                         id="menu-list-grow"
                         onKeyDown={handleListKeyDown}
                       >
-                        <Link href="/My Ads">
-                          <MenuItem
-                            onClick={e => {
-                              handleClose();
-                            }}
-                          >
-                            <ListItemIcon>
-                              <ListAlt />
-                            </ListItemIcon>
-                            My Ads
-                          </MenuItem>
-                        </Link>
-                        <Link href="/settings">
-                          <MenuItem
-                            onClick={e => {
-                              handleClose();
-                            }}
-                          >
-                            <ListItemIcon>
-                              <Settings />
-                            </ListItemIcon>
-                            Settings
-                          </MenuItem>
-                        </Link>
+                        <MenuItem
+                          onClick={e => {
+                            handleClose();
+                            router.push("/my-ads");
+                          }}
+                        >
+                          <ListItemIcon>
+                            <ListAlt />
+                          </ListItemIcon>
+                          My Ads
+                        </MenuItem>
+                        <MenuItem
+                          onClick={e => {
+                            handleClose();
+                            router.push("/settings");
+                          }}
+                        >
+                          <ListItemIcon>
+                            <Settings />
+                          </ListItemIcon>
+                          Settings
+                        </MenuItem>
                         <MenuItem
                           onClick={e => {
                             logout();

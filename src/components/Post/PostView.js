@@ -115,7 +115,7 @@ const PostView = ({ id }) => {
         <PoseGroup>
           {animate && [
             <Appear key="slider" i={0} className={classes.imageSlider}>
-              <Box maxWidth={"500px"}>
+              <Box maxWidth={"600px"}>
                 <ImageSlider images={post.images} />
               </Box>
             </Appear>,

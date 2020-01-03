@@ -54,7 +54,7 @@ module.exports = gql`
 
     getPost(id: String!): Post
 
-    myAds(searchTerm: String, perPage: String, after: String): PaginateResponse!
+    myAds(searchTerm: String, perPage: Int!, after: String): PaginateResponse!
   }
 
   type PostLocation {

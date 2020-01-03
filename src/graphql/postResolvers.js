@@ -37,6 +37,34 @@ export const CREATE_POST = gql`
   }
 `;
 
+export const UPDATE_POST = gql`
+  mutation UpdatePost(
+    $title: String!
+    $description: String!
+    $images: [String!]
+    $tags: [String!]
+    $priceInfo: String!
+    $price: Float
+    $address: String!
+    $latitude: Float!
+    $longitude: Float!
+  ) {
+    createPost(
+      title: $title
+      description: $description
+      images: $images
+      tags: $tags
+      priceInfo: $priceInfo
+      price: $price
+      address: $address
+      latitude: $latitude
+      longitude: $longitude
+    ) {
+      uuid
+    }
+  }
+`;
+
 export const ALL_POSTS = gql`
   query allPosts($after: String, $perPage: Int!) {
     allPosts(perPage: $perPage, after: $after) {
@@ -101,6 +129,27 @@ export const FLEX_SEARCH_POSTS = gql`
         images
         tags
         createdAt
+      }
+      perPage
+      after
+    }
+  }
+`;
+
+export const MY_ADS = gql`
+  query myAds($searchTerm: String, $perPage: Int!, $after: String) {
+    myAds(searchTerm: $searchTerm, perPage: $perPage, after: $after) {
+      data {
+        uuid
+        title
+        description
+        price
+        priceInfo
+        authorId
+        images
+        tags
+        createdAt
+        updatedAt
       }
       perPage
       after

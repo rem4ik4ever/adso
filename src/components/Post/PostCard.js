@@ -9,13 +9,17 @@ import {
   Box,
   CardActions,
   IconButton,
-  CardActionArea
+  CardActionArea,
+  Button
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import moment from "moment";
 import MessageIcon from "@material-ui/icons/Message";
 import ShareIcon from "@material-ui/icons/Share";
+import EditIcon from "@material-ui/icons/Edit";
 import { useRouter } from "next/dist/client/router";
+import { useIdentityContext } from "../../hooks/useIdentity";
+import Link from "next/link";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -33,6 +37,7 @@ const useStyles = makeStyles(theme => ({
     paddingTop: "56.25%" // 16:9
   },
   price: {
+    fontSize: "1.05rem",
     color: theme.palette.primary.dark
   },
   contentImage: {
@@ -44,17 +49,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Image = ({ url }) => {
-  const classes = useStyles();
-  return (
-    <Box className={classes.contentImage}>
-      <img src={url} className={classes.img} />
-    </Box>
-  );
-};
 export const PostCard = ({ post }) => {
   const classes = useStyles();
   const router = useRouter();
+  const { user } = useIdentityContext();
+  const isMyAd = user.uuid == post.authorId;
   return (
     <Card className={classes.card}>
       <CardActionArea onClick={e => router.push(`/p?id=${post.uuid}`)}>
@@ -70,11 +69,15 @@ export const PostCard = ({ post }) => {
         title={post.title}
       />
       <CardActions>
-        <Box display="flex" justifyContent="space-between" flexGrow="1">
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          flexGrow="1"
+          alignItems="center"
+        >
           <Box>
             {post.priceInfo.toLowerCase() == "fixed" ? (
               <Box>
-                <Typography variant="subtitle2">Price: </Typography>
                 <Typography className={classes.price}>${post.price}</Typography>
               </Box>
             ) : (
@@ -82,12 +85,26 @@ export const PostCard = ({ post }) => {
             )}
           </Box>
           <Box>
-            <IconButton>
-              <MessageIcon />
-            </IconButton>
-            <IconButton>
-              <ShareIcon />
-            </IconButton>
+            {isMyAd ? (
+              <Link href={`/my-ads/edit?p=${post.uuid}`}>
+                <Button
+                  startIcon={<EditIcon />}
+                  color="secondary"
+                  variant="outlined"
+                >
+                  Edit
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <IconButton>
+                  <MessageIcon />
+                </IconButton>
+                <IconButton>
+                  <ShareIcon />
+                </IconButton>
+              </>
+            )}
           </Box>
         </Box>
       </CardActions>

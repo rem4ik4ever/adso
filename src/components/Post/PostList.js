@@ -1,31 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
-import {
-  Box,
-  Typography,
-  Button,
-  Container,
-  GridList,
-  GridListTile
-} from "@material-ui/core";
-import { ALL_POSTS, FLEX_SEARCH_POSTS } from "../../graphql/postResolvers";
+import { Box, Typography, Button } from "@material-ui/core";
 import { PostCard } from "./PostCard";
-import { makeStyles } from "@material-ui/styles";
-import { throttle, debounce } from "lodash";
+import { debounce } from "lodash";
+import { Appear } from "../../animations/appear";
+import { PoseGroup } from "react-pose";
 
 const PER_PAGE = 10;
 
-const useStyles = makeStyles(theme => ({
-  container: {
-    padding: 0
-  }
-}));
-
-export const PostList = filters => {
-  const classes = useStyles();
+export const PostList = ({ filters, query }) => {
   const [posts, setState] = useState([]);
   const [after, setAfter] = useState("");
   const [loading, setLoading] = useState(true);
+
   const fetch = React.useMemo(
     () =>
       debounce(filters => {
@@ -41,7 +28,7 @@ export const PostList = filters => {
     }
   }, [filters]);
 
-  const { data, error, fetchMore } = useQuery(FLEX_SEARCH_POSTS, {
+  const { data, error, fetchMore } = useQuery(query, {
     variables: {
       perPage: PER_PAGE,
       searchTerm: filters.searchTerm || "",
@@ -50,8 +37,9 @@ export const PostList = filters => {
     },
     onCompleted: response => {
       if (response) {
-        setState(response.postsByFlexSearch.data);
-        setAfter(response.postsByFlexSearch.after);
+        const queryKey = Object.keys(response)[0];
+        setState(response[queryKey].data);
+        setAfter(response[queryKey].after);
       }
     }
   });
@@ -76,8 +64,9 @@ export const PostList = filters => {
       updateQuery: (prev, { fetchMoreResult }) => {
         setLoading(false);
         if (!fetchMoreResult) return prev;
-        setState([...posts, ...fetchMoreResult.postsByFlexSearch.data]);
-        setAfter(fetchMoreResult.postsByFlexSearch.after);
+        const queryKey = Object.keys(fetchMoreResult)[0];
+        setState([...posts, ...fetchMoreResult[queryKey].data]);
+        setAfter(fetchMoreResult[queryKey].after);
       },
       notifyOnNetworkStatusChange: true
     });
@@ -97,9 +86,13 @@ export const PostList = filters => {
         flexWrap={{ xs: "none", sm: "wrap" }}
         justifyContent="center"
       >
-        {posts.map(post => (
-          <PostCard key={post.uuid} post={post} />
-        ))}
+        <PoseGroup>
+          {posts.map((post, index) => (
+            <Appear i={index} key={post.uuid}>
+              <PostCard post={post} />
+            </Appear>
+          ))}
+        </PoseGroup>
       </Box>
       {after !== "" && (
         <Box display="flex" justifyContent="center" m="16px">
