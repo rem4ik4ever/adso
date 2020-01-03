@@ -53,7 +53,7 @@ export const PostCard = ({ post }) => {
   const classes = useStyles();
   const router = useRouter();
   const { user } = useIdentityContext();
-  const isMyAd = user.uuid == post.authorId;
+  const isMyAd = user && user.uuid == post.authorId;
   return (
     <Card className={classes.card}>
       <CardActionArea onClick={e => router.push(`/p?id=${post.uuid}`)}>
