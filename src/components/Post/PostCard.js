@@ -59,7 +59,9 @@ export const PostCard = ({ post }) => {
       <CardActionArea onClick={e => router.push(`/p?id=${post.uuid}`)}>
         <CardHeader
           avatar={<Avatar aria-label="author">RK</Avatar>}
-          title={`${post.title.slice(0, 20)}${post.title.length > 20 && "..."}`}
+          title={`${post.title.slice(0, 20)}${
+            post.title.length > 20 ? "..." : ""
+          }`}
           subheader={moment(+post.createdAt).fromNow()}
         />
       </CardActionArea>
