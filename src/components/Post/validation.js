@@ -16,7 +16,13 @@ export const validatePost = ({
     title.trim().length > 70 ||
     title.trim().length < 7
   ) {
-    errors["title"] = "Missing title";
+    if (!title || title == "") {
+      errors["title"] = "Missing title";
+    } else if (title.trim().length < 7) {
+      errors["title"] = "Title is too short";
+    } else if (title.trim().length > 70) {
+      errors["title"] = "Title is too long";
+    }
   }
   if (!description || description.trim() == "") {
     errors["description"] = "Missing description";

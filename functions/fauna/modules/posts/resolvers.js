@@ -105,17 +105,45 @@ const allPosts = async (_, { after, perPage }, _context) => {
   }
 };
 
-const updatePost = async (_, { id, title, description }, _context) => {
+const updatePost = async (
+  _,
+  {
+    id,
+    title,
+    description,
+    tags,
+    images,
+    priceInfo,
+    price,
+    address,
+    latitude,
+    longitude
+  },
+  _context
+) => {
   try {
-    const data = { title, description };
+    const updateData = {
+      title,
+      description,
+      tags,
+      images,
+      priceInfo,
+      price,
+      address,
+      latitude,
+      longitude,
+      updatedAt: moment().format("x")
+    };
     const match = await client.query(
       q.Get(q.Match(q.Index("posts_by_uuid"), id))
     );
-    await client.query(q.Update(q.Ref(match.ref), { data }));
+    const { data } = await client.query(
+      q.Update(q.Ref(match.ref), { data: updateData })
+    );
+    return data;
   } catch (err) {
-    return false;
+    return null;
   }
-  return true;
 };
 
 const deletePost = async (_, { id }, _context) => {
@@ -357,9 +385,9 @@ module.exports = {
     myAds
   },
   Mutation: {
-    createPost: async (root, args, context) => createPost(root, args, context),
-    updatePost: async (root, args, context) => updatePost(root, args, context),
-    deletePost: async (root, args, context) => deletePost(root, args, context),
+    createPost,
+    updatePost,
+    deletePost,
     signS3
   }
 };

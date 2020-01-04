@@ -39,17 +39,19 @@ export const CREATE_POST = gql`
 
 export const UPDATE_POST = gql`
   mutation UpdatePost(
-    $title: String!
-    $description: String!
+    $id: String!
+    $title: String
+    $description: String
     $images: [String!]
     $tags: [String!]
-    $priceInfo: String!
+    $priceInfo: String
     $price: Float
-    $address: String!
-    $latitude: Float!
-    $longitude: Float!
+    $address: String
+    $latitude: Float
+    $longitude: Float
   ) {
-    createPost(
+    updatePost(
+      id: $id
       title: $title
       description: $description
       images: $images
@@ -61,6 +63,17 @@ export const UPDATE_POST = gql`
       longitude: $longitude
     ) {
       uuid
+      title
+      description
+      priceInfo
+      price
+      images
+      tags
+      address
+      latitude
+      longitude
+      createdAt
+      authorId
     }
   }
 `;
@@ -97,6 +110,7 @@ export const GET_POST = gql`
       latitude
       longitude
       createdAt
+      authorId
       author {
         firstName
         lastName

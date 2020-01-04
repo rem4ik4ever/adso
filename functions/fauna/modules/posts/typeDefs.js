@@ -68,8 +68,7 @@ module.exports = gql`
   }
 
   type Post {
-    id: ID!
-    uuid: String!
+    uuid: ID!
     title: String!
     description: String!
     authorId: String!
@@ -103,7 +102,19 @@ module.exports = gql`
       latitude: Float!
       longitude: Float!
     ): Post
-    updatePost(id: String!, title: String!, description: String!): Boolean!
+
+    updatePost(
+      id: String!
+      title: String
+      description: String
+      images: [String!]
+      tags: [String!]
+      priceInfo: String
+      price: Float
+      address: String
+      latitude: Float
+      longitude: Float
+    ): Post
     deletePost(id: String!): Boolean!
     signS3(filename: String!, filetype: String!): S3Payload!
   }

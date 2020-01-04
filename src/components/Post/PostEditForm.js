@@ -1,6 +1,10 @@
 import React from "react";
 import { useMutation } from "@apollo/react-hooks";
-import { CREATE_POST } from "../../graphql/postResolvers";
+import {
+  CREATE_POST,
+  UPDATE_POST,
+  GET_POST
+} from "../../graphql/postResolvers";
 import { Dropzone } from "../FileUpload";
 import TagsInput from "../util/TagsInput";
 import { ImageList } from "../ImageList";
@@ -26,9 +30,10 @@ import { makeStyles } from "@material-ui/styles";
 import { PlaceAutocomplete } from "../Location/PlaceAutocomplete";
 import { usePosition } from "../../hooks/usePosition";
 import { getLatLngFromAddress } from "../Location/geocoding";
-import InfoIcon from "@material-ui/icons/Info";
+import { Save, Delete } from "@material-ui/icons";
 import PostComplete from "../Post/PostComplete";
 import { useRouter } from "next/router";
+import Section from "./Section";
 
 const useStyles = makeStyles(theme => ({
   errorText: {
@@ -53,30 +58,59 @@ const useStyles = makeStyles(theme => ({
   descriptionIcon: {
     color: "cadetblue",
     margin: theme.spacing(1)
+  },
+  deleteBtn: {
+    backgroundColor: theme.palette.error.main,
+    color: theme.palette.white,
+    marginRight: theme.spacing(1)
   }
 }));
 
-const PostEditForm = () => {
+const PostEditForm = ({ post }) => {
   const router = useRouter();
-  const [images, setImages] = React.useState([]);
-  const [tags, setTags] = React.useState([]);
-  const [description, setDescription] = React.useState("");
-  const [title, setTitle] = React.useState("");
-  const [address, onAddressChange] = React.useState("");
-  const [price, setPrice] = React.useState(0);
-  const [priceInfo, setPriceInfo] = React.useState("Fixed");
+  const [postToEdit, setState] = React.useState({ ...post });
   const [isSubmitting, setSubmitting] = React.useState(false);
   const [isCompleted, setCompleted] = React.useState(false);
+  const handleChange = (field, val) => {
+    setState({ ...postToEdit, [field]: val });
+  };
 
-  const [createPost, { loading, error }] = useMutation(CREATE_POST, {
+  const [updatePost, { loading, error }] = useMutation(UPDATE_POST, {
     onCompleted: data => {
       setCompleted(true);
       setTimeout(() => {
-        router.push(`/p?id=${data.createPost.uuid}`);
+        setSubmitting(false);
+        // router.push(`/p?id=${data.updatePost.uuid}`);
       }, 2000);
     },
     onError: err => {
       console.error(err);
+    },
+    update: (cache, { data }) => {
+      console.log("Ca", cache);
+      console.log("trying update cached", data);
+      const { updatePost } = data;
+      try {
+        let { getPost } = cache.readQuery({
+          query: GET_POST,
+          variables: { id: updatePost.uuid }
+        });
+        console.log("GetPOST", getPost);
+        cache.writeQuery({
+          query: GET_POST,
+          data: {
+            getPost: {
+              ...updatePost,
+              author: getPost.author
+            }
+          }
+        });
+        console.log(cache);
+      } catch (e) {
+        console.log("EE", e);
+        // We should always catch here,
+        // as the cache may be empty or the query may fail
+      }
     }
   });
   const [validationErrors, setErrors] = React.useState([]);
@@ -85,29 +119,39 @@ const PostEditForm = () => {
   const { latitude, longitude } = usePosition();
 
   // if (loading) return "Loading...";
-  // if (error) {
-  //   return <div>{error.message}</div>;
-  // }
+  if (error) {
+    if (isSubmitting) {
+      setSubmitting(false);
+    }
+    return (
+      <Box mt={2} textAlign="center">
+        <Typography className={classes.errorText}>
+          Sorry something went wrong. Please try again
+        </Typography>
+        <Button
+          onClick={e => {
+            location.reload();
+          }}
+        >
+          Reload
+        </Button>
+      </Box>
+    );
+  }
 
   const onDrop = urls => {
-    const updatedImages = [...images, ...urls];
-    setImages(updatedImages);
+    const updatedImages = [...postToEdit.images, ...urls];
+    handleChange("images", updatedImages);
   };
 
   const onSubmit = async e => {
     e.preventDefault();
     setErrors([]);
-    const latlng = await getLatLngFromAddress(address);
+    const latlng = await getLatLngFromAddress(postToEdit.address);
     const variables = {
-      title,
-      priceInfo,
-      price: +price,
-      description,
-      images,
-      tags,
-      address,
-      longitude,
-      latitude
+      ...postToEdit,
+      id: post.uuid,
+      price: +postToEdit.price
     };
     if (latlng) {
       variables.longitude = latlng.longitude;
@@ -117,9 +161,10 @@ const PostEditForm = () => {
     console.log("Submitting", valid, errors, variables);
     if (!valid) {
       setErrors(errors);
+      window.scrollTo(0, 0);
     } else {
       setSubmitting(true);
-      createPost({
+      updatePost({
         variables
       });
     }
@@ -130,7 +175,7 @@ const PostEditForm = () => {
       description: "Good titile is half of the success!",
       field: "title",
       isValid: () => {
-        const { errors } = validatePost({ title });
+        const { errors } = validatePost({ title: postToEdit.title });
         if (errors["title"]) {
           return false;
         }
@@ -142,15 +187,17 @@ const PostEditForm = () => {
             type="text"
             label="Title"
             name="title"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
+            value={postToEdit.title}
+            onChange={e => handleChange("title", e.target.value)}
             fullWidth
             inputProps={{
               maxLength: 70,
               minLength: 12
             }}
           />
-          <Typography variant="caption">{title.length} / 70</Typography>
+          <Typography variant="caption">
+            {postToEdit.title.length} / 70
+          </Typography>
         </Box>
       )
     },
@@ -158,7 +205,9 @@ const PostEditForm = () => {
       label: "Add description",
       field: "description",
       isValid: () => {
-        const { errors } = validatePost({ description });
+        const { errors } = validatePost({
+          description: postToEdit.description
+        });
         if (errors["description"]) {
           return false;
         }
@@ -167,8 +216,8 @@ const PostEditForm = () => {
       description: "Provide details and information about it",
       component: () => (
         <Description
-          value={description}
-          onChange={setDescription}
+          value={postToEdit.description}
+          onChange={val => handleChange("description", val)}
           limit={2000}
         />
       )
@@ -179,7 +228,10 @@ const PostEditForm = () => {
         "If you know how much you want set Fixed price if you want to negotiate set 'Contact for price'",
       field: "price",
       isValid: () => {
-        const { errors } = validatePost({ price, priceInfo });
+        const { errors } = validatePost({
+          price: postToEdit.price,
+          priceInfo: postToEdit.priceInfo
+        });
         if (errors["price"]) {
           return false;
         }
@@ -192,23 +244,23 @@ const PostEditForm = () => {
             <Select
               labelId="price-info"
               id="price-info-select"
-              value={priceInfo}
+              value={postToEdit.priceInfo}
               onChange={e => {
-                setPriceInfo(e.target.value);
+                handleChange("price-info", e.target.value);
               }}
             >
               <MenuItem value={"Fixed"}>Fixed</MenuItem>
               <MenuItem value={"Contact for price"}>Contact for price</MenuItem>
             </Select>
           </FormControl>
-          {priceInfo === "Fixed" && (
+          {postToEdit.priceInfo === "Fixed" && (
             <Box ml="8px">
               <TextField
                 type="number"
                 label="Enter price"
                 name="price"
-                value={price}
-                onChange={e => setPrice(e.target.value)}
+                value={postToEdit.price}
+                onChange={e => handleChange("price", e.target.value)}
                 fullWidth
                 inputProps={{
                   step: 0.01
@@ -225,7 +277,7 @@ const PostEditForm = () => {
         "Home? Mall? Moon? pick a place where you feel comfortable to meet",
       field: "address",
       isValid: () => {
-        const { errors } = validatePost({ address });
+        const { errors } = validatePost({ address: postToEdit.address });
         if (errors["address"]) {
           return false;
         }
@@ -233,7 +285,10 @@ const PostEditForm = () => {
       },
       component: () => (
         <Box mt={1}>
-          <PlaceAutocomplete onChange={onAddressChange} value={address} />
+          <PlaceAutocomplete
+            onChange={val => handleChange("address", val)}
+            value={postToEdit.address}
+          />
         </Box>
       )
     },
@@ -243,7 +298,7 @@ const PostEditForm = () => {
         "This will help other people to find you Ad. Don't be shy add some tags!",
       field: "tags",
       isValid: () => {
-        const { errors } = validatePost({ tags });
+        const { errors } = validatePost({ tags: postToEdit.tags });
         if (errors["tags"]) {
           return false;
         }
@@ -252,13 +307,13 @@ const PostEditForm = () => {
       component: () => (
         <TagsInput
           onChange={tags => {
-            setTags(tags);
+            handleChange("tags", tags);
           }}
           onAdd={tag => {
-            const tTags = [...tags, tag];
-            setTags(tTags);
+            const tTags = [...postToEdit.tags, tag];
+            handleChange("tags", tTags);
           }}
-          tags={tags}
+          tags={postToEdit.tags}
         />
       )
     },
@@ -268,7 +323,7 @@ const PostEditForm = () => {
         "Make sure you use high quality images. People like to see images with good light and sharp details",
       field: "images",
       isValid: () => {
-        const { errors } = validatePost({ images });
+        const { errors } = validatePost({ images: postToEdit.images });
         if (errors["images"]) {
           return false;
         }
@@ -279,85 +334,63 @@ const PostEditForm = () => {
           <Dropzone
             onFileDrop={onDrop}
             limit={12}
-            currentCount={images.length}
-            images={images}
+            currentCount={postToEdit.images.length}
+            images={postToEdit.images}
           />
-          <ImageList imagesUrls={images} onChange={setImages} />
+          <ImageList
+            imagesUrls={postToEdit.images}
+            onChange={val => handleChange("images", val)}
+          />
         </Box>
       )
     }
   ];
-
-  const handleNext = e => {
-    e.preventDefault();
-    setActiveStep(activeStep => activeStep + 1);
-  };
-
-  const handleBack = e => {
-    e.preventDefault();
-    setActiveStep(activeStep => activeStep - 1);
-  };
 
   if (isSubmitting) {
     return <PostComplete complete={isCompleted} />;
   }
   return (
     <Container maxWidth="md">
-      <Paper className={classes.main}>
-        <Box height="100%">
-          <form onSubmit={onSubmit} className={classes.postForm}>
-            <Stepper activeStep={activeStep} orientation="vertical">
-              {steps.map((step, index) => {
-                return (
-                  <Step key={index}>
-                    <StepLabel>{step.label}</StepLabel>
-                    <StepContent>
-                      <div className={classes.stepDescription}>
-                        <InfoIcon className={classes.descriptionIcon} />
-                        {step.description}
-                      </div>
-                      <Box>{step.component()}</Box>
-                      <Box mt={1} textAlign="end">
-                        {activeStep !== 0 && (
-                          <Button
-                            type="button"
-                            variant="text"
-                            onClick={handleBack}
-                            tabIndex={-1}
-                          >
-                            Back
-                          </Button>
-                        )}
-                        {activeStep == steps.length - 1 ? (
-                          <Button
-                            type="submit"
-                            variant="contained"
-                            color="secondary"
-                            fullWidth
-                            disabled={!step.isValid()}
-                          >
-                            post
-                          </Button>
-                        ) : (
-                          <Button
-                            type="button"
-                            variant="outlined"
-                            onClick={handleNext}
-                            color="primary"
-                            disabled={!step.isValid()}
-                          >
-                            Next
-                          </Button>
-                        )}
-                      </Box>
-                    </StepContent>
-                  </Step>
-                );
-              })}
-            </Stepper>
-          </form>
+      <Box height="100%">
+        <Box my={1}>
+          {Object.keys(validationErrors).map((prop, index) => (
+            <Typography className={classes.errorText} key={`err-${index}`}>
+              {validationErrors[prop]}
+            </Typography>
+          ))}
         </Box>
-      </Paper>
+        <form onSubmit={onSubmit} className={classes.postForm}>
+          {steps.map((step, index) => {
+            return (
+              <Box my={1} key={index}>
+                <Section label={step.label}>{step.component()}</Section>
+              </Box>
+            );
+          })}
+          <Box my={1}>
+            <Section>
+              <Box display="flex" justifyContent="flex-end">
+                <Button
+                  type="button"
+                  variant="outlined"
+                  className={classes.deleteBtn}
+                  startIcon={<Delete />}
+                >
+                  Delete
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Save />}
+                >
+                  Save
+                </Button>
+              </Box>
+            </Section>
+          </Box>
+        </form>
+      </Box>
     </Container>
   );
 };

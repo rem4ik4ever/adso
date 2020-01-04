@@ -88,7 +88,7 @@ export const PostList = ({ filters, query }) => {
       >
         <PoseGroup>
           {posts.map((post, index) => (
-            <Appear i={index} key={post.uuid}>
+            <Appear i={index + 100} key={post.uuid}>
               <PostCard post={post} />
             </Appear>
           ))}

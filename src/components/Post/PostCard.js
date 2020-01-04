@@ -88,7 +88,7 @@ export const PostCard = ({ post }) => {
           </Box>
           <Box>
             {isMyAd ? (
-              <Link href={`/my-ads/edit?p=${post.uuid}`}>
+              <Link href={`/my-ads/edit?id=${post.uuid}`}>
                 <Button
                   startIcon={<EditIcon />}
                   color="secondary"

@@ -1,20 +1,6 @@
 import React from "react";
-import {
-  Card,
-  CardHeader,
-  Avatar,
-  CardMedia,
-  CardContent,
-  Typography,
-  Box,
-  CardActions,
-  IconButton,
-  CardActionArea
-} from "@material-ui/core";
+import { Typography, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import moment from "moment";
-import MessageIcon from "@material-ui/icons/Message";
-import ShareIcon from "@material-ui/icons/Share";
 import { useRouter } from "next/dist/client/router";
 import Link from "next/link";
 
