@@ -41,10 +41,10 @@ const createPost = async (
     const now = moment().format("x");
     const post = {
       data: {
-        uuid: uuidv4(),
+        id: uuidv4(),
         title,
         description,
-        authorId: payload.uuid,
+        authorId: payload.id,
         tags,
         images,
         priceInfo,
@@ -72,9 +72,7 @@ const allPosts = async (_, { after, perPage }, _context) => {
     };
     let match = null;
     if (after) {
-      match = await client.query(
-        q.Get(q.Match(q.Index("posts_by_uuid"), after))
-      );
+      match = await client.query(q.Get(q.Match(q.Index("posts_by_id"), after)));
       opts.after = match.data.createdAt;
     }
     const response = await client.query(
@@ -92,8 +90,8 @@ const allPosts = async (_, { after, perPage }, _context) => {
       beforeObject = await client.query(q.Get(response.before[1]));
     }
     return {
-      after: afterObject ? afterObject.data.uuid : "",
-      before: beforeObject ? beforeObject.data.uuid : "",
+      after: afterObject ? afterObject.data.id : "",
+      before: beforeObject ? beforeObject.data.id : "",
       data: response.data.map(item => {
         return item.data;
       }),
@@ -135,7 +133,7 @@ const updatePost = async (
       updatedAt: moment().format("x")
     };
     const match = await client.query(
-      q.Get(q.Match(q.Index("posts_by_uuid"), id))
+      q.Get(q.Match(q.Index("posts_by_id"), id))
     );
     const { data } = await client.query(
       q.Update(q.Ref(match.ref), { data: updateData })
@@ -149,7 +147,7 @@ const updatePost = async (
 const deletePost = async (_, { id }, _context) => {
   try {
     const match = await client.query(
-      q.Get(q.Match(q.Index("posts_by_uuid"), id))
+      q.Get(q.Match(q.Index("posts_by_id"), id))
     );
     await client.query(q.Delete(q.Ref(match.ref)));
   } catch (err) {
@@ -187,7 +185,7 @@ const signS3 = async (_, { filename, filetype }, _context) => {
 
 const getPost = async (_root, { id }, _context) => {
   const { data } = await client.query(
-    q.Get(q.Match(q.Index("posts_by_uuid"), id))
+    q.Get(q.Match(q.Index("posts_by_id"), id))
   );
   const author = await client.query(
     q.Get(q.Match(q.Index("user_by_uuid"), data.authorId))
@@ -208,7 +206,7 @@ const postsByLocation = async (
   };
   let match = null;
   if (after) {
-    match = await client.query(q.Get(q.Match(q.Index("posts_by_uuid"), after)));
+    match = await client.query(q.Get(q.Match(q.Index("posts_by_id"), after)));
     opts.after = match.data.createdAt;
   }
   const response = await client.query(
@@ -223,8 +221,8 @@ const postsByLocation = async (
     beforeObject = await client.query(q.Get(response.before[1]));
   }
   const result = {
-    after: afterObject ? afterObject.data.uuid : "",
-    before: beforeObject ? beforeObject.data.uuid : "",
+    after: afterObject ? afterObject.data.id : "",
+    before: beforeObject ? beforeObject.data.id : "",
     data: response.data.map(item => {
       return item;
     }),
@@ -243,7 +241,7 @@ const postsBySearchTerm = async (
   };
   let match = null;
   if (after) {
-    match = await client.query(q.Get(q.Match(q.Index("posts_by_uuid"), after)));
+    match = await client.query(q.Get(q.Match(q.Index("posts_by_id"), after)));
     opts.after = match.data.createdAt;
   }
   const response = await client.query(QueryBySearchTerm(searchTerm, opts));
@@ -256,8 +254,8 @@ const postsBySearchTerm = async (
     beforeObject = await client.query(q.Get(response.before[1]));
   }
   const result = {
-    after: afterObject ? afterObject.data.uuid : "",
-    before: beforeObject ? beforeObject.data.uuid : "",
+    after: afterObject ? afterObject.data.id : "",
+    before: beforeObject ? beforeObject.data.id : "",
     data: response.data.map(item => {
       return item;
     }),
@@ -276,7 +274,7 @@ const postsByPriceRange = async (
   };
   let match = null;
   if (after) {
-    match = await client.query(q.Get(q.Match(q.Index("posts_by_uuid"), after)));
+    match = await client.query(q.Get(q.Match(q.Index("posts_by_id"), after)));
     opts.after = match.data.createdAt;
   }
   const response = await client.query(
@@ -291,8 +289,8 @@ const postsByPriceRange = async (
     beforeObject = await client.query(q.Get(response.before[1]));
   }
   const result = {
-    after: afterObject ? afterObject.data.uuid : "",
-    before: beforeObject ? beforeObject.data.uuid : "",
+    after: afterObject ? afterObject.data.id : "",
+    before: beforeObject ? beforeObject.data.id : "",
     data: response.data.map(item => {
       return item;
     }),
@@ -311,7 +309,7 @@ const postsByFlexSearch = async (
   };
   let match = null;
   if (after) {
-    match = await client.query(q.Get(q.Match(q.Index("posts_by_uuid"), after)));
+    match = await client.query(q.Get(q.Match(q.Index("posts_by_id"), after)));
     opts.after = match.data.createdAt;
   }
   const response = await client.query(
@@ -326,8 +324,8 @@ const postsByFlexSearch = async (
     beforeObject = await client.query(q.Get(response.before[1]));
   }
   const result = {
-    after: afterObject ? afterObject.data.uuid : "",
-    before: beforeObject ? beforeObject.data.uuid : "",
+    after: afterObject ? afterObject.data.id : "",
+    before: beforeObject ? beforeObject.data.id : "",
     data: response.data.map(item => {
       return item;
     }),
@@ -349,7 +347,7 @@ const myAds = async (_, { searchTerm = "", perPage, after }, { headers }) => {
   };
   let match = null;
   if (after) {
-    match = await client.query(q.Get(q.Match(q.Index("posts_by_uuid"), after)));
+    match = await client.query(q.Get(q.Match(q.Index("posts_by_id"), after)));
     opts.after = match.data.createdAt;
   }
   const response = await client.query(
@@ -364,8 +362,8 @@ const myAds = async (_, { searchTerm = "", perPage, after }, { headers }) => {
     beforeObject = await client.query(q.Get(response.before[1]));
   }
   const result = {
-    after: afterObject ? afterObject.data.uuid : "",
-    before: beforeObject ? beforeObject.data.uuid : "",
+    after: afterObject ? afterObject.data.id : "",
+    before: beforeObject ? beforeObject.data.id : "",
     data: response.data.map(item => {
       return item;
     }),

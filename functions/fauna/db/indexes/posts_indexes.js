@@ -24,6 +24,23 @@ const postByUuid = {
   }
 };
 
+const postById = {
+  name: "posts_by_id",
+  create: true,
+  update: true,
+  params: {
+    source: "posts",
+    unique: true,
+    serialized: true,
+    source: "posts",
+    terms: [
+      {
+        field: ["data", "id"]
+      }
+    ]
+  }
+};
+
 const postsByCreatedAt = {
   name: "posts_by_created_at_desc",
   create: true,
@@ -43,4 +60,4 @@ const postsByCreatedAt = {
   }
 };
 
-module.exports = [allPosts, postByUuid, postsByCreatedAt];
+module.exports = [allPosts, postByUuid, postsByCreatedAt, postById];

@@ -56,7 +56,7 @@ export const PostCard = ({ post }) => {
   const isMyAd = user && user.uuid == post.authorId;
   return (
     <Card className={classes.card}>
-      <CardActionArea onClick={e => router.push(`/p?id=${post.uuid}`)}>
+      <CardActionArea onClick={e => router.push(`/p?id=${post.id}`)}>
         <CardHeader
           avatar={<Avatar aria-label="author">RK</Avatar>}
           title={`${post.title.slice(0, 20)}${
@@ -88,7 +88,7 @@ export const PostCard = ({ post }) => {
           </Box>
           <Box>
             {isMyAd ? (
-              <Link href={`/my-ads/edit?id=${post.uuid}`}>
+              <Link href={`/my-ads/edit?id=${post.id}`}>
                 <Button
                   startIcon={<EditIcon />}
                   color="secondary"

@@ -32,7 +32,7 @@ export const CREATE_POST = gql`
       latitude: $latitude
       longitude: $longitude
     ) {
-      uuid
+      id
     }
   }
 `;
@@ -62,7 +62,7 @@ export const UPDATE_POST = gql`
       latitude: $latitude
       longitude: $longitude
     ) {
-      uuid
+      id
       title
       description
       priceInfo
@@ -82,7 +82,7 @@ export const ALL_POSTS = gql`
   query allPosts($after: String, $perPage: Int!) {
     allPosts(perPage: $perPage, after: $after) {
       data {
-        uuid
+        id
         title
         price
         priceInfo
@@ -99,7 +99,7 @@ export const ALL_POSTS = gql`
 export const GET_POST = gql`
   query getPost($id: String!) {
     getPost(id: $id) {
-      uuid
+      id
       title
       description
       priceInfo
@@ -136,7 +136,7 @@ export const FLEX_SEARCH_POSTS = gql`
       after: $after
     ) {
       data {
-        uuid
+        id
         title
         price
         priceInfo
@@ -154,7 +154,7 @@ export const MY_ADS = gql`
   query myAds($searchTerm: String, $perPage: Int!, $after: String) {
     myAds(searchTerm: $searchTerm, perPage: $perPage, after: $after) {
       data {
-        uuid
+        id
         title
         description
         price

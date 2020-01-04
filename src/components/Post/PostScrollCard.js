@@ -66,7 +66,7 @@ export const PostScrollCard = ({ post }) => {
   const router = useRouter();
 
   return (
-    <Link href={`/p?id=${post.uuid}`}>
+    <Link href={`/p?id=${post.id}`}>
       <div className={classes.box}>
         <Box
           display="flex"

@@ -79,38 +79,11 @@ const PostEditForm = ({ post }) => {
     onCompleted: data => {
       setCompleted(true);
       setTimeout(() => {
-        setSubmitting(false);
-        // router.push(`/p?id=${data.updatePost.uuid}`);
+        router.push(`/p?id=${data.updatePost.id}`);
       }, 2000);
     },
     onError: err => {
       console.error(err);
-    },
-    update: (cache, { data }) => {
-      console.log("Ca", cache);
-      console.log("trying update cached", data);
-      const { updatePost } = data;
-      try {
-        let { getPost } = cache.readQuery({
-          query: GET_POST,
-          variables: { id: updatePost.uuid }
-        });
-        console.log("GetPOST", getPost);
-        cache.writeQuery({
-          query: GET_POST,
-          data: {
-            getPost: {
-              ...updatePost,
-              author: getPost.author
-            }
-          }
-        });
-        console.log(cache);
-      } catch (e) {
-        console.log("EE", e);
-        // We should always catch here,
-        // as the cache may be empty or the query may fail
-      }
     }
   });
   const [validationErrors, setErrors] = React.useState([]);
@@ -150,7 +123,7 @@ const PostEditForm = ({ post }) => {
     const latlng = await getLatLngFromAddress(postToEdit.address);
     const variables = {
       ...postToEdit,
-      id: post.uuid,
+      id: post.id,
       price: +postToEdit.price
     };
     if (latlng) {

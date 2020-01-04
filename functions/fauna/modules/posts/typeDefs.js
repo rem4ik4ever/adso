@@ -68,7 +68,7 @@ module.exports = gql`
   }
 
   type Post {
-    uuid: ID!
+    id: ID!
     title: String!
     description: String!
     authorId: String!
