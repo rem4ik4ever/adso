@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Button } from "@material-ui/core";
+import Link from "next/link";
 
 function useHookWithRefCallback() {
   const [height, setState] = React.useState(0);
@@ -23,7 +24,7 @@ function useHookWithRefCallback() {
   return [setRef, height];
 }
 
-const PostDescription = ({ content, trimHeight }) => {
+const PostDescription = ({ id, content, trimHeight }) => {
   const [descriptionRef, height] = useHookWithRefCallback();
   console.log("Heright", height);
   return (
@@ -34,7 +35,11 @@ const PostDescription = ({ content, trimHeight }) => {
         ref={descriptionRef}
         dangerouslySetInnerHTML={{ __html: content }}
       />
-      {height >= trimHeight && <Button>Read more</Button>}
+      {height >= trimHeight && (
+        <Link href={`/p?id=${id}`}>
+          <Button>Read more</Button>
+        </Link>
+      )}
     </div>
   );
 };

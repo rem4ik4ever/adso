@@ -3,6 +3,7 @@ import { Paper, Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import moment from "moment";
 import PostDescription from "./PostDescription";
+import Link from "next/link";
 
 const useStyles = makeStyles(theme => ({
   image: {
@@ -33,14 +34,21 @@ const PostListRow = ({ post }) => {
               justifyContent="space-between"
               p={1}
             >
-              <Typography className={classes.title}>{post.title}</Typography>
+              <Link href={`/p?id=${post.id}`}>
+                <Typography className={classes.title}>{post.title}</Typography>
+              </Link>
               <Typography className={classes.date}>
                 {moment(+post.createdAt).fromNow()}
               </Typography>
             </Box>
-            <PostDescription content={post.description} trimHeight={50} />
+            <Box p={1}>
+              <PostDescription
+                id={post.id}
+                content={post.description}
+                trimHeight={50}
+              />
+            </Box>
           </Box>
-          <Box>Actions</Box>
         </Box>
       </Paper>
     </Box>
