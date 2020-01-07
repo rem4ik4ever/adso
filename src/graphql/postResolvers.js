@@ -138,6 +138,7 @@ export const FLEX_SEARCH_POSTS = gql`
       data {
         id
         title
+        description
         price
         priceInfo
         images

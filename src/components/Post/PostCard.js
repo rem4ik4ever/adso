@@ -24,9 +24,9 @@ import Link from "next/link";
 const useStyles = makeStyles(theme => ({
   card: {
     [theme.breakpoints.up("sm")]: {
-      margin: theme.spacing(2),
-      maxWidth: 240,
-      minWidth: 240
+      margin: theme.spacing(1),
+      maxWidth: 200,
+      minWidth: 200
     },
     [theme.breakpoints.down("sm")]: {
       marginTop: theme.spacing(2)
@@ -34,7 +34,12 @@ const useStyles = makeStyles(theme => ({
   },
   media: {
     height: 0,
-    paddingTop: "56.25%" // 16:9
+    [theme.breakpoints.up("sm")]: {
+      paddingTop: "100%"
+    },
+    [theme.breakpoints.down("sm")]: {
+      paddingTop: "56.25%"
+    }
   },
   price: {
     fontSize: "1.05rem",
@@ -46,6 +51,15 @@ const useStyles = makeStyles(theme => ({
   },
   img: {
     width: "inherit"
+  },
+  title: {
+    fontSize: "0.85rem",
+    fontWeight: 500,
+    minHeight: "40px"
+  },
+  date: {
+    fontSize: "0.65rem",
+    color: theme.palette.sub.main
   }
 }));
 
@@ -57,19 +71,23 @@ export const PostCard = ({ post }) => {
   return (
     <Card className={classes.card}>
       <CardActionArea onClick={e => router.push(`/p?id=${post.id}`)}>
-        <CardHeader
-          avatar={<Avatar aria-label="author">RK</Avatar>}
-          title={`${post.title.slice(0, 20)}${
-            post.title.length > 20 ? "..." : ""
-          }`}
-          subheader={moment(+post.createdAt).fromNow()}
+        <CardMedia
+          className={classes.media}
+          image={post.images[0]}
+          title={post.title}
         />
       </CardActionArea>
-      <CardMedia
-        className={classes.media}
-        image={post.images[0]}
-        title={post.title}
-      />
+      <CardContent>
+        <Box>
+          <Typography className={classes.title}>
+            {post.title.slice(0, 40)}
+            {post.title.length > 40 ? "..." : ""}
+          </Typography>
+          <Typography className={classes.date}>
+            {moment(+post.createdAt).fromNow()}
+          </Typography>
+        </Box>
+      </CardContent>
       <CardActions>
         <Box
           display="flex"
@@ -83,10 +101,10 @@ export const PostCard = ({ post }) => {
                 <Typography className={classes.price}>${post.price}</Typography>
               </Box>
             ) : (
-              <Typography variant="subtitle2">Contact for Price</Typography>
+              <Typography variant="caption">Contact for Price</Typography>
             )}
           </Box>
-          <Box>
+          <Box display="flex" justifyContent="flex-end">
             {isMyAd ? (
               <Link href={`/my-ads/edit?id=${post.id}`}>
                 <Button

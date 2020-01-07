@@ -5,10 +5,11 @@ import { PostCard } from "./PostCard";
 import { debounce } from "lodash";
 import { Appear } from "../../animations/appear";
 import { PoseGroup } from "react-pose";
+import PostListRow from "./PostListRow";
 
 const PER_PAGE = 10;
 
-export const PostList = ({ filters, query }) => {
+export const PostList = ({ filters, query, layout = "card" }) => {
   const [posts, setState] = useState([]);
   const [after, setAfter] = useState("");
   const [loading, setLoading] = useState(true);
@@ -82,14 +83,20 @@ export const PostList = ({ filters, query }) => {
       {posts.length == 0 && <Typography>Sorry, no results</Typography>}
       <Box
         display="flex"
-        flexDirection={{ xs: "column", sm: "row" }}
-        flexWrap={{ xs: "none", sm: "wrap" }}
+        flexDirection={
+          layout == "card" ? { xs: "column", sm: "row" } : "column"
+        }
+        flexWrap={layout == "card" ? { xs: "none", sm: "wrap" } : "none"}
         justifyContent="center"
       >
         <PoseGroup>
           {posts.map((post, index) => (
             <Appear i={index + 100} key={post.id}>
-              <PostCard post={post} />
+              {layout == "card" ? (
+                <PostCard post={post} />
+              ) : (
+                <PostListRow post={post} />
+              )}
             </Appear>
           ))}
         </PoseGroup>
