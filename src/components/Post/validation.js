@@ -46,7 +46,7 @@ export const validatePost = ({
     errors["price"] = "Please enter price";
   }
 
-  if (!categoryId) {
+  if (!categoryId || categoryId === "") {
     errors["categoryId"] = "Please select Category";
   }
   return { valid: Object.keys(errors).length == 0, errors };

@@ -68,7 +68,7 @@ const CreatePost = () => {
   const [title, setTitle] = React.useState("");
   const [address, onAddressChange] = React.useState("");
   const [price, setPrice] = React.useState(0);
-  const [categoryId, setCategory] = React.useState(null);
+  const [categoryId, setCategory] = React.useState("");
   const [priceInfo, setPriceInfo] = React.useState("Fixed");
   const [isSubmitting, setSubmitting] = React.useState(false);
   const [isCompleted, setCompleted] = React.useState(false);
@@ -151,7 +151,7 @@ const CreatePost = () => {
             <InputLabel id="category-select">Category</InputLabel>
             <Select
               labelId="category-select"
-              // value={categoryId}
+              value={categoryId}
               onChange={e => setCategory(e.target.value)}
             >
               {allCategories.map(category => (
