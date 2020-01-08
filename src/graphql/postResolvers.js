@@ -20,6 +20,7 @@ export const CREATE_POST = gql`
     $address: String!
     $latitude: Float!
     $longitude: Float!
+    $categoryId: String!
   ) {
     createPost(
       title: $title
@@ -31,6 +32,7 @@ export const CREATE_POST = gql`
       address: $address
       latitude: $latitude
       longitude: $longitude
+      categoryId: $categoryId
     ) {
       id
     }

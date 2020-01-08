@@ -83,6 +83,7 @@ module.exports = gql`
     createdAt: String!
     updatedAt: String!
     author: User!
+    categoryId: String!
   }
 
   type S3Payload {
@@ -101,6 +102,7 @@ module.exports = gql`
       address: String!
       latitude: Float!
       longitude: Float!
+      categoryId: String!
     ): Post
 
     updatePost(

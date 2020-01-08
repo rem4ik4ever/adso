@@ -7,7 +7,8 @@ export const validatePost = ({
   priceInfo,
   price,
   latitude,
-  longitude
+  longitude,
+  categoryId
 }) => {
   let errors = {};
   if (
@@ -43,6 +44,10 @@ export const validatePost = ({
   }
   if (priceInfo == "Fixed" && (!price || price == 0)) {
     errors["price"] = "Please enter price";
+  }
+
+  if (!categoryId) {
+    errors["categoryId"] = "Please select Category";
   }
   return { valid: Object.keys(errors).length == 0, errors };
 };

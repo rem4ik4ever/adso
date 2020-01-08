@@ -1,5 +1,5 @@
 import React from "react";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import { CREATE_POST } from "../graphql/postResolvers";
 import { Dropzone } from "./FileUpload";
 import TagsInput from "./util/TagsInput";
@@ -29,6 +29,7 @@ import { getLatLngFromAddress } from "./Location/geocoding";
 import InfoIcon from "@material-ui/icons/Info";
 import PostComplete from "./Post/PostComplete";
 import { useRouter } from "next/router";
+import { ALL_CATEGORIES } from "../graphql/categoriesResolvers";
 
 const useStyles = makeStyles(theme => ({
   errorText: {
@@ -53,6 +54,9 @@ const useStyles = makeStyles(theme => ({
   descriptionIcon: {
     color: "cadetblue",
     margin: theme.spacing(1)
+  },
+  categories: {
+    width: "100%"
   }
 }));
 
@@ -64,27 +68,31 @@ const CreatePost = () => {
   const [title, setTitle] = React.useState("");
   const [address, onAddressChange] = React.useState("");
   const [price, setPrice] = React.useState(0);
+  const [categoryId, setCategory] = React.useState(null);
   const [priceInfo, setPriceInfo] = React.useState("Fixed");
   const [isSubmitting, setSubmitting] = React.useState(false);
   const [isCompleted, setCompleted] = React.useState(false);
+  const [validationErrors, setErrors] = React.useState([]);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const classes = useStyles();
+  const { latitude, longitude } = usePosition();
 
-  const [createPost, { loading, error }] = useMutation(CREATE_POST, {
+  const [createPost] = useMutation(CREATE_POST, {
     onCompleted: data => {
       setCompleted(true);
       setTimeout(() => {
-        router.push(`/p?id=${data.createPost.uuid}`);
+        router.push(`/p?id=${data.createPost.id}`);
       }, 2000);
     },
     onError: err => {
       console.error(err);
     }
   });
-  const [validationErrors, setErrors] = React.useState([]);
-  const [activeStep, setActiveStep] = React.useState(0);
-  const classes = useStyles();
-  const { latitude, longitude } = usePosition();
 
-  // if (loading) return "Loading...";
+  const { data, loading, error } = useQuery(ALL_CATEGORIES);
+
+  if (loading) return "";
+  const { allCategories } = data;
   // if (error) {
   //   return <div>{error.message}</div>;
   // }
@@ -104,6 +112,7 @@ const CreatePost = () => {
       price: +price,
       description,
       images,
+      categoryId,
       tags,
       address,
       longitude,
@@ -125,6 +134,36 @@ const CreatePost = () => {
     }
   };
   const steps = [
+    {
+      label: "Choose Category",
+      description: "This helps sort your Ad",
+      field: "categoryId",
+      isValid: () => {
+        const { errors } = validatePost({ categoryId });
+        if (errors["categoryId"]) {
+          return false;
+        }
+        return true;
+      },
+      component: () => (
+        <Box mt={1}>
+          <FormControl className={classes.categories}>
+            <InputLabel id="category-select">Category</InputLabel>
+            <Select
+              labelId="category-select"
+              // value={categoryId}
+              onChange={e => setCategory(e.target.value)}
+            >
+              {allCategories.map(category => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name.toUpperCase()}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      )
+    },
     {
       label: "What are you offering?",
       description: "Good titile is half of the success!",

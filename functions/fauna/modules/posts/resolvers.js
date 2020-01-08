@@ -31,7 +31,8 @@ const createPost = async (
     price,
     address,
     latitude,
-    longitude
+    longitude,
+    categoryId
   },
   context
 ) => {
@@ -44,7 +45,7 @@ const createPost = async (
         id: uuidv4(),
         title,
         description,
-        authorId: payload.id,
+        authorId: payload.uuid,
         tags,
         images,
         priceInfo,
@@ -52,6 +53,7 @@ const createPost = async (
         address,
         latitude,
         longitude,
+        categoryId,
         active: true,
         createdAt: now,
         updatedAt: now
