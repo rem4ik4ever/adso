@@ -25,6 +25,10 @@ const theme = createMuiTheme({
     shadow: {
       main: "#bfbfbf"
     },
+    font: {
+      main: "#000",
+      subtitle: "#bdb8b8"
+    },
     white: "#fff"
   }
 });

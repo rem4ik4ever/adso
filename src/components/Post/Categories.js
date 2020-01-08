@@ -9,6 +9,7 @@ import {
   DriveEta,
   HomeWork
 } from "@material-ui/icons";
+import Link from "next/link";
 
 const useStyles = makeStyles(theme => ({
   category: {
@@ -41,33 +42,43 @@ const Categories = () => {
         justifyContent={{ sm: "center" }}
       >
         <div className={classes.category}>
-          <IconButton className={classes.categoryButton} color="primary">
-            <Storefront />
-          </IconButton>
+          <Link href="/c/all">
+            <IconButton className={classes.categoryButton} color="primary">
+              <Storefront />
+            </IconButton>
+          </Link>
           <Typography className={classes.categoryTitle}>All</Typography>
         </div>
         <div className={classes.category}>
-          <IconButton className={classes.categoryButton} color="primary">
-            <Computer />
-          </IconButton>
+          <Link href="/c/electronics">
+            <IconButton className={classes.categoryButton} color="primary">
+              <Computer />
+            </IconButton>
+          </Link>
           <Typography className={classes.categoryTitle}>Electronics</Typography>
         </div>
         <div className={classes.category}>
-          <IconButton className={classes.categoryButton} color="primary">
-            <DriveEta />
-          </IconButton>
+          <Link href="/c/cars">
+            <IconButton className={classes.categoryButton} color="primary">
+              <DriveEta />
+            </IconButton>
+          </Link>
           <Typography className={classes.categoryTitle}>Cars</Typography>
         </div>
         <div className={classes.category}>
-          <IconButton className={classes.categoryButton} color="primary">
-            <HomeWork />
-          </IconButton>
+          <Link href="/c/rentals">
+            <IconButton className={classes.categoryButton} color="primary">
+              <HomeWork />
+            </IconButton>
+          </Link>
           <Typography className={classes.categoryTitle}>Rentals</Typography>
         </div>
         <div className={classes.category}>
-          <IconButton className={classes.categoryButton} color="primary">
-            <Deck />
-          </IconButton>
+          <Link href="/c/furniture">
+            <IconButton className={classes.categoryButton} color="primary">
+              <Deck />
+            </IconButton>
+          </Link>
           <Typography className={classes.categoryTitle}>Furniture</Typography>
         </div>
       </Box>
