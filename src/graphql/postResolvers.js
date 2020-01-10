@@ -122,11 +122,30 @@ export const GET_POST = gql`
   }
 `;
 
+export const GET_EDIT_POST = gql`
+  query getEditPost($id: String!) {
+    getEditPost(id: $id) {
+      id
+      title
+      description
+      priceInfo
+      price
+      images
+      tags
+      address
+      latitude
+      longitude
+      createdAt
+    }
+  }
+`;
+
 export const FLEX_SEARCH_POSTS = gql`
   query postsByFlexSearch(
     $searchTerm: String!
     $location: LocationSearchInput
     $priceRange: PriceSearchInput
+    $categoryId: String
     $perPage: Int!
     $after: String
   ) {
@@ -136,6 +155,7 @@ export const FLEX_SEARCH_POSTS = gql`
       priceRange: $priceRange
       perPage: $perPage
       after: $after
+      categoryId: $categoryId
     ) {
       data {
         id

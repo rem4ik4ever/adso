@@ -198,6 +198,26 @@ const getPost = async (_root, { id }, _context) => {
   };
 };
 
+const getEditPost = async (_root, { id }, { headers }) => {
+  try {
+    user = await currentUser(headers);
+  } catch (error) {
+    return null;
+  }
+
+  const { data } = await client.query(
+    q.Get(q.Match(q.Index("posts_by_id"), id))
+  );
+  if (data.authorId != user.uuid) return null;
+  const author = await client.query(
+    q.Get(q.Match(q.Index("user_by_uuid"), data.authorId))
+  );
+  return {
+    ...data,
+    author: author.data
+  };
+};
+
 const postsByLocation = async (
   _root,
   { latitude, longitude, distance, perPage, after },
@@ -303,7 +323,7 @@ const postsByPriceRange = async (
 
 const postsByFlexSearch = async (
   _root,
-  { searchTerm, location, priceRange, perPage, after },
+  { searchTerm, location, priceRange, categoryId, perPage, after },
   _context
 ) => {
   let opts = {
@@ -315,7 +335,7 @@ const postsByFlexSearch = async (
     opts.after = match.data.createdAt;
   }
   const response = await client.query(
-    FlexSearchQuery(searchTerm, location, priceRange, opts)
+    FlexSearchQuery(searchTerm, location, priceRange, categoryId, opts)
   );
   let afterObject = null;
   let beforeObject = null;
@@ -378,6 +398,7 @@ module.exports = {
   Query: {
     allPosts: (root, args, context) => allPosts(root, args, context),
     getPost,
+    getEditPost,
     postsByLocation,
     postsBySearchTerm,
     postsByPriceRange,

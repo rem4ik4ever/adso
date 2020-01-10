@@ -9,7 +9,12 @@ import PostListRow from "./PostListRow";
 
 const PER_PAGE = 10;
 
-export const PostList = ({ filters, query, layout = "card" }) => {
+export const PostList = ({
+  filters,
+  query,
+  layout = "card",
+  categoryId = null
+}) => {
   const [posts, setState] = useState([]);
   const [after, setAfter] = useState("");
   const [loading, setLoading] = useState(true);
@@ -28,13 +33,13 @@ export const PostList = ({ filters, query, layout = "card" }) => {
       fetch(filters);
     }
   }, [filters]);
-
   const { data, error, fetchMore } = useQuery(query, {
     variables: {
       perPage: PER_PAGE,
       searchTerm: filters.searchTerm || "",
       location: filters.location,
-      priceRange: filters.priceRange
+      priceRange: filters.priceRange,
+      categoryId: categoryId
     },
     onCompleted: response => {
       if (response) {
@@ -47,7 +52,8 @@ export const PostList = ({ filters, query, layout = "card" }) => {
   const loadMore = data => {
     let variables = {
       perPage: PER_PAGE,
-      after
+      after,
+      categoryId
     };
     const filters = data.filters;
     if (filters) {

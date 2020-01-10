@@ -7,6 +7,8 @@ import { MY_ADS } from "../../src/graphql/postResolvers";
 import { PostList } from "../../src/components/Post/PostList";
 import { useRouter } from "next/router";
 import { useFilters } from "../../src/hooks/useFilters";
+import { useIdentityContext } from "../../src/hooks/useIdentity";
+import SignIn from "../sign-in";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -21,6 +23,8 @@ const MyAds = () => {
   const router = useRouter();
   const classes = useStyles();
   const filters = useFilters(router.query);
+  const { isLoggedIn } = useIdentityContext();
+  if (!isLoggedIn) return <SignIn />;
   return (
     <div>
       <Head>

@@ -1,6 +1,14 @@
 const faunadb = require("faunadb");
 const q = faunadb.query;
 
+/**
+ * Query by Distance between given Lat Lng and Post lat lng
+ * make sure that distance is within given distance
+ *
+ * @param {Number} distance
+ * @param {Decimal} latitude
+ * @param {Decimal} longitude
+ */
 const queryByDistance = (distance, latitude, longitude) =>
   q.GTE(
     distance,
@@ -122,6 +130,14 @@ const QueryBySearchTerm = (searchTerm, opts) =>
     q.Lambda(["createdAt", "ref"], q.Select(["data"], q.Get(q.Var("ref"))))
   );
 
+/**
+ * Match by Category
+ *
+ * @param {String} categoryId
+ */
+const matchByCategory = categoryId =>
+  q.Equals(q.Select(["data", "categoryId"], q.Get(q.Var("ref"))), categoryId);
+
 const queryByPrice = (fromPrice = 0, toPrice = null) => {
   const price = q.Select(["data", "price"], q.Get(q.Var("ref")));
   return q.All([
@@ -148,6 +164,7 @@ const FlexSearchQuery = (
   searchTerm,
   location = null,
   priceRange = null,
+  categoryId = null,
   opts = { perPage: 20 }
 ) => {
   let searchPrefs = [
@@ -168,6 +185,9 @@ const FlexSearchQuery = (
   }
   if (priceRange) {
     searchPrefs.push(queryByPrice(priceRange.from, priceRange.to));
+  }
+  if (categoryId) {
+    searchPrefs.push(matchByCategory(categoryId));
   }
   return q.Map(
     q.Filter(

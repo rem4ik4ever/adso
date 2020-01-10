@@ -19,14 +19,14 @@ const useStyles = makeStyles(theme => ({
     }
   }
 }));
-const Electronics = () => {
+const Rentals = () => {
   const classes = useStyles();
   const router = useRouter();
   const filters = useFilters(router.query);
   return (
     <div>
       <Head>
-        <title>Electronics</title>
+        <title>Rentals</title>
       </Head>
       <Container maxWidth="md" className={classes.container}>
         <Search placeholder="Filter" />
@@ -34,7 +34,7 @@ const Electronics = () => {
           <PostList
             filters={filters}
             query={FLEX_SEARCH_POSTS}
-            categoryId={"1"}
+            categoryId={"2"}
             layout="list"
           />
         </Box>
@@ -43,4 +43,4 @@ const Electronics = () => {
   );
 };
 
-export default Electronics;
+export default Rentals;

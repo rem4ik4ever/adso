@@ -48,11 +48,13 @@ module.exports = gql`
       location: LocationSearchInput
       priceRange: PriceSearchInput
       searchTerm: String!
+      categoryId: String
       perPage: Int!
       after: String
     ): PaginateResponse!
 
     getPost(id: String!): Post
+    getEditPost(id: String!): Post
 
     myAds(searchTerm: String, perPage: Int!, after: String): PaginateResponse!
   }
