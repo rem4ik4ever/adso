@@ -1,7 +1,6 @@
 const allCategories = {
   name: "all_categories",
-  unique: false,
-  serialized: false,
+  serialized: true,
   source: "categories",
   terms: []
 };

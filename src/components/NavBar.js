@@ -40,6 +40,9 @@ const useStyles = makeStyles(theme => ({
     // backgroundColor: "#fff",
     // color: "black",
     // boxShadow: "none"
+  },
+  logo: {
+    cursor: "pointer"
   }
 }));
 
@@ -85,10 +88,11 @@ const NavBar = () => {
     <AppBar position="sticky" className={classes.navbar}>
       <Toolbar variant="dense">
         <Link href="/">
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className={classes.logo}>
             tugogo
           </Typography>
         </Link>
+        <div className={classes.title}></div>
         {isLoggedIn ? (
           <>
             <IconButton ref={anchorRef} onClick={handleToggle}>

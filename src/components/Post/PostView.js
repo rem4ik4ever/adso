@@ -110,6 +110,7 @@ const PostView = ({ id }) => {
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
         />
+        <title>{post.title}</title>
       </Head>
       <Box className={classes.root}>
         <PoseGroup>

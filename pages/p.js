@@ -6,13 +6,6 @@ const Post = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  return (
-    <>
-      <Head>
-        <title>Post: {id}</title>
-      </Head>
-      <PostView id={id} />
-    </>
-  );
+  return <PostView id={id} />;
 };
 export default Post;
