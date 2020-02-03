@@ -5,16 +5,25 @@ const postResolvers = require("./modules/posts/resolvers");
 const postTypeDefs = require("./modules/posts/typeDefs");
 const categoryTypeDefs = require("./modules/categories/typeDefs");
 const categoryResolvers = require("./modules/categories/resolvers");
+const conversationTypeDefs = require("./modules/conversations/typeDefs");
+const conversationResolvers = require("./modules/conversations/resolvers");
 const { rootTypes, rootResolver } = require("./modules/rootTypes.js");
 const { merge } = require("lodash");
 
 const server = new ApolloServer({
-  typeDefs: [rootTypes, authTypeDefs, postTypeDefs, categoryTypeDefs],
+  typeDefs: [
+    rootTypes,
+    authTypeDefs,
+    postTypeDefs,
+    categoryTypeDefs,
+    conversationTypeDefs
+  ],
   resolvers: merge(
     rootResolver,
     authResolvers,
     postResolvers,
-    categoryResolvers
+    categoryResolvers,
+    conversationResolvers
   ),
   context: ctx => {
     const { event, context } = ctx;

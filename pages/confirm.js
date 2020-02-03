@@ -38,7 +38,7 @@ const Confirm = () => {
 
   const [confirmUser, { loading, error }] = useMutation(CONFIRM_USER, {
     onCompleted: data => {
-      if (data.confirmUser) {
+      if (data.confirm) {
         setState(true);
         setTimeout(() => {
           console.log("SHOULD REDIRECT NOW");

@@ -59,8 +59,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LOGIN = gql`
-  mutation login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+  mutation login($input: LoginInput!) {
+    login(input: $input) {
       accessToken
       refreshToken
     }
@@ -94,7 +94,7 @@ const SignIn = () => {
     const email = formRef.current.email.value;
     if (!validateEmail(email)) return setMsg("Invalid email");
     const password = formRef.current.password.value;
-    login({ variables: { email, password } });
+    login({ variables: { input: { email, password } } });
   };
 
   return (

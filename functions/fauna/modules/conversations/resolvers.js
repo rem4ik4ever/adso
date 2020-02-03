@@ -39,7 +39,8 @@ const createConversation = async (_, { postId }, { headers }) => {
       id: uuidv4(),
       postId,
       active: true,
-      createdAt: now
+      createdAt: now,
+      participants: []
     };
 
     const { data } = await client.query(

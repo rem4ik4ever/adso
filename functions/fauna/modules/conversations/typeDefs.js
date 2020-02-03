@@ -1,8 +1,6 @@
 const { gql } = require("apollo-server-lambda");
 
 module.exports = gql`
-  scalar Date
-
   type Conversation {
     id: ID!
     postId: String
@@ -20,8 +18,8 @@ module.exports = gql`
   }
   extend type Query {
     myConversations(after: String, perPage: Int): ConversationPaginateResponse!
-
-    getConversation(id: String!)
+    # createConversation(postId: String!): Conversation
+    getConversation(id: String!): Conversation
   }
 
   extend type Mutation {

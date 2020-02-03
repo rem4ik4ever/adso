@@ -10,8 +10,7 @@ import {
 const CURRENT_USER = gql`
   query me {
     me {
-      uuid
-      name
+      id
       firstName
       lastName
       email
