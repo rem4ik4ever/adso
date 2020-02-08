@@ -84,8 +84,17 @@ const SignIn = ({ enqueueSnackbar }) => {
       location.reload();
     },
     onError: err => {
+      console.log(err);
       if (err && err.message.includes("WrongEmailOrPassword")) {
         setMsg("Wrong email or password");
+      }
+      if (err && err.message.includes("UserNotConfirmed")) {
+        enqueueSnackbar(
+          "Please confirm your email. Click link in confirmation email.",
+          {
+            variant: "warning"
+          }
+        );
       }
     }
   });
@@ -102,9 +111,13 @@ const SignIn = ({ enqueueSnackbar }) => {
 
   const [resendConfirmation] = useMutation(RESEND_CONFIRMATION, {
     onCompleted: response => {
-      // setShowResend(false);
-      // setResent(true);
-      enqueueSnackbar("Confirmation link was sent to your email");
+      enqueueSnackbar(
+        "Confirmation link was sent to your email. Please check your email.",
+        {
+          variant: "success"
+        }
+      );
+      router.push("/sign-in");
     },
     onError: err => {
       console.log(err);

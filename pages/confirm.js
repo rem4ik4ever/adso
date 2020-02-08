@@ -12,6 +12,7 @@ import { CONFIRM_USER } from "../src/graphql/authResolvers";
 import { useMutation } from "@apollo/react-hooks";
 import queryString from "query-string";
 import { useRouter } from "next/router";
+import { withSnackbar } from "notistack";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Confirm = () => {
+const Confirm = ({ enqueueSnackbar }) => {
   const classes = useStyles();
   const router = useRouter();
   const [confirmed, setState] = useState(false);
@@ -63,14 +64,7 @@ const Confirm = () => {
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
-        {confirmationResent ? (
-          <>
-            <Avatar className={classes.avatar}>
-              <Mail />
-            </Avatar>
-            <Typography>Confirmation has been sent!</Typography>
-          </>
-        ) : (
+        {
           <>
             {loading ? (
               <>
@@ -89,6 +83,10 @@ const Confirm = () => {
                       <Button
                         onClick={e => {
                           e.preventDefault();
+                          enqueueSnackbar(
+                            "Please enter your email and password to resend confirmation email",
+                            { variant: "info" }
+                          );
                           router.push(`/sign-in?resend=true`);
                         }}
                       >
@@ -107,10 +105,10 @@ const Confirm = () => {
               </>
             )}
           </>
-        )}
+        }
       </div>
     </Container>
   );
 };
 
-export default Confirm;
+export default withSnackbar(Confirm);

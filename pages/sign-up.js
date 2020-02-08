@@ -13,6 +13,8 @@ import Container from "@material-ui/core/Container";
 import { useLoading } from "../src/hooks/useLoading";
 import { useMutation } from "@apollo/react-hooks";
 import { REGISTER_USER } from "../src/graphql/authResolvers";
+import { useRouter } from "next/router";
+import { withSnackbar } from "notistack";
 
 function Copyright() {
   return (
@@ -50,12 +52,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SignUp = () => {
+const SignUp = ({ enqueueSnackbar }) => {
+  const router = useRouter();
   const classes = useStyles();
   const [msg, setMsg] = useState("");
   const formRef = React.createRef();
   const [register, { loading }] = useMutation(REGISTER_USER, {
-    onCompleted: () => {},
+    onCompleted: () => {
+      enqueueSnackbar(
+        "Successfully registered. Please check your inbox for confirmation email",
+        { variant: "success" }
+      );
+      router.push("/sign-in");
+    },
     onError: err => {
       console.error(err);
       setMsg(err.message);
@@ -173,4 +182,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default withSnackbar(SignUp);
