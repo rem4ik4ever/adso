@@ -21,6 +21,9 @@ import {
 } from "../src/lib/auth";
 import { useRouter } from "next/router";
 import { useIdentityContext } from "../src/hooks/useIdentity";
+import { RESEND_CONFIRMATION } from "../src/graphql/authResolvers";
+import queryString from "query-string";
+import { withSnackbar } from "notistack";
 
 function Copyright() {
   return (
@@ -67,7 +70,7 @@ const LOGIN = gql`
   }
 `;
 
-const SignIn = () => {
+const SignIn = ({ enqueueSnackbar }) => {
   const router = useRouter();
   const classes = useStyles();
   const { isLoggedIn } = useIdentityContext();
@@ -97,6 +100,40 @@ const SignIn = () => {
     login({ variables: { input: { email, password } } });
   };
 
+  const [resendConfirmation] = useMutation(RESEND_CONFIRMATION, {
+    onCompleted: response => {
+      // setShowResend(false);
+      // setResent(true);
+      enqueueSnackbar("Confirmation link was sent to your email");
+    },
+    onError: err => {
+      console.log(err);
+    }
+  });
+
+  const onResend = event => {
+    event.preventDefault();
+    const email = formRef.current.email.value;
+    if (!validateEmail(email)) return setMsg("Invalid email");
+    const password = formRef.current.password.value;
+    resendConfirmation({
+      variables: {
+        email,
+        password,
+        token: "token"
+      }
+    });
+  };
+
+  const handleSubmit = event => {
+    const parsed = queryString.parse(location.search);
+    if (parsed.resend) {
+      onResend(event);
+      return;
+    }
+    onSignIn(event);
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -113,7 +150,7 @@ const SignIn = () => {
         <form
           className={classes.form}
           noValidate
-          onSubmit={onSignIn}
+          onSubmit={handleSubmit}
           ref={formRef}
         >
           <TextField
@@ -169,4 +206,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default withSnackbar(SignIn);

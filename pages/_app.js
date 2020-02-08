@@ -9,6 +9,7 @@ import NavBar from "../src/components/NavBar";
 import { IdentityContextProvider } from "../src/hooks/useIdentity";
 import { GoogleApiWrapper } from "google-maps-react";
 import Footer from "../src/components/Footer";
+import { SnackbarProvider } from "notistack";
 
 class AdsoApp extends App {
   componentDidMount() {
@@ -23,19 +24,21 @@ class AdsoApp extends App {
     const { Component, pageProps } = this.props;
     return (
       <IdentityContextProvider>
-        <Head>
-          <title>Adso App</title>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-          />
-        </Head>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <NavBar />
-          <Component {...pageProps} />
-          {/* <Footer /> */}
-        </ThemeProvider>
+        <SnackbarProvider maxSnack={3}>
+          <Head>
+            <title>Adso App</title>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+            />
+          </Head>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <NavBar />
+            <Component {...pageProps} />
+            {/* <Footer /> */}
+          </ThemeProvider>
+        </SnackbarProvider>
       </IdentityContextProvider>
     );
   }

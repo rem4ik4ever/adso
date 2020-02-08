@@ -17,7 +17,11 @@ export const CONFIRM_USER = gql`
 `;
 
 export const RESEND_CONFIRMATION = gql`
-  mutation resendConfirmation($token: String!) {
-    resendConfirmation(token: $token)
+  mutation resendConfirmation(
+    $email: String!
+    $password: String!
+    $token: String!
+  ) {
+    resendConfirmation(email: $email, password: $password, token: $token)
   }
 `;

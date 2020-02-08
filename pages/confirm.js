@@ -4,17 +4,14 @@ import {
   Container,
   Typography,
   CircularProgress,
-  Link,
   Button
 } from "@material-ui/core";
 import { Check, Error, Mail } from "@material-ui/icons/";
 import { makeStyles } from "@material-ui/styles";
-import {
-  CONFIRM_USER,
-  RESEND_CONFIRMATION
-} from "../src/graphql/authResolvers";
+import { CONFIRM_USER } from "../src/graphql/authResolvers";
 import { useMutation } from "@apollo/react-hooks";
 import queryString from "query-string";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -32,17 +29,16 @@ const useStyles = makeStyles(theme => ({
 
 const Confirm = () => {
   const classes = useStyles();
+  const router = useRouter();
   const [confirmed, setState] = useState(false);
   const [showResend, setShowResend] = useState(false);
-  const [confirmationResent, setResent] = useState(false);
 
   const [confirmUser, { loading, error }] = useMutation(CONFIRM_USER, {
     onCompleted: data => {
       if (data.confirm) {
         setState(true);
         setTimeout(() => {
-          console.log("SHOULD REDIRECT NOW");
-          location.href = "/sign-in";
+          router.push("/sign-in");
         }, 4000);
       }
     },
@@ -52,16 +48,6 @@ const Confirm = () => {
       if (err.message.includes("ConfirmationTokenExpired")) {
         setShowResend(true);
       }
-    }
-  });
-
-  const [resendConfirmation] = useMutation(RESEND_CONFIRMATION, {
-    onCompleted: () => {
-      setShowResend(false);
-      setResent(true);
-    },
-    onError: () => {
-      setShowResend(false);
     }
   });
   useEffect(() => {
@@ -103,12 +89,7 @@ const Confirm = () => {
                       <Button
                         onClick={e => {
                           e.preventDefault();
-                          let parsed = queryString.parse(location.search);
-                          resendConfirmation({
-                            variables: {
-                              token: parsed.token
-                            }
-                          });
+                          router.push(`/sign-in?resend=true`);
                         }}
                       >
                         Try resend confiramtion?
