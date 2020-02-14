@@ -112,7 +112,7 @@ const CreatePost = () => {
       price: +price,
       description,
       images,
-      categoryId,
+      categoryId: +categoryId,
       tags,
       address,
       longitude,

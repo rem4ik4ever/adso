@@ -44,7 +44,5 @@ class AdsoApp extends App {
   }
 }
 export default GoogleApiWrapper({
-  apiKey: process.env.NETLIFY_DEV
-    ? process.env.GOOGLE_MAPS_DEV_API_KEY
-    : process.env.GOOGLE_MAPS_API_KEY
+  apiKey: process.env.GOOGLE_MAPS_API_KEY
 })(withApollo(AdsoApp));

@@ -13,14 +13,14 @@ export const CREATE_POST = gql`
   mutation CreatePost(
     $title: String!
     $description: String!
-    $images: [String!]
-    $tags: [String!]
+    $images: [String!]!
+    $tags: [String!]!
     $priceInfo: String!
     $price: Float
     $address: String!
     $latitude: Float!
     $longitude: Float!
-    $categoryId: String!
+    $categoryId: Int!
   ) {
     createPost(
       title: $title
