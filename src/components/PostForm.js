@@ -81,7 +81,7 @@ const CreatePost = () => {
     onCompleted: data => {
       setCompleted(true);
       setTimeout(() => {
-        router.push(`/p?id=${data.createPost.id}`);
+        router.push(`/p?id=${data.createPost.uuid}`);
       }, 2000);
     },
     onError: err => {

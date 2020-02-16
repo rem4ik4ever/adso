@@ -35,6 +35,7 @@ export const CREATE_POST = gql`
       categoryId: $categoryId
     ) {
       id
+      uuid
     }
   }
 `;
@@ -111,12 +112,11 @@ export const GET_POST = gql`
       address
       latitude
       longitude
-      createdAt
-      authorId
+      createdDate
       author {
+        name
         firstName
         lastName
-        name
       }
     }
   }
