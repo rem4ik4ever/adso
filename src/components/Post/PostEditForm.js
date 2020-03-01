@@ -79,7 +79,7 @@ const PostEditForm = ({ post }) => {
     onCompleted: data => {
       setCompleted(true);
       setTimeout(() => {
-        router.push(`/p?id=${data.updatePost.id}`);
+        router.push(`/p?id=${data.updatePost.uuid}`);
       }, 2000);
     },
     onError: err => {
@@ -123,7 +123,7 @@ const PostEditForm = ({ post }) => {
     const latlng = await getLatLngFromAddress(postToEdit.address);
     const variables = {
       ...postToEdit,
-      id: post.id,
+      uuid: post.uuid,
       price: +postToEdit.price
     };
     if (latlng) {

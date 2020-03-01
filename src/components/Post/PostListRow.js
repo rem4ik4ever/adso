@@ -87,7 +87,7 @@ const PostListRow = ({ post }) => {
                 </Typography>
               </Link>
               <Typography className={classes.titleDate}>
-                {moment(+post.createdAt).fromNow()}
+                {moment(post.createdDate).fromNow()}
               </Typography>
             </Box>
             <Box p={1}>
@@ -106,7 +106,7 @@ const PostListRow = ({ post }) => {
             </Box>
             <Box p={1}>
               <Typography className={classes.bodyDate}>
-                {moment(+post.createdAt).fromNow()}
+                {moment(post.createdDate).fromNow()}
               </Typography>
             </Box>
             <Box p={1} className={classes.description}>

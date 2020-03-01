@@ -84,7 +84,7 @@ export const PostCard = ({ post }) => {
             {post.title.length > 40 ? "..." : ""}
           </Typography>
           <Typography className={classes.date}>
-            {moment(+post.createdAt).fromNow()}
+            {moment(post.createdDate).fromNow()}
           </Typography>
         </Box>
       </CardContent>
@@ -106,7 +106,7 @@ export const PostCard = ({ post }) => {
           </Box>
           <Box display="flex" justifyContent="flex-end">
             {isMyAd ? (
-              <Link href={`/my-ads/edit?id=${post.id}`}>
+              <Link href={`/my-ads/edit?id=${post.uuid}`}>
                 <Button
                   startIcon={<EditIcon />}
                   color="secondary"

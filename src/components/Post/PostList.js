@@ -7,7 +7,7 @@ import { Appear } from "../../animations/appear";
 import { PoseGroup } from "react-pose";
 import PostListRow from "./PostListRow";
 
-const PER_PAGE = 10;
+const PER_PAGE = 2;
 
 export const PostList = ({
   filters,
@@ -16,7 +16,8 @@ export const PostList = ({
   categoryId = null
 }) => {
   const [posts, setState] = useState([]);
-  const [after, setAfter] = useState("");
+  const [after, setAfter] = useState(null);
+  const [pageInfo, setPageInfo] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetch = React.useMemo(
@@ -33,19 +34,32 @@ export const PostList = ({
       fetch(filters);
     }
   }, [filters]);
-  const { data, error, fetchMore } = useQuery(query, {
-    variables: {
-      perPage: PER_PAGE,
-      searchTerm: filters.searchTerm || "",
-      location: filters.location,
-      priceRange: filters.priceRange,
-      categoryId: categoryId
-    },
+  const variables = {
+    first: PER_PAGE,
+    searchTerm: filters.searchTerm || "",
+    categoryId: categoryId
+  };
+  if (filters.location) {
+    variables = {
+      ...variables,
+      ...filters.location
+    };
+  }
+  if (filters.priceRange) {
+    variables = {
+      ...variables,
+      ...filters.priceRange
+    };
+  }
+  const { error, fetchMore } = useQuery(query, {
+    variables,
     onCompleted: response => {
       if (response) {
         const queryKey = Object.keys(response)[0];
-        setState(response[queryKey].data);
-        setAfter(response[queryKey].after);
+        const data = response[queryKey];
+        setState(data.edges);
+        setAfter(data.pageInfo.endCursor);
+        setPageInfo(data.pageInfo);
       }
     }
   });
@@ -72,8 +86,10 @@ export const PostList = ({
         setLoading(false);
         if (!fetchMoreResult) return prev;
         const queryKey = Object.keys(fetchMoreResult)[0];
-        setState([...posts, ...fetchMoreResult[queryKey].data]);
-        setAfter(fetchMoreResult[queryKey].after);
+        const data = fetchMoreResult[queryKey];
+        setState([...posts, ...data.edges]);
+        setAfter(data.pageInfo.endCursor);
+        setPageInfo(data.pageInfo);
       },
       notifyOnNetworkStatusChange: true
     });
@@ -107,7 +123,7 @@ export const PostList = ({
           ))}
         </PoseGroup>
       </Box>
-      {after !== "" && (
+      {pageInfo.hasNextPage && (
         <Box display="flex" justifyContent="center" m="16px">
           <Button
             onClick={e => loadMore(filters)}

@@ -42,19 +42,19 @@ export const CREATE_POST = gql`
 
 export const UPDATE_POST = gql`
   mutation UpdatePost(
-    $id: String!
-    $title: String
-    $description: String
+    $uuid: String!
+    $title: String!
+    $description: String!
     $images: [String!]
     $tags: [String!]
-    $priceInfo: String
+    $priceInfo: String!
     $price: Float
-    $address: String
-    $latitude: Float
-    $longitude: Float
+    $address: String!
+    $latitude: Float!
+    $longitude: Float!
   ) {
     updatePost(
-      id: $id
+      uuid: $uuid
       title: $title
       description: $description
       images: $images
@@ -65,7 +65,7 @@ export const UPDATE_POST = gql`
       latitude: $latitude
       longitude: $longitude
     ) {
-      id
+      uuid
       title
       description
       priceInfo
@@ -75,8 +75,10 @@ export const UPDATE_POST = gql`
       address
       latitude
       longitude
-      createdAt
-      authorId
+      createdDate
+      author {
+        id
+      }
     }
   }
 `;
@@ -126,7 +128,11 @@ export const GET_EDIT_POST = gql`
   query getEditPost($id: String!) {
     getEditPost(id: $id) {
       id
+      uuid
       title
+      category {
+        id
+      }
       description
       priceInfo
       price
@@ -135,7 +141,7 @@ export const GET_EDIT_POST = gql`
       address
       latitude
       longitude
-      createdAt
+      createdDate
     }
   }
 `;
@@ -174,22 +180,25 @@ export const FLEX_SEARCH_POSTS = gql`
 `;
 
 export const MY_ADS = gql`
-  query myAds($searchTerm: String, $perPage: Int!, $after: String) {
-    myAds(searchTerm: $searchTerm, perPage: $perPage, after: $after) {
-      data {
+  query myAds($searchTerm: String, $after: String, $first: Int) {
+    myAds(searchTerm: $searchTerm, after: $after, first: $first) {
+      edges {
         id
+        uuid
         title
         description
         price
         priceInfo
-        authorId
         images
         tags
-        createdAt
-        updatedAt
+        createdDate
       }
-      perPage
-      after
+      totalCount
+      pageInfo {
+        endCursor
+        beforeCursor
+        hasNextPage
+      }
     }
   }
 `;
