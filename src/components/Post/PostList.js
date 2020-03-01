@@ -7,7 +7,7 @@ import { Appear } from "../../animations/appear";
 import { PoseGroup } from "react-pose";
 import PostListRow from "./PostListRow";
 
-const PER_PAGE = 2;
+const PER_PAGE = 10;
 
 export const PostList = ({
   filters,
