@@ -1,14 +1,14 @@
 import React from "react";
 import { Box, Container } from "@material-ui/core";
-import Search from "../../src/components/Post/Search";
+import Search from "src/components/Post/Search";
 import Head from "next/head";
 import { makeStyles } from "@material-ui/styles";
-import { MY_ADS } from "../../src/graphql/postResolvers";
-import { PostList } from "../../src/components/Post/PostList";
+import { MY_ADS } from "src/graphql/postResolvers";
+import { PostList } from "src/components/Post/PostList";
 import { useRouter } from "next/router";
-import { useFilters } from "../../src/hooks/useFilters";
-import { useIdentityContext } from "../../src/hooks/useIdentity";
-import SignIn from "../sign-in";
+import { useFilters } from "src/hooks/useFilters";
+import { useIdentityContext } from "src/hooks/useIdentity";
+import SignIn from "pages/sign-in";
 
 const useStyles = makeStyles(theme => ({
   container: {

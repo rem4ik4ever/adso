@@ -3,9 +3,6 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "../src/components/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -18,12 +15,13 @@ import {
   setAuthenticationToken,
   setRefreshToken,
   validateEmail
-} from "../src/lib/auth";
+} from "src/lib/auth";
 import { useRouter } from "next/router";
-import { useIdentityContext } from "../src/hooks/useIdentity";
-import { RESEND_CONFIRMATION } from "../src/graphql/authResolvers";
 import queryString from "query-string";
 import { withSnackbar } from "notistack";
+import Link from "src/components/Link";
+import { useIdentityContext } from "src/hooks/useIdentity";
+import { RESEND_CONFIRMATION } from "src/graphql/authResolvers";
 
 function Copyright() {
   return (

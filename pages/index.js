@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Head from "next/head";
-import { PostList } from "../src/components/Post/PostList";
 import { Container, Box } from "@material-ui/core";
-import ActionsList from "../src/components/Post/ActionsList";
 import { makeStyles } from "@material-ui/styles";
-import Search from "../src/components/Post/Search";
+import Search from "src/components/Post/Search";
 import { useRouter } from "next/router";
+import RecentlyAdded from "src/components/Post/RecentlyAdded";
+import Categories from "src/components/Post/Categories";
+import { FLEX_SEARCH_POSTS } from "src/graphql/postResolvers";
+import { useFilters } from "src/hooks/useFilters";
+import { PostList } from "src/components/Post/PostList";
 import { usePosition } from "../src/hooks/usePosition";
-import RecentlyAdded from "../src/components/Post/RecentlyAdded";
-import Section from "../src/components/Post/Section";
-import Categories from "../src/components/Post/Categories";
-import { FLEX_SEARCH_POSTS } from "../src/graphql/postResolvers";
-import { useFilters } from "../src/hooks/useFilters";
 
 const useStyles = makeStyles(theme => ({
   container: {

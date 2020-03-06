@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { Box, Typography, Button } from "@material-ui/core";
-import { PostCard } from "./PostCard";
 import { debounce } from "lodash";
-import { Appear } from "../../animations/appear";
 import { PoseGroup } from "react-pose";
-import PostListRow from "./PostListRow";
+import { Appear } from "src/animations/appear";
+import { PostCard } from "src/components/Post/PostCard";
+import PostListRow from "src/components/Post/PostListRow";
 
 const PER_PAGE = 10;
 
