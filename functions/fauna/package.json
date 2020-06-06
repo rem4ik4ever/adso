@@ -15,7 +15,7 @@
   "author": "Netlify",
   "license": "MIT",
   "dependencies": {
-    "apollo-server-lambda": "^2.4.8",
+    "apollo-server-lambda": "^2.14.2",
     "aws-sdk": "^2.585.0",
     "bcryptjs": "^2.4.3",
     "cookie": "^0.4.0",
